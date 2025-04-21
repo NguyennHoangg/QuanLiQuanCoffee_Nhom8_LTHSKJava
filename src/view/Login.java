@@ -14,16 +14,13 @@ public class Login implements ActionListener {
             private JPasswordField txtPassword;
             private JButton btnLogin; // Class-level button
             private CoffeeController controller = new CoffeeController();
+            private JLabel imgLabel;
 
-            public Login() {
+    public Login() {
                 init();
             }
 
-            public static void main(String[] args) {
-                SwingUtilities.invokeLater(() -> {
-                    new Login();
-                });
-            }
+
 
             public void init() {
                 JFrame fr = new JFrame("Login");
@@ -80,6 +77,19 @@ public class Login implements ActionListener {
                 panel2.setPreferredSize(new Dimension(370, 400));
                 panel2.setLayout(new BorderLayout());
 
+                // Tạo ImageIcon và thay đổi kích thước hình ảnh
+                ImageIcon icon = new ImageIcon("image/login.png");
+                Image img = icon.getImage(); // Lấy đối tượng hình ảnh
+                Image scaledImg = img.getScaledInstance(250, 250, Image.SCALE_SMOOTH); // Thu nhỏ hình ảnh
+                imgLabel = new JLabel(new ImageIcon(scaledImg)); // Khởi tạo JLabel với ImageIcon đã thu nhỏ
+
+                imgLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                imgLabel.setVerticalAlignment(SwingConstants.CENTER);
+
+                panel2.add(imgLabel, BorderLayout.CENTER);
+
+
+
                 fr.add(panel2, BorderLayout.WEST);
                 fr.add(panel, BorderLayout.EAST);
                 fr.setVisible(true);
@@ -104,6 +114,9 @@ public class Login implements ActionListener {
                             return;
                         }
                         JOptionPane.showMessageDialog(null, "Đăng nhập thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        new Manager_GUI();
+                        // Đóng cửa sổ đăng nhập
+                        SwingUtilities.getWindowAncestor((Component) obj).dispose();
                     }
                 }
             }

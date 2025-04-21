@@ -28,13 +28,4 @@ public class ConnectDataBase {
         }
         return conn;
     }
-
-    public static void main(String[] args) {
-        Connection connection = ConnectDataBase.getConnection();
-        if (connection != null) {
-            System.out.println("Connection successful!");
-        } else {
-            System.out.println("Connection failed!");
-        }
-    }
 }

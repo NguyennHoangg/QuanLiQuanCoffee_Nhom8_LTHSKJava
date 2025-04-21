@@ -2,16 +2,6 @@ create database QuanLiCoffee;
 
 use QuanLiCoffee
 
-create table NhanVien(
-maNV nvarchar(10) primary key not null,
-tenNV nvarchar(255) not null,
-tuoi int not null,
-diaChi nvarchar(255) not null,
-soDienThoai nvarchar(12) not null)
-
-create table KhachHang(
-maKH nvarchar(10) primary key not null,
-)
 
 -- Bảng TaiKhoan
 CREATE TABLE TaiKhoan (
@@ -76,3 +66,5 @@ CREATE TABLE ChiTietHoaDon (
     FOREIGN KEY (maHoaDon) REFERENCES HoaDon(maHoaDon),
     FOREIGN KEY (maSanPham) REFERENCES SanPham(maSanPham)
 );
+
+INSERT INTO TaiKhoan(tenDangNhap, matKhau) VALUES ( N'admin', N'admin');
