@@ -48,8 +48,8 @@ public class Manager_GUI {
         sidebar.add(hiLabel);
 
         String[] upperMenuItems = {
-                "SẢN PHẨM", "NHÀ CUNG CẤP", "NHẬP HÀNG", "PHIẾU NHẬP",
-                "XUẤT HÀNG", "PHIẾU XUẤT", "TỒN KHO", "TÀI KHOẢN", "THỐNG KÊ"
+                "SẢN PHẨM", "NHÀ CUNG CẤP", "PHIẾU NHẬP",
+                "PHIẾU XUẤT", "QUẢN LÝ KHO", "TÀI KHOẢN", "THỐNG KÊ"
         };
 
         String[] bottomMenuItems = {
@@ -60,8 +60,7 @@ public class Manager_GUI {
 
         // Icon paths
         String[] iconPaths = {
-                "src/image/products.png", "src/image/supplier.png", "src/image/import_export.png",
-                "src/image/list.png", "src/image/import_export.png", "src/image/list.png",
+                "src/image/products.png", "src/image/supplier.png", "src/image/import_export.png", "src/image/import_export.png",
                 "src/image/inventory.png", "src/image/profile_2.png", "src/image/thongke.png"
         };
 
@@ -118,6 +117,14 @@ public class Manager_GUI {
     }
 
 
+    /*     * Tạo toolbar với các nút chức năng và tìm kiếm
+        * @return JPanel chứa toolbar
+        * @author Nguyen Hoang
+        * @date 21/04/2025
+        * @description Tạo một toolbar với các nút chức năng như Thêm, Xóa, Sửa, Xem chi tiết và Xuất PDF.
+        * Tạo một trường tìm kiếm với các tùy chọn tìm kiếm theo mã hoặc tên sản phẩm.
+        * @note Sử dụng GridLayout và FlowLayout để bố trí các thành phần trong toolbar.
+     */
     private JPanel createToolbar() {
         JPanel toolbar = new JPanel(new GridLayout(1, 2, 0, 20));
         toolbar.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
