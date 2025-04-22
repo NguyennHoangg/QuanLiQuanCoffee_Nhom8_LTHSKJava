@@ -48,7 +48,7 @@ public class Manager_GUI {
         sidebar.add(hiLabel);
 
         String[] upperMenuItems = {
-                "SẢN PHẨM", "NHÀ CUNG CẤP", "PHIẾU NHẬP",
+                "SẢN PHẨM", "PHIẾU NHẬP",
                 "PHIẾU XUẤT", "QUẢN LÝ KHO", "TÀI KHOẢN", "THỐNG KÊ"
         };
 
@@ -60,7 +60,7 @@ public class Manager_GUI {
 
         // Icon paths
         String[] iconPaths = {
-                "src/image/products.png", "src/image/supplier.png", "src/image/import_export.png", "src/image/import_export.png",
+                "src/image/products.png", "src/image/import_export.png", "src/image/import_export.png",
                 "src/image/inventory.png", "src/image/profile_2.png", "src/image/thongke.png"
         };
 

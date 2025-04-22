@@ -6,13 +6,15 @@ public class NhanVien {
     private int tuoi;
     private String diaChi;
     private String soDienThoai;
+    private TaiKhoan taiKhoan;
 
-    public NhanVien(String maNhanVien, String tenNhanVien, int tuoi, String diaChi, String soDienThoai) {
+    public NhanVien(String maNhanVien, String tenNhanVien, int tuoi, String diaChi, String soDienThoai, TaiKhoan taiKhoan) {
         this.maNhanVien = maNhanVien;
         this.tenNhanVien = tenNhanVien;
         this.tuoi = tuoi;
         this.diaChi = diaChi;
         this.soDienThoai = soDienThoai;
+        this.taiKhoan = taiKhoan;
     }
 
     public String getMaNhanVien() {
@@ -70,6 +72,18 @@ public class NhanVien {
         this.soDienThoai = soDienThoai;
     }
 
+    public TaiKhoan getTaiKhoan() {
+        return taiKhoan;
+    }
+
+    public void setTaiKhoan(TaiKhoan taiKhoan) {
+        if (taiKhoan == null) {
+            throw new IllegalArgumentException("Tài khoản không được để trống");
+        }
+        this.taiKhoan = taiKhoan;
+    }
+
+
     @Override
     public String toString() {
         return "HoaDon{" +
@@ -78,6 +92,7 @@ public class NhanVien {
                 ", tuoi='" + tuoi + '\'' +
                 ", diaChi='" + diaChi + '\'' +
                 ", soDienThoai='" + soDienThoai + '\'' +
+                ", taiKhoan=" + taiKhoan +
                 '}';
     }
 }
