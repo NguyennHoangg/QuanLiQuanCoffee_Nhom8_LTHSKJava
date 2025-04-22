@@ -1,18 +1,21 @@
 package view;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class Manager_GUI {
+    private JFrame frame;
+    private JPanel mainPanel;      // Panel chứa các màn hình
+    private CardLayout cardLayout; // Bộ quản lý layout chuyển panel
+
     public Manager_GUI() {
         initUI();
     }
 
     private void initUI() {
-        JFrame frame = new JFrame("Coffee Management System");
+        frame = new JFrame("Coffee Management System");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1500, 750);
+        frame.setSize(1500, 800);
         frame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
 
@@ -20,170 +23,95 @@ public class Manager_GUI {
         JPanel sidebar = createSidebar();
         frame.add(sidebar, BorderLayout.WEST);
 
-        // === Panel chính bên phải (chứa toolbar và bảng) ===
-        JPanel mainPanel = new JPanel(new BorderLayout());
+        // === Main panel với CardLayout ===
+        cardLayout = new CardLayout();
+        mainPanel = new JPanel(cardLayout);
 
-        JPanel toolbar = createToolbar();
-        JScrollPane tablePanel = createProductTable();
-
-        mainPanel.add(toolbar, BorderLayout.NORTH);
-        mainPanel.add(tablePanel, BorderLayout.CENTER);
+        // Thêm các panel tương ứng vào mainPanel
+        mainPanel.add(new ProductFrame(), "PRODUCT");
+        mainPanel.add(new ThongKeFrame(), "THONG_KE");
+//        mainPanel.add(new PhieuNhapFrame(), "PHIEU_NHAP");
+//        mainPanel.add(new PhieuXuatFrame(), "PHIEU_XUAT");
+//        mainPanel.add(new KhoFrame(), "KHO");
+//        mainPanel.add(new AccountFrame(), "ACCOUNT");
+//        mainPanel.add(new UpdateFrame(), "UPDATE");
 
         frame.add(mainPanel, BorderLayout.CENTER);
-
         frame.setVisible(true);
     }
 
     private JPanel createSidebar() {
         JPanel sidebar = new JPanel();
         sidebar.setBackground(new Color(10, 82, 116));
-        sidebar.setPreferredSize(new Dimension(200, 0));
+        sidebar.setPreferredSize(new Dimension(220, 0));
         sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
 
-        JLabel hiLabel = new JLabel("HI! Admin");
+        JLabel hiLabel = new JLabel("Xin chào, Admin!");
         hiLabel.setForeground(Color.WHITE);
-        hiLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        hiLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        hiLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 40, 0));
         hiLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        hiLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 50, 0));
         sidebar.add(hiLabel);
 
-        String[] upperMenuItems = {
-                "SẢN PHẨM", "PHIẾU NHẬP",
-                "PHIẾU XUẤT", "QUẢN LÝ KHO", "TÀI KHOẢN", "THỐNG KÊ"
-        };
+        // Thêm các nút vào sidebar
+        addSidebarButton(sidebar, "SẢN PHẨM", "image/products.png", "PRODUCT");
+        addSidebarButton(sidebar, "PHIẾU NHẬP", "image/import_export.png", "PHIEU_NHAP");
+        addSidebarButton(sidebar, "PHIẾU XUẤT", "image/import_export.png", "PHIEU_XUAT");
+        addSidebarButton(sidebar, "QUẢN LÝ KHO", "image/inventory.png", "KHO");
+        addSidebarButton(sidebar, "TÀI KHOẢN", "image/profile_2.png", "ACCOUNT");
+        addSidebarButton(sidebar, "THỐNG KÊ", "image/thongke.png", "THONG_KE");
 
-        String[] bottomMenuItems = {
-                "ĐỔI THÔNG TIN", "ĐĂNG XUẤT"
-        };
+        sidebar.add(Box.createVerticalGlue());
 
-        Font btnFont = new Font("Segoe UI", Font.BOLD, 16);
-
-        // Icon paths
-        String[] iconPaths = {
-                "src/image/products.png", "src/image/import_export.png", "src/image/import_export.png",
-                "src/image/inventory.png", "src/image/profile_2.png", "src/image/thongke.png"
-        };
-
-        // Upper menu buttons with icons
-        for (int i = 0; i < upperMenuItems.length; i++) {
-            JButton btn = new JButton(upperMenuItems[i]);
-            btn.setAlignmentX(Component.CENTER_ALIGNMENT);
-            btn.setMaximumSize(new Dimension(180, 40));
-            btn.setPreferredSize(new Dimension(180, 40));
-            btn.setFont(btnFont);
-            btn.setBackground(new Color(10, 82, 116));
-            btn.setForeground(Color.WHITE);
-            btn.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-            btn.setFocusPainted(false);
-
-            // Set icon
-            Image imageScale = new ImageIcon(iconPaths[i]).getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-            ImageIcon icon = new ImageIcon(imageScale);
-            btn.setIcon(icon);
-
-
-            sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
-            sidebar.add(btn);
-        }
-
-        sidebar.add(Box.createVerticalGlue()); // Push bottom group to the bottom
-
-        //Icon
-        String[] bottomIconPaths = {
-                "src/image/update.png", "src/image/logout.png"
-        };
-        // Bottom menu buttons without icons
-        for (int i = 0; i < bottomMenuItems.length; i++) {
-            JButton btn = new JButton(bottomMenuItems[i]);
-            btn.setAlignmentX(Component.CENTER_ALIGNMENT);
-            btn.setMaximumSize(new Dimension(180, 40));
-            btn.setPreferredSize(new Dimension(180, 40));
-            btn.setFont(btnFont);
-            btn.setBackground(new Color(10, 82, 116));
-            btn.setForeground(Color.WHITE);
-            btn.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-            btn.setFocusPainted(false);
-            sidebar.add(Box.createRigidArea(new Dimension(0, 20)));
-
-            // Set icon
-            Image imageScale = new ImageIcon(bottomIconPaths[i]).getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-            ImageIcon icon = new ImageIcon(imageScale);
-            btn.setIcon(icon);
-
-            sidebar.add(btn);
-        }
+        addSidebarButton(sidebar, "ĐỔI THÔNG TIN", "image/update.png", "UPDATE");
+        addSidebarButton(sidebar, "ĐĂNG XUẤT", "image/logout.png", "DANG_XUAT");
 
         return sidebar;
     }
 
+    private void addSidebarButton(JPanel sidebar, String text, String iconPath, String frameToOpen) {
+        JButton btn = new JButton(text);
+        btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btn.setMaximumSize(new Dimension(180, 40));
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btn.setBackground(new Color(10, 82, 116));
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        btn.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        btn.setHorizontalAlignment(SwingConstants.LEFT);
 
-    /*     * Tạo toolbar với các nút chức năng và tìm kiếm
-        * @return JPanel chứa toolbar
-        * @author Nguyen Hoang
-        * @date 21/04/2025
-        * @description Tạo một toolbar với các nút chức năng như Thêm, Xóa, Sửa, Xem chi tiết và Xuất PDF.
-        * Tạo một trường tìm kiếm với các tùy chọn tìm kiếm theo mã hoặc tên sản phẩm.
-        * @note Sử dụng GridLayout và FlowLayout để bố trí các thành phần trong toolbar.
-     */
-    private JPanel createToolbar() {
-        JPanel toolbar = new JPanel(new GridLayout(1, 2, 0, 20));
-        toolbar.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        ImageIcon icon = new ImageIcon(iconPath);
+        Image scaledImg = icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        btn.setIcon(new ImageIcon(scaledImg));
 
-        JPanel toolbar1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5)); // khoảng cách giữa các nút
-        String[] btnNames = {"Thêm", "Xóa", "Sửa", "Xem chi tiết", "Xuất PDF"};
-
-
-
-
-        for (String name : btnNames) {
-            JButton btn = new JButton(name);
-            btn.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // cỡ chữ vừa phải
-            btn.setMargin(new Insets(5, 10, 5, 10)); // padding trong nút
-            btn.setPreferredSize(new Dimension(110, 30)); // giảm chiều cao
-            btn.setFocusPainted(false); // bỏ viền khi nhấn
-            btn.setBorder(null); // bỏ viền
-            btn.setBackground(new Color(10, 82, 116)); // màu nền
-            btn.setForeground(Color.WHITE); // màu chữ
-            toolbar1.add(btn);
+        if (frameToOpen != null) {
+            if (frameToOpen.equals("DANG_XUAT")) {
+                btn.addActionListener(e -> handleLogout());
+            } else {
+                btn.addActionListener(e -> openFrame(frameToOpen));
+            }
         }
 
-        toolbar1.setBorder(BorderFactory.createTitledBorder("Chức năng"));
-        toolbar1.setPreferredSize(new Dimension(700, 60));
-
-        JPanel toolbar2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
-        String[] searchOptions = {"Tìm kiếm theo mã", "Tìm kiếm theo tên"};
-        JComboBox<String> searchComboBox = new JComboBox<>(searchOptions);
-        JTextField searchField = new JTextField(20);
-        JButton searchButton = new JButton("Tìm kiếm");
-
-        searchButton.setPreferredSize(new Dimension(100, 30));
-        searchButton.setMargin(new Insets(5, 10, 5, 10));
-        searchButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-
-        toolbar2.add(searchComboBox);
-        toolbar2.add(searchField);
-        toolbar2.add(searchButton);
-        toolbar2.setBorder(BorderFactory.createTitledBorder("Tìm kiếm"));
-        toolbar2.setPreferredSize(new Dimension(500, 60));
-
-        toolbar.add(toolbar1);
-        toolbar.add(toolbar2);
-
-        return toolbar;
+        sidebar.add(btn);
+        sidebar.add(Box.createRigidArea(new Dimension(0, 20)));
     }
 
-
-    private JScrollPane createProductTable() {
-        String[] columnNames = {"Mã sản phẩm", "Tên sản phẩm", "Loại", "Số Lượng", "Đơn giá"};
-        Object[][] data = {
-                {"CF1", "Cà Phê Đá", "Đồ uống", 50, 20000},
-                {"CF2", "Cà Phê Sữa", "Đồ uống", 30, 25000},
-                {"CF3", "Cà Phê Trứng", "Đồ uống", 20, 30000},
-                {"CF4", "Cà Phê Đen", "Đồ uống", 40, 22000},
-                {"CF5", "Cà Phê Sữa Đá", "Đồ uống", 25, 27000}
-        };
-        JTable table = new JTable(new DefaultTableModel(data, columnNames));
-        JScrollPane scrollPane = new JScrollPane(table);
-        return scrollPane;
+    private void openFrame(String frameName) {
+        // Chuyển đổi giữa các panel bằng CardLayout
+        cardLayout.show(mainPanel, frameName);
     }
+
+    private void handleLogout() {
+        int confirm = JOptionPane.showConfirmDialog(
+                frame,
+                "Bạn có chắc chắn muốn đăng xuất?",
+                "Xác nhận đăng xuất",
+                JOptionPane.YES_NO_OPTION
+        );
+        if (confirm == JOptionPane.YES_OPTION) {
+            frame.dispose(); // Đóng cửa sổ hiện tại
+            new fLogin();
+        }
+    }
+
 }
