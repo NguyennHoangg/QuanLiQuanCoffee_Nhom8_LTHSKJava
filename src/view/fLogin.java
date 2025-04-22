@@ -5,20 +5,18 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import view.custom.customPanel;
-
-
-
-
+import controller.CoffeeController;
 
     public class fLogin extends JFrame implements ActionListener, KeyListener, FocusListener, MouseListener {
+        private CoffeeController coffeeController = new CoffeeController();
         private JTextField txtUsername, txtPassword;
         private JButton btnLogin;
         private JLabel lbShowMessage;
         private ImageIcon background = new ImageIcon(
-                new ImageIcon("img/background.jpg").getImage().getScaledInstance(790, 500, Image.SCALE_SMOOTH));
+                new ImageIcon("image/background.jpg").getImage().getScaledInstance(450, 500, Image.SCALE_SMOOTH));
         private ImageIcon errorIcon = new ImageIcon("img/cancel_16.png");
         private ImageIcon LogoIcon = new ImageIcon(
-                new ImageIcon("img/user_512.png").getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
+                new ImageIcon("image/profile2.png").getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
         private customPanel customUI = customPanel.getInstance();
         Border borderBottomFocus = BorderFactory.createMatteBorder(0, 0, 1, 0, Color.decode("#1a66e3"));
         Border borderBottomUnFocus = BorderFactory.createMatteBorder(0, 0, 1, 0, Color.decode("#d0e1fd"));
@@ -113,9 +111,21 @@ import view.custom.customPanel;
         public void actionPerformed(ActionEvent e) {
             Object o = e.getSource();
             if (o.equals(btnLogin)) {
-                String username = txtUsername.getText().trim();
-                String password = txtPassword.getText().trim();
+                String userName = txtUsername.getText().trim();
+                String passWord = txtPassword.getText().trim();
                 if (validData()) {
+                    if (coffeeController.checkLogin(userName, passWord)){
+                        JOptionPane.showMessageDialog(this, "Đăng nhập thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        this.dispose();
+                        new Manager_GUI();
+                    }
+                    else {
+                        txtUsername.setBorder(borderBottomError);
+                        txtPassword.setBorder(borderBottomError);
+                        showMessage("Tên đăng nhập hoặc mật khẩu không đúng");
+                    }
+                }
+                else{
 
                 }
             }
@@ -202,15 +212,15 @@ import view.custom.customPanel;
         private boolean validData() {
             String username = txtUsername.getText().trim();
             String password = txtPassword.getText().trim();
-            if (!(username.length() > 4 && username.matches("^[a-zA-Z0-9_@#]{5,}$"))) {
+            if (!(username.length() > 4 && username.matches("^[a-zA-Z0-9]{5,}$"))) {
                 if (username.length() < 5)
                     showMessage("Tên đăng nhập phải tối thiểu 5 ký tự");
                 else
-                    showMessage("Tên đăng nhập phải chứa các kỳ tự, số, @, #, _");
+                    showMessage("Tên đăng nhập phải chứa các kỳ tự, số");
                 txtUsername.setBorder(borderBottomError);
                 return false;
             }
-            if (!(password.length() > 0 && password.matches("^[a-zA-Z0-9_@#]{5,}$"))) {
+            if (!(password.length() > 0 && password.matches("^[a-zA-Z0-9]{5,}$"))) {
                 if (password.length() < 5)
                     showMessage("Mật khẩu phải tối thiểu 5 ký tự");
                 else
