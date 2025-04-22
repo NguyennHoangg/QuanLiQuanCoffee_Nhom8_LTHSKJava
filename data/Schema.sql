@@ -121,3 +121,38 @@ INSERT INTO TaiKhoan(tenDangNhap, matKhau, quyen) VALUES ( N'admin', N'admin', 1
                                                          (N'hoang', N'hoang123', 0),
                                                          (N'yen', N'yen123', 0),
                                                          (N'khavy', N'khavy123', 0);
+
+--Data
+INSERT INTO SanPham (maSanPham, tenSanPham, giaBan, soLuong, maLoaiSanPham) VALUES
+                                                                                ('SP01', N'Coffee Đen', 25000, 100, 'LSP01'),
+                                                                                ('SP02', N'Coffee Sữa', 28000, 120, 'LSP01'),
+                                                                                ('SP03', N'Latte', 32000, 80, 'LSP01'),
+                                                                                ('SP04', N'Cappuccino', 35000, 90, 'LSP01'),
+
+                                                                                ('SP05', N'Coca Cola', 15000, 200, 'LSP02'),
+                                                                                ('SP06', N'Sprite', 15000, 180, 'LSP02'),
+                                                                                ('SP07', N'Pepsi', 15000, 160, 'LSP02'),
+                                                                                ('SP08', N'7Up', 15000, 170, 'LSP02'),
+
+                                                                                ('SP09', N'Sinh Tố Bơ', 30000, 70, 'LSP03'),
+                                                                                ('SP10', N'Sinh Tố Dâu', 30000, 60, 'LSP03'),
+                                                                                ('SP11', N'Sinh Tố Xoài', 30000, 65, 'LSP03'),
+                                                                                ('SP12', N'Sinh Tố Mãng Cầu', 32000, 55, 'LSP03'),
+
+                                                                                ('SP13', N'Trà Đào', 25000, 90, 'LSP04'),
+                                                                                ('SP14', N'Trà Vải', 25000, 85, 'LSP04'),
+                                                                                ('SP15', N'Trà Sữa Trân Châu', 28000, 95, 'LSP04'),
+                                                                                ('SP16', N'Trà Gừng', 22000, 75, 'LSP04'),
+
+                                                                                ('SP17', N'Thuốc Lá Jet', 25000, 50, 'LSP05'),
+                                                                                ('SP18', N'Thuốc Lá Hero', 22000, 40, 'LSP05'),
+                                                                                ('SP19', N'Thuốc Lá Craven A', 27000, 45, 'LSP05'),
+                                                                                ('SP20', N'Thuốc Lá Esse', 30000, 35, 'LSP05');
+
+
+INSERT INTO LoaiSanPham (maLoaiSanPham, tenLoaiSanPham) VALUES
+                                                            ('LSP01', N'Coffee'),
+                                                            ('LSP02', N'Nước Ngọt'),
+                                                            ('LSP03', N'Sinh Tố'),
+                                                            ('LSP04', N'Trà'),
+                                                            ('LSP05', N'Thuốc Lá');
