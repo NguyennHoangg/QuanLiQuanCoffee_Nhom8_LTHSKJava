@@ -1,14 +1,19 @@
-package view;
+package view.Employee;
+
+import view.Manager.ProductFrame;
+import view.Manager.ThongKeFrame;
+import view.login.fLogin;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class Manager_GUI {
+public class Employeer_GUI {
+    private boolean isShiftOpen = false; // Trạng thái ca làm việc
     private JFrame frame;
     private JPanel mainPanel;      // Panel chứa các màn hình
     private CardLayout cardLayout; // Bộ quản lý layout chuyển panel
 
-    public Manager_GUI() {
+    public Employeer_GUI() {
         initUI();
     }
 
@@ -28,13 +33,14 @@ public class Manager_GUI {
         mainPanel = new JPanel(cardLayout);
 
         // Thêm các panel tương ứng vào mainPanel
-        mainPanel.add(new ProductFrame(), "PRODUCT");
-        mainPanel.add(new ThongKeFrame(), "THONG_KE");
-//        mainPanel.add(new PhieuNhapFrame(), "PHIEU_NHAP");
-//        mainPanel.add(new PhieuXuatFrame(), "PHIEU_XUAT");
-//        mainPanel.add(new KhoFrame(), "KHO");
-//        mainPanel.add(new AccountFrame(), "ACCOUNT");
-//        mainPanel.add(new UpdateFrame(), "UPDATE");
+        CaLamViecPanel caLamViecPanel = new CaLamViecPanel();
+        caLamViecPanel.setShiftListener(() -> {
+            isShiftOpen = true; // Cập nhật trạng thái ca làm việc
+            cardLayout.show(mainPanel, "BAN_HANG"); // Chuyển sang Panel bán hàng
+    });
+        mainPanel.add(caLamViecPanel, "CA_LAM_VIEC");
+        mainPanel.add(new BanHangPanel(), "BAN_HANG");
+//
 
         frame.add(mainPanel, BorderLayout.CENTER);
         frame.setVisible(true);
@@ -46,7 +52,7 @@ public class Manager_GUI {
         sidebar.setPreferredSize(new Dimension(220, 0));
         sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
 
-        JLabel hiLabel = new JLabel("Xin chào, Admin!");
+        JLabel hiLabel = new JLabel("Xin chào, Employeer!");
         hiLabel.setForeground(Color.WHITE);
         hiLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
         hiLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 40, 0));
@@ -54,15 +60,12 @@ public class Manager_GUI {
         sidebar.add(hiLabel);
 
         // Thêm các nút vào sidebar
-        addSidebarButton(sidebar, "SẢN PHẨM", "image/products.png", "PRODUCT");
-        addSidebarButton(sidebar, "PHIẾU NHẬP", "image/import_export.png", "PHIEU_NHAP");
-        addSidebarButton(sidebar, "PHIẾU XUẤT", "image/import_export.png", "PHIEU_XUAT");
-        addSidebarButton(sidebar, "QUẢN LÝ KHO", "image/inventory.png", "KHO");
-        addSidebarButton(sidebar, "TÀI KHOẢN", "image/profile_2.png", "ACCOUNT");
-        addSidebarButton(sidebar, "THỐNG KÊ", "image/thongke.png", "THONG_KE");
+        addSidebarButton(sidebar, "BÁN HÀNG", "image/products.png", "BAN_HANG");
+        addSidebarButton(sidebar, "HÓA ĐƠN", "image/list.png", "HOA_DON");
 
         sidebar.add(Box.createVerticalGlue());
 
+        addSidebarButton(sidebar, "ĐÓNG CA", "image/thongke.png", "DONG_CA");
         addSidebarButton(sidebar, "ĐỔI THÔNG TIN", "image/update.png", "UPDATE");
         addSidebarButton(sidebar, "ĐĂNG XUẤT", "image/logout.png", "DANG_XUAT");
 
@@ -97,7 +100,15 @@ public class Manager_GUI {
     }
 
     private void openFrame(String frameName) {
-        // Chuyển đổi giữa các panel bằng CardLayout
+        if (frameName.equals("BAN_HANG") && !isShiftOpen) {
+            JOptionPane.showMessageDialog(
+                    frame,
+                    "Vui lòng mở ca làm việc trước khi vào Bán hàng!",
+                    "Thông báo",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
         cardLayout.show(mainPanel, frameName);
     }
 
@@ -113,5 +124,6 @@ public class Manager_GUI {
             new fLogin();
         }
     }
+
 
 }

@@ -1,14 +1,17 @@
-package view;
+package view.login;
 import javax.swing.*;
 import javax.swing.border.*;
 
 import java.awt.*;
 import java.awt.event.*;
+
+import view.Employee.Employeer_GUI;
+import view.Manager.Manager_GUI;
 import view.custom.customPanel;
-import controller.CoffeeController;
+import controller.UserController;
 
     public class fLogin extends JFrame implements ActionListener, KeyListener, FocusListener, MouseListener {
-        private CoffeeController coffeeController = new CoffeeController();
+        private UserController coffeeController = new UserController();
         private JTextField txtUsername, txtPassword;
         private JButton btnLogin;
         private JLabel lbShowMessage;
@@ -114,19 +117,21 @@ import controller.CoffeeController;
                 String userName = txtUsername.getText().trim();
                 String passWord = txtPassword.getText().trim();
                 if (validData()) {
-                    if (coffeeController.checkLogin(userName, passWord)){
+                    if (coffeeController.checkLogin(userName, passWord) && coffeeController.checkAdmin(userName, passWord)) {
                         JOptionPane.showMessageDialog(this, "Đăng nhập thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                         this.dispose();
                         new Manager_GUI();
+                    }
+                    else if (coffeeController.checkLogin(userName, passWord) && !coffeeController.checkAdmin(userName, passWord)) {
+                        JOptionPane.showMessageDialog(this, "Đăng nhập thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        this.dispose();
+                        new Employeer_GUI();
                     }
                     else {
                         txtUsername.setBorder(borderBottomError);
                         txtPassword.setBorder(borderBottomError);
                         showMessage("Tên đăng nhập hoặc mật khẩu không đúng");
                     }
-                }
-                else{
-
                 }
             }
         }
@@ -229,6 +234,10 @@ import controller.CoffeeController;
                 return false;
             }
             return true;
+        }
+
+        public String getTenDangNhap(){
+            return txtUsername.getText().trim();
         }
 
     }

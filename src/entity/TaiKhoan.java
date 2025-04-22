@@ -3,10 +3,12 @@ package entity;
 public class TaiKhoan {
     private String tenDangNhap;
     private String matKhau;
+    private boolean quyenHan = false;
 
-    public TaiKhoan(String tenDangNhap, String matKhau) {
+    public TaiKhoan(String tenDangNhap, String matKhau, boolean quyenHan) {
         this.tenDangNhap = tenDangNhap;
         this.matKhau = matKhau;
+        this.quyenHan = quyenHan;
 
     }
 
@@ -30,6 +32,14 @@ public class TaiKhoan {
             throw new IllegalArgumentException("Mật khẩu không được để trống");
         }
         this.matKhau = matKhau;
+    }
+
+    public boolean isQuyenHan() {
+        return quyenHan;
+    }
+
+    public void setQuyenHan(boolean quyenHan) {
+        this.quyenHan = quyenHan;
     }
 
     @Override
