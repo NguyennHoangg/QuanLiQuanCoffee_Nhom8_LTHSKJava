@@ -124,8 +124,9 @@ import controller.UserController;
                     }
                     else if (coffeeController.checkLogin(userName, passWord) && !coffeeController.checkAdmin(userName, passWord)) {
                         JOptionPane.showMessageDialog(this, "Đăng nhập thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        coffeeController.setCurrentUsername(userName); // Lưu tên đăng nhập
                         this.dispose();
-                        new Employeer_GUI();
+                        new Employeer_GUI(coffeeController); // Truyền UserController
                     }
                     else {
                         txtUsername.setBorder(borderBottomError);
@@ -235,11 +236,6 @@ import controller.UserController;
             }
             return true;
         }
-
-        public String getTenDangNhap(){
-            return txtUsername.getText().trim();
-        }
-
     }
 
 

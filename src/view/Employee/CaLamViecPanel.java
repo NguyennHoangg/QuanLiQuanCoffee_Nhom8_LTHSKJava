@@ -1,5 +1,8 @@
 package view.Employee;
 
+import controller.UserController;
+import entity.CaLamViec;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -65,15 +68,6 @@ public class CaLamViecPanel extends JPanel implements ActionListener {
         return outerPanel;
     }
 
-    /**
-     * Phương thức này trả về số tiền mở ca từ ô nhập liệu.
-     * @param soTien Số tiền mở ca.
-     * @return Giá trị số tiền mở ca.
-     */
-
-    public double getTienMoCa(double soTien) {
-        return soTienField.getText().isEmpty() ? 0 : Double.parseDouble(soTienField.getText());
-    }
 
     /**
      * Phương thức này trả về thời gian bắt đầu ca làm việc.
@@ -84,11 +78,9 @@ public class CaLamViecPanel extends JPanel implements ActionListener {
         return LocalDateTime.now();
     }
 
-
-    public interface ShiftListener {
-        void onShiftOpened(); // Callback khi ca làm việc được mở
-    }
-
+public interface ShiftListener {
+    void onShiftOpened(double tienMoCa); // Truyền số tiền mở ca
+}
 
     /**
      * Phương thức này thiết lập listener cho sự kiện mở ca làm việc.
@@ -98,15 +90,31 @@ public class CaLamViecPanel extends JPanel implements ActionListener {
         this.shiftListener = shiftListener;
     }
 
+    /**
+     * Phương thức này xử lý sự kiện khi nhấn nút mở ca làm việc.
+     * @param e Sự kiện nhấn nút.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         Object obj = e.getSource();
         if (obj.equals(openShiftButton)) {
-            LocalDateTime startTime = LocalDateTime.now();
-            if (shiftListener != null) {
-                shiftListener.onShiftOpened(); // Gọi callback khi mở ca
+            String soTien = soTienField.getText();
+            if (soTien.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập số tiền mở ca!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                return;
             }
-            JOptionPane.showMessageDialog(this, "Ca làm việc đã được mở!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            try {
+                double soTienMoCa = Double.parseDouble(soTien);
+                CaLamViec caLamViec = new CaLamViec();
+                caLamViec.setThoiGianBatDau(LocalDateTime.now());
+                caLamViec.setTienMoCa(soTienMoCa);
+
+                if (shiftListener != null) {
+                    shiftListener.onShiftOpened(soTienMoCa); // Truyền số tiền mở ca
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Số tiền mở ca không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 

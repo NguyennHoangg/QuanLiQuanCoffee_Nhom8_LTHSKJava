@@ -1,5 +1,9 @@
 package view.Employee;
 
+import controller.HoaDonController;
+import controller.UserController;
+import entity.HoaDon;
+import entity.NhanVien;
 import entity.SanPham;
 
 import javax.swing.*;
@@ -7,19 +11,30 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.time.LocalDateTime;
+
 import controller.SanPhamController;
 
-public class BanHangPanel extends JPanel implements MouseListener {
+public class BanHangPanel extends JPanel implements MouseListener, ActionListener {
+    private JButton btnThanhToan;
     private SanPhamController sanPhamController;
     private DefaultTableModel tableModel;
     private JTable table;
     private JTextField maSanPhamField, tenSanPhamField, soLuongField, tienKhachDuaField;
     private JLabel donGiaLabel, thanhTienLabel, tienTraLaiLabel;
 
+    private HoaDonController hoaDonController;
+    private UserController userController;
 
-    public BanHangPanel() {
+
+
+    // src/view/Employee/BanHangPanel.java
+    public BanHangPanel(UserController userController) {
+        this.userController = userController; // Assign the passed UserController
         setLayout(new BorderLayout());
         add(northPanel(), BorderLayout.NORTH);
         add(createTableScrollPane(), BorderLayout.CENTER);
@@ -27,6 +42,10 @@ public class BanHangPanel extends JPanel implements MouseListener {
         addProductToTable();
 
         table.addMouseListener(this);
+        soLuongField.addActionListener(e -> calculateValues());
+        tienKhachDuaField.addActionListener(e -> calculateValues());
+        btnThanhToan.addActionListener(this);
+        this.hoaDonController = new HoaDonController();
     }
 
     public JPanel northPanel() {
@@ -112,13 +131,18 @@ public class BanHangPanel extends JPanel implements MouseListener {
         gbc.gridx = 1;
         panel.add(tienTraLaiLabel, gbc);
 
+        gbc.gridx = 2;
+        panel.add(new JLabel("Nhân viên: "), gbc);
+        gbc.gridx = 3;
+        panel.add( new JLabel(userController.getCurrentUsername()) ,gbc);
+
 
         gbc.gridy = 5;
         gbc.gridx = 0;
         gbc.gridwidth = 4; // Nút chiếm toàn bộ chiều ngang
         gbc.anchor = GridBagConstraints.CENTER;
 
-        JButton btnThanhToan = new JButton("THANH TOÁN");
+        btnThanhToan = new JButton("THANH TOÁN");
         btnThanhToan.setPreferredSize(new Dimension(200, 35));
         btnThanhToan.setBackground(new Color(10, 82, 116));
         btnThanhToan.setForeground(Color.WHITE);
@@ -129,9 +153,17 @@ public class BanHangPanel extends JPanel implements MouseListener {
 
 
         DocumentListener calListener = new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) { update(); }
-            public void removeUpdate(DocumentEvent e) { update(); }
-            public void changedUpdate(DocumentEvent e) { update(); }
+            public void insertUpdate(DocumentEvent e) {
+                update();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                update();
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                update();
+            }
 
             public void update() {
                 calculateValues();
@@ -141,8 +173,6 @@ public class BanHangPanel extends JPanel implements MouseListener {
         soLuongField.getDocument().addDocumentListener(calListener);
         tienKhachDuaField.getDocument().addDocumentListener(calListener);
 
-        soLuongField.addActionListener(e -> calculateValues());
-        tienKhachDuaField.addActionListener(e -> calculateValues());
 
         return panel;
     }
@@ -221,13 +251,13 @@ public class BanHangPanel extends JPanel implements MouseListener {
     public void addProductToTable() {
         tableModel.setRowCount(0); // Xóa tất cả các hàng hiện tại
         // Thêm sản phẩm vào bảng
-        for(SanPham sp : sanPhamController.getDsachSanPham()) {
-           tableModel.addRow(new Object[]{
-                   sp.getMaSanPham(),
-                   sp.getTenSanPham(),
-                   sp.getLoaiSanPham().getTenLoaiSanPham(),
-                   sp.getGiaBan()
-           });
+        for (SanPham sp : sanPhamController.getDsachSanPham()) {
+            tableModel.addRow(new Object[]{
+                    sp.getMaSanPham(),
+                    sp.getTenSanPham(),
+                    sp.getLoaiSanPham().getTenLoaiSanPham(),
+                    sp.getGiaBan()
+            });
         }
     }
 
@@ -257,5 +287,63 @@ public class BanHangPanel extends JPanel implements MouseListener {
             thanhTienLabel.setText("0");
             tienTraLaiLabel.setText("0");
         }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object o = e.getSource();
+        if (o.equals(btnThanhToan)) {
+            try {
+                // Lấy thông tin từ giao diện
+                String maSanPham = maSanPhamField.getText();
+                String tenSanPham = tenSanPhamField.getText();
+                int soLuong = Integer.parseInt(soLuongField.getText());
+                double donGia = Double.parseDouble(donGiaLabel.getText());
+                double thanhTien = soLuong * donGia;
+
+                // Kiểm tra thông tin
+                if (maSanPham.isEmpty() || tenSanPham.isEmpty() || soLuong <= 0) {
+                    JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Lấy thông tin nhân viên
+                NhanVien nhanVien = userController.getNhanVienByTenDangNhap(userController.getCurrentUsername());
+                if (nhanVien == null) {
+                    JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin nhân viên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Tạo hóa đơn
+                HoaDon hoaDon = new HoaDon();
+                hoaDon.setMaHoaDon(hoaDonController.generateMaHoaDon());
+                hoaDon.setMaNhanVien(nhanVien.getMaNhanVien());
+                hoaDon.setNgayLap(LocalDateTime.now());
+                hoaDon.setThanhTien(thanhTien);
+                hoaDon.setGiaBan(donGia);
+                hoaDon.setSoLuong(soLuong);
+                hoaDon.setSanPham(sanPhamController.getThongTinSanPham(maSanPham));
+
+                // Lưu hóa đơn vào cơ sở dữ liệu
+                if (hoaDonController.insertHoaDon(hoaDon) && hoaDonController.insertChiTietHoaDon(hoaDon)) {
+                    JOptionPane.showMessageDialog(this, "Thanh toán thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    clearFields(); // Xóa các trường nhập liệu
+                } else {
+                    JOptionPane.showMessageDialog(this, "Lỗi khi lưu hóa đơn!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập số hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void clearFields() {
+        maSanPhamField.setText("");
+        tenSanPhamField.setText("");
+        soLuongField.setText("0");
+        donGiaLabel.setText("0");
+        thanhTienLabel.setText("0");
+        tienKhachDuaField.setText("0");
+        tienTraLaiLabel.setText("0");
     }
 }

@@ -5,17 +5,27 @@ import java.time.LocalDateTime;
 
 public class HoaDon {
     private String maHoaDon;
-    private KhachHang maKhachHang;
     private String maNhanVien;
     private LocalDateTime ngayLap;
     private SanPham sanPham;
+    private int soLuong;
+    private double giaBan;
+    private double thanhTien;
 
-    public HoaDon(String maHoaDon, KhachHang maKhachHang, String maNhanVien, LocalDateTime ngayLap, SanPham sanPham) {
+
+
+    public HoaDon(String maHoaDon, String maNhanVien, LocalDateTime ngayLap, SanPham sanPham, int soLuong, double giaBan, double thanhTien) {
         this.maHoaDon = maHoaDon;
-        this.maKhachHang = maKhachHang;
         this.maNhanVien = maNhanVien;
         this.ngayLap = ngayLap;
         this.sanPham = sanPham;
+        this.soLuong = soLuong;
+        this.giaBan = giaBan;
+        this.thanhTien = thanhTien;
+    }
+
+    public HoaDon() {
+
     }
 
     public String getMaHoaDon() {
@@ -27,17 +37,6 @@ public class HoaDon {
             throw new IllegalArgumentException("Mã hóa đơn không được để trống");
         }
         this.maHoaDon = maHoaDon;
-    }
-
-    public KhachHang getMaKhachHang() {
-        return maKhachHang;
-    }
-
-    public void setMaKhachHang(KhachHang maKhachHang) {
-        if (maKhachHang == null) {
-            throw new IllegalArgumentException("Khách hàng không được để trống");
-        }
-        this.maKhachHang = maKhachHang;
     }
 
     public String getMaNhanVien() {
@@ -73,14 +72,40 @@ public class HoaDon {
         this.sanPham = sanPham;
     }
 
+    public int getSoLuong() {
+        return soLuong;
+    }
+
+    public void setSoLuong(int soLuong) {
+        this.soLuong = soLuong;
+    }
+
+    public double getGiaBan() {
+        return giaBan;
+    }
+
+    public void setGiaBan(double giaBan) {
+        this.giaBan = giaBan;
+    }
+
+    public double getThanhTien() {
+        return thanhTien;
+    }
+
+    public void setThanhTien(double thanhTien) {
+        this.thanhTien = thanhTien;
+    }
+
     @Override
     public String toString() {
         return "HoaDon{" +
                 "maHoaDon='" + maHoaDon + '\'' +
-                ", maKhachHang=" + maKhachHang +
                 ", maNhanVien='" + maNhanVien + '\'' +
                 ", ngayLap=" + ngayLap +
                 ", sanPham=" + sanPham +
+                ", soLuong=" + soLuong +
+                ", giaBan=" + giaBan +
+                ", thanhTien=" + thanhTien +
                 '}';
     }
 

@@ -19,6 +19,9 @@ public class CaLamViec {
         this.tienDongCa = tienDongCa;
     }
 
+    public CaLamViec() {
+    }
+
     public String getMaCaLamViec() {
         return maCaLamViec;
     }

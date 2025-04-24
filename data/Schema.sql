@@ -36,35 +36,24 @@ CREATE TABLE NhanVien (
                           FOREIGN KEY (tenDangNhap) REFERENCES TaiKhoan(tenDangNhap)
 );
 
--- Bảng KhachHang
-CREATE TABLE KhachHang (
-                           maKhachHang NVARCHAR(50) PRIMARY KEY,    -- Mã khách hàng (khóa chính)
-                           tenKhachHang NVARCHAR(100) NOT NULL,     -- Tên khách hàng
-                           tuoi INT NOT NULL,                       -- Tuổi
-                           diaChi NVARCHAR(200) NOT NULL,           -- Địa chỉ
-                           soDienThoai NVARCHAR(15) NOT NULL        -- Số điện thoại
-);
 
 -- Bảng HoaDon
 CREATE TABLE HoaDon (
-                        maHoaDon NVARCHAR(50) PRIMARY KEY,       -- Mã hóa đơn (khóa chính)
-                        maKhachHang NVARCHAR(50) NOT NULL,       -- Mã khách hàng (khóa ngoại)
-                        maNhanVien NVARCHAR(50) NOT NULL,        -- Mã nhân viên (khóa ngoại)
-                        ngayLap DATETIME NOT NULL,               -- Ngày lập hóa đơn
-                        maSanPham NVARCHAR(50) NOT NULL,         -- Mã sản phẩm (khóa ngoại)
-                        FOREIGN KEY (maKhachHang) REFERENCES KhachHang(maKhachHang),
-                        FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien),
-                        FOREIGN KEY (maSanPham) REFERENCES SanPham(maSanPham)
+    maHoaDon NVARCHAR(50) PRIMARY KEY,       -- Mã hóa đơn (khóa chính)
+    maNhanVien NVARCHAR(50) NOT NULL,        -- Mã nhân viên (khóa ngoại)
+    ngayLap DATETIME NOT NULL,               -- Ngày lập hóa đơn
+    tongTien DECIMAL(10, 2) NOT NULL DEFAULT 0, -- Tổng tiền
+    FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien)
 );
 
 -- Bảng ChiTietHoaDon
 CREATE TABLE ChiTietHoaDon (
-                               maChiTietHoaDon NVARCHAR(50) PRIMARY KEY, -- Mã chi tiết hóa đơn (khóa chính)
                                maHoaDon NVARCHAR(50) NOT NULL,          -- Mã hóa đơn (khóa ngoại)
                                maSanPham NVARCHAR(50) NOT NULL,         -- Mã sản phẩm (khóa ngoại)
                                soLuong INT NOT NULL,                    -- Số lượng
                                giaBan DECIMAL(10, 2) NOT NULL,          -- Giá bán
                                thanhTien DECIMAL(10, 2) NOT NULL,       -- Thành tiền
+                               PRIMARY KEY (maHoaDon, maSanPham),       -- Khóa chính mới
                                FOREIGN KEY (maHoaDon) REFERENCES HoaDon(maHoaDon),
                                FOREIGN KEY (maSanPham) REFERENCES SanPham(maSanPham)
 );
@@ -123,6 +112,12 @@ INSERT INTO TaiKhoan(tenDangNhap, matKhau, quyen) VALUES ( N'admin', N'admin', 1
                                                          (N'khavy', N'khavy123', 0);
 
 --Data
+INSERT INTO LoaiSanPham (maLoaiSanPham, tenLoaiSanPham) VALUES
+                                                            ('LSP01', N'Coffee'),
+                                                            ('LSP02', N'Nước Ngọt'),
+                                                            ('LSP03', N'Sinh Tố'),
+                                                            ('LSP04', N'Trà'),
+                                                            ('LSP05', N'Thuốc Lá');
 INSERT INTO SanPham (maSanPham, tenSanPham, giaBan, soLuong, maLoaiSanPham) VALUES
                                                                                 ('SP01', N'Coffee Đen', 25000, 100, 'LSP01'),
                                                                                 ('SP02', N'Coffee Sữa', 28000, 120, 'LSP01'),
@@ -149,10 +144,7 @@ INSERT INTO SanPham (maSanPham, tenSanPham, giaBan, soLuong, maLoaiSanPham) VALU
                                                                                 ('SP19', N'Thuốc Lá Craven A', 27000, 45, 'LSP05'),
                                                                                 ('SP20', N'Thuốc Lá Esse', 30000, 35, 'LSP05');
 
-
-INSERT INTO LoaiSanPham (maLoaiSanPham, tenLoaiSanPham) VALUES
-                                                            ('LSP01', N'Coffee'),
-                                                            ('LSP02', N'Nước Ngọt'),
-                                                            ('LSP03', N'Sinh Tố'),
-                                                            ('LSP04', N'Trà'),
-                                                            ('LSP05', N'Thuốc Lá');
+INSERT INTO NhanVien (maNhanVien, tenNhanVien, tuoi, diaChi, soDienThoai, tenDangNhap) VALUES
+                                                                                           ('NV01', N'Hoàng', 25, N'Hà Nội', '0123456789', N'hoang'),
+                                                                                           ('NV02', N'Yến', 22, N'TP.Ho Chi Minh', '0987654321', N'yen'),
+                                                                                           ('NV03', N'Khavy', 28, N'TP.Ho Chi Minh', '0912345678', N'khavy');

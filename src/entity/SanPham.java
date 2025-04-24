@@ -15,6 +15,10 @@ public class SanPham {
         this.loaiSanPham = loaiSanPham;
     }
 
+    public SanPham() {
+
+    }
+
     public String getMaSanPham() {
         return maSanPham;
     }
