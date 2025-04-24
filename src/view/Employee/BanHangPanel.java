@@ -1,5 +1,9 @@
 package view.Employee;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import controller.HoaDonController;
 import controller.UserController;
 import entity.HoaDon;
@@ -11,16 +15,18 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.FileOutputStream;
 import java.time.LocalDateTime;
 
 import controller.SanPhamController;
 
 public class BanHangPanel extends JPanel implements MouseListener, ActionListener {
-    private JButton btnThanhToan;
+    private JButton btnThanhToan, btnThemGioHang;
     private SanPhamController sanPhamController;
     private DefaultTableModel tableModel;
     private JTable table;
@@ -32,7 +38,6 @@ public class BanHangPanel extends JPanel implements MouseListener, ActionListene
 
 
 
-    // src/view/Employee/BanHangPanel.java
     public BanHangPanel(UserController userController) {
         this.userController = userController; // Assign the passed UserController
         setLayout(new BorderLayout());
@@ -139,7 +144,6 @@ public class BanHangPanel extends JPanel implements MouseListener, ActionListene
 
         gbc.gridy = 5;
         gbc.gridx = 0;
-        gbc.gridwidth = 4; // Nút chiếm toàn bộ chiều ngang
         gbc.anchor = GridBagConstraints.CENTER;
 
         btnThanhToan = new JButton("THANH TOÁN");
@@ -185,6 +189,13 @@ public class BanHangPanel extends JPanel implements MouseListener, ActionListene
         return new JScrollPane(table);
     }
 
+    /**
+     * Phương thức này xử lý sự kiện khi nhấn chuột vào bảng.
+     * Nó sẽ lấy thông tin sản phẩm từ bảng và hiển thị vào các trường nhập liệu.
+     * Nếu có lỗi trong việc chuyển đổi số lượng hoặc đơn giá, nó sẽ đặt thành tiền và tiền trả lại về 0.
+     * Nếu số lượng hoặc đơn giá không hợp lệ, nó sẽ đặt thành tiền và tiền trả lại về 0.
+     * Nếu số lượng hoặc đơn giá không được nhập, nó sẽ đặt thành tiền và tiền trả lại về 0.
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
         Object o = e.getSource();
@@ -265,6 +276,12 @@ public class BanHangPanel extends JPanel implements MouseListener, ActionListene
         tableModel.setRowCount(0); // Xóa tất cả các hàng hiện tại
     }
 
+    /**
+     * Phương thức này tính toán giá trị thành tiền và tiền trả lại dựa trên số lượng và đơn giá.
+     * Nếu có lỗi trong việc chuyển đổi số lượng hoặc đơn giá, nó sẽ đặt thành tiền và tiền trả lại về 0.
+     * Nếu số lượng hoặc đơn giá không hợp lệ, nó sẽ đặt thành tiền và tiền trả lại về 0.
+     * Nếu số lượng hoặc đơn giá không được nhập, nó sẽ đặt thành tiền và tiền trả lại về 0.
+     */
     private void calculateValues() {
         try {
             // Kiểm tra số lượng
@@ -289,6 +306,13 @@ public class BanHangPanel extends JPanel implements MouseListener, ActionListene
         }
     }
 
+
+    /**
+     * Phương thức này xử lý sự kiện khi nhấn nút thanh toán.
+     * Nó sẽ lấy thông tin từ các trường nhập liệu, kiểm tra tính hợp lệ và lưu hóa đơn vào cơ sở dữ liệu.
+     * Nếu thành công, nó sẽ hiển thị thông báo thành công và xóa các trường nhập liệu.
+     * Nếu có lỗi, nó sẽ hiển thị thông báo lỗi.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         Object o = e.getSource();
@@ -327,6 +351,10 @@ public class BanHangPanel extends JPanel implements MouseListener, ActionListene
                 // Lưu hóa đơn vào cơ sở dữ liệu
                 if (hoaDonController.insertHoaDon(hoaDon) && hoaDonController.insertChiTietHoaDon(hoaDon)) {
                     JOptionPane.showMessageDialog(this, "Thanh toán thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    int comfirm = JOptionPane.showConfirmDialog(this, "Bạn có muốn xuất hóa đơn PDF không?", "Xuất hóa đơn", JOptionPane.YES_NO_OPTION);
+                    if (comfirm == JOptionPane.YES_OPTION) {
+                        xuatHoaDonPDF(hoaDon);
+                    }
                     clearFields(); // Xóa các trường nhập liệu
                 } else {
                     JOptionPane.showMessageDialog(this, "Lỗi khi lưu hóa đơn!", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -336,6 +364,72 @@ public class BanHangPanel extends JPanel implements MouseListener, ActionListene
             }
         }
     }
+
+    private void xuatHoaDonPDF(HoaDon hoaDon) {
+        try {
+            // Create the directory dynamically
+            String directory = "HoaDonPDF";
+            java.nio.file.Path dirPath = java.nio.file.Paths.get(directory);
+            if (!java.nio.file.Files.exists(dirPath)) {
+                java.nio.file.Files.createDirectories(dirPath);
+            }
+
+            // Define the file path
+            String filename = directory + "/HoaDon_" + hoaDon.getMaHoaDon() + ".pdf";
+
+            // Create the PDF document
+            Document document = new Document();
+            PdfWriter.getInstance(document, new FileOutputStream(filename));
+            document.open();
+
+            // Load the font for Vietnamese characters
+            String fontPath = "fonts/arial.ttf"; // Ensure this path is correct
+            BaseFont unicodeFont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            com.itextpdf.text.Font fontTieuDe = new com.itextpdf.text.Font(unicodeFont, 16, com.itextpdf.text.Font.BOLD);
+            com.itextpdf.text.Font fontNormal = new com.itextpdf.text.Font(unicodeFont, 12);
+
+            // Title with Vietnamese diacritical marks
+            Paragraph tieuDe = new Paragraph("Hóa Đơn Bán Hàng", fontTieuDe);
+            tieuDe.setAlignment(Element.ALIGN_CENTER); // Center the title
+            document.add(tieuDe);
+
+            // Add invoice details
+            document.add(new Paragraph("Mã Hóa Đơn: " + hoaDon.getMaHoaDon(), fontNormal));
+            document.add(new Paragraph("Ngày Lập:  " + hoaDon.getNgayLap(), fontNormal));
+            document.add(new Paragraph("Nhân viên: " + hoaDon.getMaNhanVien(), fontNormal));
+            document.add(new Paragraph("------------------------------------------------------"));
+
+            // Add product table
+            PdfPTable table = new PdfPTable(4); // 4 columns for product details
+            table.setWidthPercentage(100);
+            table.addCell("Mã Sản Phẩm");
+            table.addCell("Tên Sản Phẩm");
+            table.addCell("Số Lượng");
+            table.addCell("Đơn Giá");
+
+            // Add product data
+            table.addCell(hoaDon.getSanPham().getMaSanPham());
+            table.addCell(hoaDon.getSanPham().getTenSanPham());
+            table.addCell(String.valueOf(hoaDon.getSoLuong()));
+            table.addCell(String.valueOf(hoaDon.getGiaBan()));
+
+            document.add(table);
+
+            // Add total amount
+            document.add(new Paragraph("------------------------------------------------------"));
+            document.add(new Paragraph("Tổng Tiền: " + hoaDon.getThanhTien(), fontNormal));
+
+            // Close the document
+            document.close();
+
+            // Show success message
+            JOptionPane.showMessageDialog(this, "Đã xuất hóa đơn ra file: " + filename);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi xuất hóa đơn PDF");
+        }
+    }
+
 
     private void clearFields() {
         maSanPhamField.setText("");

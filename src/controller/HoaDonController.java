@@ -23,7 +23,13 @@ public class HoaDonController {
         return userController.getCurrentUsername();
     }
 
-    // src/controller/HoaDonController.java
+    /**
+     * Phương thức này sẽ tạo ra một mã hóa đơn ngẫu nhiên
+     * và kiểm tra xem mã hóa đơn đó đã tồn tại trong cơ sở dữ liệu hay chưa.
+     * Nếu đã tồn tại, nó sẽ tiếp tục tạo mã mới cho đến khi tìm thấy một mã chưa tồn tại.
+     * Mã Hóa Đơn sẽ có định dạng "HDXXXX", trong đó XXXX là một số ngẫu nhiên từ 1000 đến 9999.
+     * @return
+     */
     public String generateMaHoaDon() {
         String maHoaDon;
         do {
@@ -33,16 +39,29 @@ public class HoaDonController {
     }
 
 
-
-
+    /**
+     * Phuong thuc nay insert Hoa Don len csdl
+     * @param hoadon
+     * @return
+     */
     public boolean insertHoaDon(HoaDon hoadon) {
         return hoaDonDao.insertHoaDon(hoadon);
     }
 
+    /**
+     * Phuong thuc nay insert chi tiet hoa don len csdl
+     * @param hoadon
+     * @return
+     */
     public boolean insertChiTietHoaDon(HoaDon hoadon) {
         return hoaDonDao.insertChiTietHoaDon(hoadon);
     }
 
+    /**
+     * Phương thức này sẽ lấy danh sách hóa đơn của nhân viên dựa trên tên đăng nhập
+     * @param tenDangNhap
+     * @return
+     */
     public List<HoaDon> getAllHoaDon(String tenDangNhap) {
         return hoaDonDao.getAllDsachHoaDon(tenDangNhap);
     }
