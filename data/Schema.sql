@@ -48,12 +48,13 @@ CREATE TABLE HoaDon (
 
 -- Bảng ChiTietHoaDon
 CREATE TABLE ChiTietHoaDon (
+							   maChiTietHoaDon NVARCHAR(50) NOT NULL,
                                maHoaDon NVARCHAR(50) NOT NULL,          -- Mã hóa đơn (khóa ngoại)
                                maSanPham NVARCHAR(50) NOT NULL,         -- Mã sản phẩm (khóa ngoại)
                                soLuong INT NOT NULL,                    -- Số lượng
                                giaBan DECIMAL(10, 2) NOT NULL,          -- Giá bán
                                thanhTien DECIMAL(10, 2) NOT NULL,       -- Thành tiền
-                               PRIMARY KEY (maHoaDon, maSanPham),       -- Khóa chính mới
+                               PRIMARY KEY (maChiTietHoaDon),       -- Khóa chính mới
                                FOREIGN KEY (maHoaDon) REFERENCES HoaDon(maHoaDon),
                                FOREIGN KEY (maSanPham) REFERENCES SanPham(maSanPham)
 );
@@ -117,7 +118,89 @@ INSERT INTO LoaiSanPham (maLoaiSanPham, tenLoaiSanPham) VALUES
                                                             ('LSP02', N'Nước Ngọt'),
                                                             ('LSP03', N'Sinh Tố'),
                                                             ('LSP04', N'Trà'),
-                                                            ('LSP05', N'Thuốc Lá');
+                                                            ('LSP05', N'Thuốc Lá')
+															('LSP06', N'Bánh Ngọt'),
+															('LSP07', N'Đồ Ăn Vặt');
+INSERT INTO SanPham (maSanPham, tenSanPham, giaBan, soLuong, maLoaiSanPham) VALUES
+-- LSP01: Coffee
+('SP21', N'Americano', 27000, 85, 'LSP01'),
+('SP22', N'Mocha', 34000, 75, 'LSP01'),
+('SP23', N'Macchiato', 33000, 65, 'LSP01'),
+('SP24', N'Coffee Sữa Đá', 29000, 110, 'LSP01'),
+
+-- LSP02: Nước ngọt
+('SP25', N'Mirinda Cam', 15000, 190, 'LSP02'),
+('SP26', N'Fanta Nho', 15000, 175, 'LSP02'),
+('SP27', N'Sarsi', 16000, 140, 'LSP02'),
+('SP28', N'Lipton Ice Tea', 17000, 130, 'LSP02'),
+
+
+
+-- LSP03: Sinh tố
+('SP29', N'Sinh Tố Dưa Hấu', 28000, 60, 'LSP03'),
+('SP30', N'Sinh Tố Mít', 31000, 55, 'LSP03'),
+('SP31', N'Sinh Tố Chuối', 27000, 70, 'LSP03'),
+('SP32', N'Sinh Tố Kiwi', 32000, 50, 'LSP03'),
+
+-- LSP04: Trà
+('SP33', N'Trà Chanh', 22000, 100, 'LSP04'),
+('SP34', N'Trà Sữa Matcha', 29000, 90, 'LSP04'),
+('SP35', N'Trà Sữa Socola', 30000, 85, 'LSP04'),
+('SP36', N'Trà Tắc Mật Ong', 23000, 80, 'LSP04'),
+
+-- LSP05: Thuốc lá
+('SP37', N'Thuốc Lá Marlboro', 35000, 30, 'LSP05'),
+('SP38', N'Thuốc Lá 555', 36000, 25, 'LSP05'),
+('SP39', N'Thuốc Lá Zest', 24000, 45, 'LSP05'),
+('SP40', N'Thuốc Lá Vinataba', 26000, 50, 'LSP05');
+
+INSERT INTO SanPham (maSanPham, tenSanPham, giaBan, soLuong, maLoaiSanPham) VALUES
+-- LSP01: Coffee
+('SP41', N'Coffee Cold Brew', 33000, 70, 'LSP01'),
+('SP42', N'Coffee Hazelnut', 34000, 65, 'LSP01'),
+('SP43', N'Coffee Caramel', 35000, 75, 'LSP01'),
+
+-- LSP02: Nước ngọt
+('SP44', N'Nước Cam C2', 12000, 200, 'LSP02'),
+('SP45', N'Number One', 14000, 210, 'LSP02'),
+('SP46', N'Sting Dâu', 15000, 190, 'LSP02'),
+
+-- LSP03: Sinh tố
+('SP47', N'Sinh Tố Dứa', 29000, 60, 'LSP03'),
+('SP48', N'Sinh Tố Mãng Cầu Xiêm', 31000, 50, 'LSP03'),
+('SP49', N'Sinh Tố Táo', 28000, 55, 'LSP03'),
+
+-- LSP04: Trà
+('SP50', N'Trà Sữa Hồng Trà', 27000, 80, 'LSP04'),
+('SP51', N'Trà Sữa Oolong', 29000, 85, 'LSP04'),
+('SP52', N'Trà Hoa Cúc', 24000, 90, 'LSP04'),
+
+-- LSP05: Thuốc lá
+('SP53', N'Thuốc Lá Dunhill', 37000, 20, 'LSP05'),
+('SP54', N'Thuốc Lá Kent', 38000, 15, 'LSP05'),
+
+-- LSP06: Bánh ngọt
+('SP55', N'Bánh Su Kem', 18000, 120, 'LSP06'),
+('SP56', N'Bánh Mì Bơ Tỏi', 22000, 100, 'LSP06'),
+('SP57', N'Bánh Flan', 20000, 110, 'LSP06'),
+('SP58', N'Bánh Tiramisu', 35000, 70, 'LSP06'),
+('SP59', N'Bánh Donut Socola', 25000, 90, 'LSP06'),
+
+-- LSP07: Đồ ăn vặt
+('SP60', N'Khoai Tây Chiên', 30000, 130, 'LSP07'),
+('SP61', N'Xúc Xích Đức', 28000, 100, 'LSP07'),
+('SP62', N'Nem Chua Rán', 25000, 95, 'LSP07'),
+('SP63', N'Cá Viên Chiên', 27000, 115, 'LSP07'),
+('SP64', N'Bắp Xào', 22000, 105, 'LSP07'),
+('SP65', N'Phô Mai Que', 26000, 100, 'LSP07'),
+
+-- Một số món tổng hợp thêm:
+('SP66', N'Coffee Vanilla', 34000, 60, 'LSP01'),
+('SP67', N'Trà Sữa Thái Xanh', 29000, 85, 'LSP04'),
+('SP68', N'Nước Ép Cam', 27000, 90, 'LSP02'),
+('SP69', N'Sinh Tố Mâm Xôi', 31000, 50, 'LSP03'),
+('SP70', N'Bánh Plan Caramel', 23000, 100, 'LSP06');
+
 INSERT INTO SanPham (maSanPham, tenSanPham, giaBan, soLuong, maLoaiSanPham) VALUES
                                                                                 ('SP01', N'Coffee Đen', 25000, 100, 'LSP01'),
                                                                                 ('SP02', N'Coffee Sữa', 28000, 120, 'LSP01'),
@@ -148,3 +231,5 @@ INSERT INTO NhanVien (maNhanVien, tenNhanVien, tuoi, diaChi, soDienThoai, tenDan
                                                                                            ('NV01', N'Hoàng', 25, N'Hà Nội', '0123456789', N'hoang'),
                                                                                            ('NV02', N'Yến', 22, N'TP.Ho Chi Minh', '0987654321', N'yen'),
                                                                                            ('NV03', N'Khavy', 28, N'TP.Ho Chi Minh', '0912345678', N'khavy');
+
+																						   

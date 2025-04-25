@@ -12,7 +12,6 @@ public class SanPham_Dao {
 
     public List<SanPham> getDsachSanPham() {
       List<SanPham> dsachSanPham = new ArrayList<>();
-      List<LoaiSanPham> dsachLoaiSanPham = new ArrayList<>();
       try {
           String sql = "SELECT * FROM SanPham "
                   + "INNER JOIN LoaiSanPham ON SanPham.maLoaiSanPham = LoaiSanPham.maLoaiSanPham";
@@ -66,22 +65,30 @@ public class SanPham_Dao {
         return null; // Return null if no product is found
     }
 
-    public LoaiSanPham getLoaiSanPham(String maSanPham){
-        try{
-            String sql = "SELECT * FROM SanPham "
-                    + "INNER JOIN LoaiSanPham ON SanPham.maLoaiSanPham = LoaiSanPham.maLoaiSanPham "
-                    + "WHERE maSanPham = ?";
-            ConnectDataBase.getConnection();
-            Statement stmt = ConnectDataBase.getConnection().createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            if (rs.next()) {
-                String maLoai = rs.getString("maLoaiSanPham");
-                String tenLoai = rs.getString("tenLoaiSanPham");
-                return new LoaiSanPham(maLoai, tenLoai);
+    public LoaiSanPham getLoaiSanPham(String maSanPham) {
+        LoaiSanPham loaiSanPham = null;
+        String sql = "SELECT lsp.maLoaiSanPham, lsp.tenLoaiSanPham FROM LoaiSanPham lsp "
+                + "INNER JOIN SanPham sp ON lsp.maLoaiSanPham = sp.maLoaiSanPham " // Đảm bảo tên cột JOIN đúng
+                + "WHERE sp.maSanPham = ?";
+
+
+        try (Connection conn = ConnectDataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, maSanPham);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    String maLoai = rs.getString("maLoaiSanPham");
+                    String tenLoai = rs.getString("tenLoaiSanPham");
+                    loaiSanPham = new LoaiSanPham(maLoai, tenLoai); // Tạo đối tượng
+                }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Lỗi SQL khi lấy loại sản phẩm: " + e.getMessage(), e);
+
         }
-        return null;
+        return loaiSanPham;
     }
+
 }

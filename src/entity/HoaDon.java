@@ -2,23 +2,24 @@ package entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class HoaDon {
     private String maHoaDon;
     private String maNhanVien;
     private LocalDateTime ngayLap;
-    private SanPham sanPham;
+    private List<SanPham> dsachSanPham;
     private int soLuong;
     private double giaBan;
     private double thanhTien;
 
 
 
-    public HoaDon(String maHoaDon, String maNhanVien, LocalDateTime ngayLap, SanPham sanPham, int soLuong, double giaBan, double thanhTien) {
+    public HoaDon(String maHoaDon, String maNhanVien, LocalDateTime ngayLap, List<SanPham> dsachSanPham, int soLuong, double giaBan, double thanhTien) {
         this.maHoaDon = maHoaDon;
         this.maNhanVien = maNhanVien;
         this.ngayLap = ngayLap;
-        this.sanPham = sanPham;
+        this.dsachSanPham = dsachSanPham;
         this.soLuong = soLuong;
         this.giaBan = giaBan;
         this.thanhTien = thanhTien;
@@ -61,15 +62,15 @@ public class HoaDon {
         this.ngayLap = ngayLap;
     }
 
-    public SanPham getSanPham() {
-        return sanPham;
+    public List<SanPham> getDsachSanPham() {
+        return dsachSanPham;
     }
 
-    public void setSanPham(SanPham sanPham) {
-        if (sanPham == null) {
-            throw new IllegalArgumentException("Sản phẩm không được để trống");
+    public void setDsachSanPham(List<SanPham> dsachSanPham) {
+        if (dsachSanPham == null || dsachSanPham.isEmpty()) {
+            throw new IllegalArgumentException("Danh sách sản phẩm không được để trống");
         }
-        this.sanPham = sanPham;
+        this.dsachSanPham = dsachSanPham;
     }
 
     public int getSoLuong() {
@@ -102,7 +103,7 @@ public class HoaDon {
                 "maHoaDon='" + maHoaDon + '\'' +
                 ", maNhanVien='" + maNhanVien + '\'' +
                 ", ngayLap=" + ngayLap +
-                ", sanPham=" + sanPham +
+                ", dsachSanPham=" + dsachSanPham +
                 ", soLuong=" + soLuong +
                 ", giaBan=" + giaBan +
                 ", thanhTien=" + thanhTien +
