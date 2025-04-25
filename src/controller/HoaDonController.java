@@ -5,6 +5,7 @@ import dao.SanPham_Dao;
 import entity.HoaDon;
 import entity.SanPham;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
@@ -41,20 +42,20 @@ public class HoaDonController {
 
     /**
      * Phuong thuc nay insert Hoa Don len csdl
-     * @param hoadon
+     * @param
      * @return
      */
-    public boolean insertHoaDon(HoaDon hoadon) {
-        return hoaDonDao.insertHoaDon(hoadon);
+    public boolean insertHoaDon(String maHoaDon, String maNhanVien, LocalDateTime ngayLap, double tongTien) {
+        return hoaDonDao.insertHoaDon(maHoaDon, maNhanVien, ngayLap, tongTien);
     }
 
     /**
      * Phuong thuc nay insert chi tiet hoa don len csdl
-     * @param hoadon
+     * @param
      * @return
      */
-    public boolean insertChiTietHoaDon(HoaDon hoadon) {
-        return hoaDonDao.insertChiTietHoaDon(hoadon);
+    public boolean insertChiTietHoaDon(String maChiTietHoaDon, String maHoaDon, String maSanPham, int soLuong, double giaBan, double thanhTien) {
+        return hoaDonDao.insertChiTietHoaDon( maChiTietHoaDon, maHoaDon, maSanPham, soLuong, giaBan, thanhTien);
     }
 
     /**
@@ -64,5 +65,13 @@ public class HoaDonController {
      */
     public List<HoaDon> getAllHoaDon(String tenDangNhap) {
         return hoaDonDao.getAllDsachHoaDon(tenDangNhap);
+    }
+
+    public String generateMaChiTietHoaDon() {
+        String maChiTietHoaDon;
+        do {
+            maChiTietHoaDon = "CTHD" + (1000 + new Random().nextInt(9000)); // Generate random ID in range CTHD1000-CTHD9999
+        } while (hoaDonDao.isMaChiTietHoaDonExists(maChiTietHoaDon)); // Check if it already exists
+        return maChiTietHoaDon;
     }
 }

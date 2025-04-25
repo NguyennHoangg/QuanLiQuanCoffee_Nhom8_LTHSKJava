@@ -1,3 +1,4 @@
+
 package view.Employee;
 
 import javax.swing.*;
@@ -6,10 +7,12 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import controller.SanPhamController;
 import controller.UserController;
 import entity.HoaDon;
 import controller.HoaDonController;
 import entity.NhanVien;
+import entity.SanPham;
 
 public class HoaDonPanel extends JPanel {
     private DefaultTableModel tableModel;
@@ -18,13 +21,16 @@ public class HoaDonPanel extends JPanel {
 
     private HoaDonController hoaDonController;
     private UserController userController;
+    private SanPhamController sanPhamController;
 
 
-    public HoaDonPanel(UserController userController) {
+    public HoaDonPanel(UserController userController, SanPhamController sanPhamController) {
         if (userController == null) {
             throw new IllegalArgumentException("UserController cannot be null");
         }
         this.userController = userController;
+        this.sanPhamController = sanPhamController;
+
         setLayout(new BorderLayout());
         JLabel titleLabel = new JLabel("HÓA ĐƠN", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
@@ -77,23 +83,38 @@ public class HoaDonPanel extends JPanel {
             JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin nhân viên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
         hoaDonController = new HoaDonController(); // đảm bảo đã khởi tạo
         List<HoaDon> list = hoaDonController.getAllHoaDon(nhanVien.getTaiKhoan().getTenDangNhap());
 
         tableModel.setRowCount(0); // clear table
 
         for (HoaDon hd : list) {
+            // Gộp tên sản phẩm thành chuỗi
+            StringBuilder tenSanPhamBuilder = new StringBuilder();
+            for (SanPham sp : hd.getDsachSanPham()) {
+                tenSanPhamBuilder.append(sp.getTenSanPham()).append(", ");
+            }
+
+            // Xóa dấu ", " cuối nếu có
+            String tenSanPham = tenSanPhamBuilder.length() > 0
+                    ? tenSanPhamBuilder.substring(0, tenSanPhamBuilder.length() - 2)
+                    : "";
+
             Object[] rowData = {
                     hd.getMaHoaDon(),
-                    hd.getSanPham().getTenSanPham(),
+                    tenSanPham,
                     hd.getSoLuong(),
                     hd.getGiaBan(),
                     hd.getThanhTien(),
                     hd.getNgayLap(),
-                    nhanVien.getTenNhanVien() // hoặc lấy tên nhân viên nếu có
+                    nhanVien.getTenNhanVien()
             };
             tableModel.addRow(rowData);
         }
     }
+
+
+
 
 }

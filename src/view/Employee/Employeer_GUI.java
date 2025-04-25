@@ -1,6 +1,7 @@
 package view.Employee;
 
 import controller.HoaDonController;
+import controller.SanPhamController;
 import controller.UserController;
 import view.login.fLogin;
 import entity.CaLamViec;
@@ -8,27 +9,26 @@ import entity.CaLamViec;
 import javax.swing.*;
 import java.awt.*;
 
-
 public class Employeer_GUI {
     private UserController userController;
     private HoaDonController hoaDonController;
+    private SanPhamController sanPhamController;
 
-
-
-    private boolean isShiftOpen = false; // Trạng thái ca làm việc
+    private boolean isShiftOpen = false;
     private JFrame frame;
-    private JPanel mainPanel;      // Panel chứa các màn hình
-    private CardLayout cardLayout; // Bộ quản lý layout chuyển panel
-    private CaLamViec currentShift; // Lưu thông tin ca làm việc hiện tại
+    private JPanel mainPanel;
+    private CardLayout cardLayout;
+    private CaLamViec currentShift;
 
-    public Employeer_GUI(UserController userController) {
+    private ThanhToanPanel thanhToanPanel;
+
+    public Employeer_GUI(UserController userController, SanPhamController sanPhamController, HoaDonController hoaDonController) {
         this.userController = userController;
+        this.sanPhamController = sanPhamController;
+        this.hoaDonController = hoaDonController;
         initUI();
     }
 
-    /**
-     * Phương thức khởi tạo giao diện người dùng.
-     */
     private void initUI() {
         frame = new JFrame("Coffee Management System");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -36,25 +36,22 @@ public class Employeer_GUI {
         frame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
 
-        // === Sidebar trái ===
         JPanel sidebar = createSidebar();
         frame.add(sidebar, BorderLayout.WEST);
 
-        // === Main panel với CardLayout ===
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
-        // Thêm các panel tương ứng vào mainPanel
         CaLamViecPanel caLamViecPanel = new CaLamViecPanel();
         caLamViecPanel.setShiftListener(tienMoCa -> {
             try {
-                String maCaLamViec = userController.generateShiftId(); // Tạo mã ca làm việc
-                CaLamViec caLamViec = userController.createShift(maCaLamViec, tienMoCa); // Truyền đúng kiểu dữ liệu
+                String maCaLamViec = userController.generateShiftId();
+                CaLamViec caLamViec = userController.createShift(maCaLamViec, tienMoCa);
 
                 if (userController.saveShift(caLamViec)) {
-                    currentShift = caLamViec; // Lưu thông tin ca làm việc hiện tại
-                    isShiftOpen = true; // Cập nhật trạng thái ca làm việc
-                    cardLayout.show(mainPanel, "BAN_HANG"); // Chuyển sang Panel bán hàng
+                    currentShift = caLamViec;
+                    isShiftOpen = true;
+                    cardLayout.show(mainPanel, "BAN_HANG");
                 } else {
                     JOptionPane.showMessageDialog(frame, "Lỗi khi lưu ca làm việc!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
@@ -62,20 +59,22 @@ public class Employeer_GUI {
                 JOptionPane.showMessageDialog(frame, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         });
-        mainPanel.add(caLamViecPanel, "CA_LAM_VIEC");
-        mainPanel.add(new BanHangPanel(userController), "BAN_HANG");
-        mainPanel.add(new HoaDonPanel(userController), "HOA_DON");
 
+        mainPanel.add(caLamViecPanel, "CA_LAM_VIEC");
+
+        ThanhToanPanel thanhToanPanel = new ThanhToanPanel(sanPhamController, userController, hoaDonController);
+        BanHangPanel banHangPanel = new BanHangPanel(userController, mainPanel, cardLayout, sanPhamController, thanhToanPanel);
+        HoaDonPanel hoaDonPanel = new HoaDonPanel(userController, sanPhamController);
+
+
+        mainPanel.add(banHangPanel, "BAN_HANG");
+        mainPanel.add(hoaDonPanel, "HOA_DON");
+        mainPanel.add(thanhToanPanel, "THANH_TOAN");
 
         frame.add(mainPanel, BorderLayout.CENTER);
         frame.setVisible(true);
     }
 
-
-    /**
-     * Phương thức tạo sidebar bên trái.
-     * @return JPanel sidebar
-     */
     private JPanel createSidebar() {
         JPanel sidebar = new JPanel();
         sidebar.setBackground(new Color(10, 82, 116));
@@ -89,7 +88,6 @@ public class Employeer_GUI {
         hiLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         sidebar.add(hiLabel);
 
-        // Thêm các nút vào sidebar
         addSidebarButton(sidebar, "BÁN HÀNG", "image/products.png", "BAN_HANG");
         addSidebarButton(sidebar, "HÓA ĐƠN", "image/list.png", "HOA_DON");
 
@@ -131,10 +129,6 @@ public class Employeer_GUI {
         sidebar.add(Box.createRigidArea(new Dimension(0, 20)));
     }
 
-    /**
-     * Phương thức mở frame tương ứng với nút được nhấn.
-     * @param frameName Tên frame cần mở.
-     */
     private void openFrame(String frameName) {
         if (frameName.equals("BAN_HANG") && !isShiftOpen) {
             JOptionPane.showMessageDialog(
@@ -148,10 +142,6 @@ public class Employeer_GUI {
         cardLayout.show(mainPanel, frameName);
     }
 
-
-    /**
-     * Phương thức xử lý sự kiện đăng xuất.
-     */
     private void handleLogout() {
         int confirm = JOptionPane.showConfirmDialog(
                 frame,
@@ -159,15 +149,15 @@ public class Employeer_GUI {
                 "Xác nhận đăng xuất",
                 JOptionPane.YES_NO_OPTION
         );
-        if (confirm == JOptionPane.YES_OPTION) {
-            frame.dispose(); // Đóng cửa sổ hiện tại
+        if (confirm == JOptionPane.YES_OPTION && !isShiftOpen) {
+            frame.dispose();
             new fLogin();
+        }
+        if (confirm == JOptionPane.YES_OPTION && isShiftOpen) {
+            handleShiftClose();
         }
     }
 
-    /**
-     * Phương thức xử lý sự kiện đóng ca làm việc.
-     */
     private void handleShiftClose() {
         if (!isShiftOpen || currentShift == null) {
             JOptionPane.showMessageDialog(frame, "Không có ca làm việc nào đang mở!", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -214,5 +204,4 @@ public class Employeer_GUI {
             }
         }
     }
-
 }

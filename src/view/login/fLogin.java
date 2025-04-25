@@ -5,6 +5,8 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 
+import controller.HoaDonController;
+import controller.SanPhamController;
 import view.Employee.Employeer_GUI;
 import view.Manager.Manager_GUI;
 import view.custom.customPanel;
@@ -12,6 +14,10 @@ import controller.UserController;
 
     public class fLogin extends JFrame implements ActionListener, KeyListener, FocusListener, MouseListener {
         private UserController coffeeController = new UserController();
+        private SanPhamController sanPhamController;
+        private HoaDonController hoaDonController;
+
+
         private JTextField txtUsername, txtPassword;
         private JButton btnLogin;
         private JLabel lbShowMessage;
@@ -32,7 +38,8 @@ import controller.UserController;
             setResizable(false);
             setLocationRelativeTo(null);
             setDefaultCloseOperation(EXIT_ON_CLOSE);
-
+            this.sanPhamController = new SanPhamController();
+            this.hoaDonController = new HoaDonController();
             createFormLogin();
         }
 
@@ -126,7 +133,7 @@ import controller.UserController;
                         JOptionPane.showMessageDialog(this, "Đăng nhập thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                         coffeeController.setCurrentUsername(userName); // Lưu tên đăng nhập
                         this.dispose();
-                        new Employeer_GUI(coffeeController); // Truyền UserController
+                        new Employeer_GUI(coffeeController, sanPhamController, hoaDonController); // Truyền UserController
                     }
                     else {
                         txtUsername.setBorder(borderBottomError);

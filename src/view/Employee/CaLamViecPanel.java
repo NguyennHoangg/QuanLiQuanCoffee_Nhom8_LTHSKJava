@@ -51,6 +51,7 @@ public class CaLamViecPanel extends JPanel implements ActionListener {
         gbc.gridx = 1;
         soTienField = new JTextField();
         soTienField.setPreferredSize(new Dimension(250, 30));
+        soTienField.setText("455000");
         formPanel.add(soTienField, gbc);
 
         gbc.gridx = 0;
@@ -105,6 +106,10 @@ public interface ShiftListener {
             }
             try {
                 double soTienMoCa = Double.parseDouble(soTien);
+                if(soTienMoCa < 455000) {
+                    JOptionPane.showMessageDialog(this, "Số tiền mở ca tối thiểu là 455000", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 CaLamViec caLamViec = new CaLamViec();
                 caLamViec.setThoiGianBatDau(LocalDateTime.now());
                 caLamViec.setTienMoCa(soTienMoCa);
@@ -117,5 +122,7 @@ public interface ShiftListener {
             }
         }
     }
+
+
 
 }

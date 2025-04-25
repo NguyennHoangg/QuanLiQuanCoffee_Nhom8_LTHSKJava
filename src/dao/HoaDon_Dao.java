@@ -30,15 +30,15 @@ public class HoaDon_Dao {
         return doanhThu;
     }
 
-    public static boolean insertHoaDon(HoaDon hoaDon) {
+    public static boolean insertHoaDon(String maHoaDon, String maNhanVien, LocalDateTime ngayLap, double tongTien) {
         String sql = "INSERT INTO HoaDon (maHoaDon, maNhanVien, ngayLap, tongTien) VALUES (?, ?, ?, ?)";
         try (Connection conn = ConnectDataBase.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, hoaDon.getMaHoaDon());
-            pstmt.setString(2, hoaDon.getMaNhanVien());
-            pstmt.setTimestamp(3, java.sql.Timestamp.valueOf(hoaDon.getNgayLap()));
-            pstmt.setDouble(4, hoaDon.getThanhTien());
+            pstmt.setString(1, maHoaDon);
+            pstmt.setString(2, maNhanVien);
+            pstmt.setTimestamp(3, java.sql.Timestamp.valueOf(ngayLap));
+            pstmt.setDouble(4, tongTien);
 
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0;
@@ -69,16 +69,17 @@ public class HoaDon_Dao {
         return false;
     }
 
-    public boolean insertChiTietHoaDon(HoaDon hoaDon) {
-        String sql = "INSERT INTO ChiTietHoaDon ( maHoaDon, maSanPham, soLuong, giaBan, thanhTien) VALUES (?, ?, ?, ?, ?)";
+    public boolean insertChiTietHoaDon(String maChiTietHoaDon, String maHoaDon, String maSanPham, int soLuong, double giaBan, double thanhTien) {
+        String sql = "INSERT INTO ChiTietHoaDon ( maChiTietHoaDon, maHoaDon, maSanPham, soLuong, giaBan, thanhTien) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = ConnectDataBase.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, hoaDon.getMaHoaDon());
-            pstmt.setString(2, hoaDon.getSanPham().getMaSanPham());
-            pstmt.setInt(3, hoaDon.getSoLuong());
-            pstmt.setDouble(4, hoaDon.getGiaBan());
-            pstmt.setDouble(5, hoaDon.getThanhTien());
+            pstmt.setString(1, maChiTietHoaDon);
+            pstmt.setString(2, maHoaDon);
+            pstmt.setString(3, maSanPham);
+            pstmt.setInt(4, soLuong);
+            pstmt.setDouble(5, giaBan);
+            pstmt.setDouble(6, thanhTien);
 
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0;
@@ -91,7 +92,8 @@ public class HoaDon_Dao {
     }
 
     public List<HoaDon> getAllDsachHoaDon(String tenDangNhap) {
-        List<HoaDon> dsachHoaDon = new ArrayList<>();
+        Map<String, HoaDon> hoaDonMap = new HashMap<>();
+
         try {
             Connection conn = ConnectDataBase.getConnection();
             String sql = "SELECT * FROM HoaDon"
@@ -103,31 +105,57 @@ public class HoaDon_Dao {
                     + " WHERE TaiKhoan.tenDangNhap = ?";
 
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, tenDangNhap); // Gán giá trị cho dấu hỏi
-
+            pstmt.setString(1, tenDangNhap);
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
                 String maHD = rs.getString("maHoaDon");
                 String maNV = rs.getString("maNhanVien");
                 LocalDateTime ngayLap = rs.getTimestamp("ngayLap").toLocalDateTime();
-                double tongTien = rs.getDouble("tongTien");
+
                 String maSP = rs.getString("maSanPham");
-                int soLuong = rs.getInt("soLuong");
-                double giaBan = rs.getDouble("giaBan");
-                double thanhTien = rs.getDouble("thanhTien");
                 String tenSP = rs.getString("tenSanPham");
+                double giaBan = rs.getDouble("giaBan");
+                int soLuong = rs.getInt("soLuong");
+                double thanhTien = rs.getDouble("thanhTien");
                 String maLoaiSP = rs.getString("maLoaiSanPham");
                 String tenLoaiSP = rs.getString("tenLoaiSanPham");
 
-                SanPham sanPham = new SanPham(maSP, tenSP, giaBan, soLuong, new LoaiSanPham(maLoaiSP, tenLoaiSP));
-                HoaDon hoaDon = new HoaDon(maHD, maNV, ngayLap, sanPham, soLuong, giaBan, thanhTien);
-                dsachHoaDon.add(hoaDon);
+                SanPham sp = new SanPham(maSP, tenSP, giaBan, soLuong, new LoaiSanPham(maLoaiSP, tenLoaiSP));
+
+                if (!hoaDonMap.containsKey(maHD)) {
+                    List<SanPham> dsSP = new ArrayList<>();
+                    dsSP.add(sp);
+                    HoaDon hd = new HoaDon(maHD, maNV, ngayLap, dsSP, 0, 0, 0); // số lượng, giá bán, thành tiền sẽ tính sau
+                    hoaDonMap.put(maHD, hd);
+                } else {
+                    hoaDonMap.get(maHD).getDsachSanPham().add(sp);
+                }
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return dsachHoaDon;
+
+        return new ArrayList<>(hoaDonMap.values());
     }
 
+
+    public boolean isMaChiTietHoaDonExists(String maChiTietHoaDon) {
+        String sql = "SELECT COUNT(*) FROM ChiTietHoaDon WHERE maChiTietHoaDon = ?";
+        try (Connection conn = ConnectDataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, maChiTietHoaDon);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Return true if count > 0
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error checking maChiTietHoaDon existence: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

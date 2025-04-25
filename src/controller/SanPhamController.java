@@ -4,6 +4,7 @@ import dao.SanPham_Dao;
 import entity.LoaiSanPham;
 import entity.SanPham;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SanPhamController {
@@ -14,6 +15,11 @@ public class SanPhamController {
      * @return
      */
     private SanPham_Dao sanPhamDao = new SanPham_Dao();
+    private List<SanPham> sharedProducts = new ArrayList<>();
+
+    public SanPhamController() {
+        this.sharedProducts = new ArrayList<>();
+    }
 
     public SanPham getSanPham(SanPham sanPham) {
         return sanPham;
@@ -42,6 +48,14 @@ public class SanPhamController {
      */
     public LoaiSanPham getLoaiSanPham(String maSanPham) {
         return sanPhamDao.getLoaiSanPham(maSanPham);
+    }
+
+    public List<SanPham> getSharedProducts() {
+        return sharedProducts;
+    }
+
+    public void setSharedProducts(List<SanPham> sanPham) {
+        this.sharedProducts = sanPham;
     }
 
 
