@@ -36,6 +36,14 @@ public class BanHangPanel extends JPanel implements MouseListener, ActionListene
 
     private ThanhToanPanel thanhToanPanel;
 
+    /**
+     * Constructor của panel bán hàng
+     * @param userController
+     * @param mainPanel
+     * @param cardLayout
+     * @param sanPhamController
+     * @param thanhToanPanel
+     */
     public BanHangPanel(UserController userController, JPanel mainPanel, CardLayout cardLayout, SanPhamController sanPhamController, ThanhToanPanel thanhToanPanel) {
         this.userController = userController;
         this.mainPanel = mainPanel;
@@ -48,12 +56,15 @@ public class BanHangPanel extends JPanel implements MouseListener, ActionListene
         addProductToTable();
 
     table.addMouseListener(this);
-    soLuongField.addActionListener(e -> calculateValues());
-    tienKhachDuaField.addActionListener(e -> calculateValues());
     btnThanhToan.addActionListener(this);
     btnThemGioHang.addActionListener(this);
     this.hoaDonController = new HoaDonController();
 }
+
+    /**
+     * Tạo panel phía trên chứa các ô nhập liệu
+     * @return JPanel chứa các ô nhập liệu
+     */
     public JPanel northPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(Color.WHITE);
@@ -114,10 +125,10 @@ public class BanHangPanel extends JPanel implements MouseListener, ActionListene
         panel.add(donGiaLabel, gbc);
 
         gbc.gridy = 3;
-        gbc.gridx = 2;
+        gbc.gridx = 0;
         panel.add(new JLabel("Nhân viên: "), gbc);
-        gbc.gridx = 3;
-        panel.add(new JLabel(userController.getCurrentUsername()), gbc);
+        gbc.gridx = 1;
+        panel.add(new JLabel(userController.getNhanVienByTenDangNhap(userController.getCurrentUsername()).getTenNhanVien()), gbc);
 
         gbc.gridy = 4;
         gbc.gridx = 1;
@@ -136,30 +147,14 @@ public class BanHangPanel extends JPanel implements MouseListener, ActionListene
         btnThanhToan.setForeground(Color.WHITE);
         panel.add(btnThanhToan, gbc);
 
-        DocumentListener calListener = new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) {
-                update();
-            }
-
-            public void removeUpdate(DocumentEvent e) {
-                update();
-            }
-
-            public void changedUpdate(DocumentEvent e) {
-                update();
-            }
-
-            public void update() {
-                calculateValues();
-            }
-        };
-
-        soLuongField.getDocument().addDocumentListener(calListener);
-        tienKhachDuaField.getDocument().addDocumentListener(calListener);
-
         return panel;
     }
 
+
+    /**
+     * Tạo bảng hiển thị danh sách sản phẩm
+     * @return JScrollPane chứa bảng sản phẩm
+     */
     private JScrollPane createTableScrollPane() {
         String[] columnNames = {"Mã sản phẩm", "Tên sản phẩm", "Loại", "Đơn giá"};
         tableModel = new DefaultTableModel(columnNames, 0);
@@ -167,6 +162,12 @@ public class BanHangPanel extends JPanel implements MouseListener, ActionListene
         return new JScrollPane(table);
     }
 
+
+    /**
+     * Phương thức này xử lý sự kiện khi nhấn chuột vào bảng sản phẩm.
+     * Nó sẽ lấy thông tin sản phẩm từ bảng và điền vào các ô nhập liệu tương ứng.
+     * @param e Sự kiện chuột
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getSource().equals(table)) {
@@ -181,7 +182,7 @@ public class BanHangPanel extends JPanel implements MouseListener, ActionListene
                 donGiaLabel.setText(donGia);
 
                 soLuongField.requestFocus();
-                calculateValues();
+
             }
         }
     }
@@ -210,22 +211,14 @@ public class BanHangPanel extends JPanel implements MouseListener, ActionListene
         }
     }
 
-    private void calculateValues() {
-        try {
-            int soLuong = soLuongField.getText().isEmpty() ? 0 : Integer.parseInt(soLuongField.getText());
-            int donGia = donGiaLabel.getText().isEmpty() ? 0 : Integer.parseInt(donGiaLabel.getText());
-            int thanhTien = soLuong * donGia;
-            thanhTienLabel.setText(String.valueOf(thanhTien));
 
-            int tienKhach = tienKhachDuaField.getText().isEmpty() ? 0 : Integer.parseInt(tienKhachDuaField.getText());
-            int tienTra = tienKhach - thanhTien;
-            tienTraLaiLabel.setText(String.valueOf(tienTra));
-        } catch (NumberFormatException e) {
-            thanhTienLabel.setText("0");
-            tienTraLaiLabel.setText("0");
-        }
-    }
 
+    /**
+     * Phương thức này xử lý sự kiện khi nhấn nút "THÊM VÀO GIỎ HÀNG" hoặc "THANH TOÁN".
+     * Nếu nhấn nút "THANH TOÁN", nó sẽ chuyển sang panel thanh toán.
+     * Nếu nhấn nút "THÊM VÀO GIỎ HÀNG", nó sẽ thêm sản phẩm vào giỏ hàng.
+     * @param e Sự kiện nhấn nút
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(btnThemGioHang)) {

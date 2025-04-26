@@ -225,8 +225,8 @@ import controller.UserController;
         private boolean validData() {
             String username = txtUsername.getText().trim();
             String password = txtPassword.getText().trim();
-            if (!(username.length() > 4 && username.matches("^[a-zA-Z0-9]{5,}$"))) {
-                if (username.length() < 5)
+            if (!(username.length() > 2 && username.matches("^[a-zA-Z0-9]{2,}$"))) {
+                if (username.length() < 2)
                     showMessage("Tên đăng nhập phải tối thiểu 5 ký tự");
                 else
                     showMessage("Tên đăng nhập phải chứa các kỳ tự, số");

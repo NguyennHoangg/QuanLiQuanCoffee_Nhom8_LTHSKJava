@@ -118,7 +118,7 @@ INSERT INTO LoaiSanPham (maLoaiSanPham, tenLoaiSanPham) VALUES
                                                             ('LSP02', N'Nước Ngọt'),
                                                             ('LSP03', N'Sinh Tố'),
                                                             ('LSP04', N'Trà'),
-                                                            ('LSP05', N'Thuốc Lá')
+                                                            ('LSP05', N'Thuốc Lá'),
 															('LSP06', N'Bánh Ngọt'),
 															('LSP07', N'Đồ Ăn Vặt');
 INSERT INTO SanPham (maSanPham, tenSanPham, giaBan, soLuong, maLoaiSanPham) VALUES
@@ -217,7 +217,7 @@ INSERT INTO SanPham (maSanPham, tenSanPham, giaBan, soLuong, maLoaiSanPham) VALU
                                                                                 ('SP11', N'Sinh Tố Xoài', 30000, 65, 'LSP03'),
                                                                                 ('SP12', N'Sinh Tố Mãng Cầu', 32000, 55, 'LSP03'),
 
-                                                                                ('SP13', N'Trà Đào', 25000, 90, 'LSP04'),
+                                                                               ('SP13', N'Trà Đào', 25000, 90, 'LSP04'),
                                                                                 ('SP14', N'Trà Vải', 25000, 85, 'LSP04'),
                                                                                 ('SP15', N'Trà Sữa Trân Châu', 28000, 95, 'LSP04'),
                                                                                 ('SP16', N'Trà Gừng', 22000, 75, 'LSP04'),

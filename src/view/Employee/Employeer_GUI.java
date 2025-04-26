@@ -22,6 +22,12 @@ public class Employeer_GUI {
 
     private ThanhToanPanel thanhToanPanel;
 
+    /**
+     * Constructor của JFrame chính
+     * @param userController
+     * @param sanPhamController
+     * @param hoaDonController
+     */
     public Employeer_GUI(UserController userController, SanPhamController sanPhamController, HoaDonController hoaDonController) {
         this.userController = userController;
         this.sanPhamController = sanPhamController;
@@ -29,6 +35,9 @@ public class Employeer_GUI {
         initUI();
     }
 
+    /**
+     * Khởi tạo giao diện chính
+     */
     private void initUI() {
         frame = new JFrame("Coffee Management System");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -42,6 +51,7 @@ public class Employeer_GUI {
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
+        // Tạo panel ca làm việc và thêm listener cho nó để mở ca làm việc
         CaLamViecPanel caLamViecPanel = new CaLamViecPanel();
         caLamViecPanel.setShiftListener(tienMoCa -> {
             try {
@@ -60,6 +70,7 @@ public class Employeer_GUI {
             }
         });
 
+
         mainPanel.add(caLamViecPanel, "CA_LAM_VIEC");
 
         ThanhToanPanel thanhToanPanel = new ThanhToanPanel(sanPhamController, userController, hoaDonController);
@@ -75,6 +86,10 @@ public class Employeer_GUI {
         frame.setVisible(true);
     }
 
+    /**
+     * Tạo sidebar bên trái
+     * @return JPanel sidebar
+     */
     private JPanel createSidebar() {
         JPanel sidebar = new JPanel();
         sidebar.setBackground(new Color(10, 82, 116));
@@ -100,6 +115,13 @@ public class Employeer_GUI {
         return sidebar;
     }
 
+    /**
+     * Thêm nút vào sidebar
+     * @param sidebar JPanel sidebar
+     * @param text String text hiển thị
+     * @param iconPath String đường dẫn icon
+     * @param frameToOpen String tên frame để mở
+     */
     private void addSidebarButton(JPanel sidebar, String text, String iconPath, String frameToOpen) {
         JButton btn = new JButton(text);
         btn.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -129,19 +151,28 @@ public class Employeer_GUI {
         sidebar.add(Box.createRigidArea(new Dimension(0, 20)));
     }
 
+
+    /**
+     * Mở frame tương ứng với tên frame
+     * @param frameName String tên frame
+     */
     private void openFrame(String frameName) {
-        if (frameName.equals("BAN_HANG") && !isShiftOpen) {
+        if (frameName.equals("BAN_HANG") && !isShiftOpen || frameName.equals("HOA_DON") && !isShiftOpen) {
             JOptionPane.showMessageDialog(
                     frame,
                     "Vui lòng mở ca làm việc trước khi vào Bán hàng!",
                     "Thông báo",
                     JOptionPane.WARNING_MESSAGE
+
             );
             return;
         }
         cardLayout.show(mainPanel, frameName);
     }
 
+    /**
+     * Xử lý sự kiện đăng xuất
+     */
     private void handleLogout() {
         int confirm = JOptionPane.showConfirmDialog(
                 frame,
@@ -158,6 +189,9 @@ public class Employeer_GUI {
         }
     }
 
+    /**
+     * Xử lý sự kiện đóng ca làm việc
+     */
     private void handleShiftClose() {
         if (!isShiftOpen || currentShift == null) {
             JOptionPane.showMessageDialog(frame, "Không có ca làm việc nào đang mở!", "Lỗi", JOptionPane.ERROR_MESSAGE);
