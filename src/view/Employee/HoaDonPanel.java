@@ -4,7 +4,6 @@ package view.Employee;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 import controller.SanPhamController;
@@ -13,6 +12,7 @@ import entity.HoaDon;
 import controller.HoaDonController;
 import entity.NhanVien;
 import entity.SanPham;
+
 
 public class HoaDonPanel extends JPanel {
     private DefaultTableModel tableModel;
@@ -23,7 +23,11 @@ public class HoaDonPanel extends JPanel {
     private UserController userController;
     private SanPhamController sanPhamController;
 
-
+    /**
+     * Constructor của panel hóa đơn
+     * @param userController
+     * @param sanPhamController
+     */
     public HoaDonPanel(UserController userController, SanPhamController sanPhamController) {
         if (userController == null) {
             throw new IllegalArgumentException("UserController cannot be null");
@@ -41,6 +45,10 @@ public class HoaDonPanel extends JPanel {
         add(createPanel(), BorderLayout.SOUTH);
     }
 
+    /**
+     * Phương thức này tạo một JScrollPane chứa bảng hóa đơn.
+     * @return JScrollPane chứa bảng hóa đơn.
+     */
     public JScrollPane createTableScrollPane() {
         String[] columnNames = {"Mã hóa đơn", "Tên sản phẩm", "Số lượng", "Đơn giá", "Thành tiền", "Thời gian", "Nhân Viên"};
         tableModel = new DefaultTableModel(columnNames, 0);
@@ -75,7 +83,9 @@ public class HoaDonPanel extends JPanel {
         return panel;
     }
 
-    // Other methods and components can be added here
+    /**
+     * Phương thức này lấy dữ liệu hóa đơn từ cơ sở dữ liệu và hiển thị lên bảng.
+     */
     public void setData() {
         // Lấy thông tin nhân viên
         NhanVien nhanVien = userController.getNhanVienByTenDangNhap(userController.getCurrentUsername());
@@ -84,10 +94,10 @@ public class HoaDonPanel extends JPanel {
             return;
         }
 
-        hoaDonController = new HoaDonController(); // đảm bảo đã khởi tạo
+        hoaDonController = new HoaDonController(); //Khởi tạo để lấy dữ liệu từ hoaDonController
         List<HoaDon> list = hoaDonController.getAllHoaDon(nhanVien.getTaiKhoan().getTenDangNhap());
 
-        tableModel.setRowCount(0); // clear table
+        tableModel.setRowCount(0); // Xóa dữ liệu cũ trong bảng
 
         for (HoaDon hd : list) {
             // Gộp tên sản phẩm thành chuỗi

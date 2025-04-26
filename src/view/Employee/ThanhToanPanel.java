@@ -29,10 +29,16 @@ public class ThanhToanPanel extends JPanel implements ActionListener {
     private JTable table;
     private JLabel tongTienLabel;
     private DefaultTableModel modelTable;
-    private JButton thanhToanButton;
+    private JButton thanhToanButton, xoaButton;
     private HoaDonController hoaDonController;
     private UserController userController;
 
+    /**
+     * Constructor của panel thanh toán
+     * @param sanPhamController
+     * @param userController
+     * @param hoaDonController
+     */
     public ThanhToanPanel(SanPhamController sanPhamController, UserController userController, HoaDonController hoaDonController) {
         this.sanPhamController = sanPhamController;
         this.userController = userController;
@@ -42,9 +48,13 @@ public class ThanhToanPanel extends JPanel implements ActionListener {
         add(createTongTien(), BorderLayout.SOUTH);
         updateData();
         thanhToanButton.addActionListener(this);
+        xoaButton.addActionListener(this);
     }
 
-    // Method to create the table and add it to the panel
+    /**
+     * Phương thức này tạo một JScrollPane chứa bảng hóa đơn.
+     * @return JScrollPane chứa bảng hóa đơn.
+     */
     public JScrollPane createTable() {
         JLabel titleLabel = new JLabel("THANH TOÁN", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
@@ -58,6 +68,10 @@ public class ThanhToanPanel extends JPanel implements ActionListener {
         return scrollPane;
     }
 
+    /**
+     * Phương thức này tạo một JPanel chứa tổng tiền và nút thanh toán.
+     * @return JPanel chứa tổng tiền và nút thanh toán.
+     */
     public JPanel createTongTien(){
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -73,18 +87,32 @@ public class ThanhToanPanel extends JPanel implements ActionListener {
         thanhToanButton.setForeground(Color.WHITE);
         thanhToanButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
         thanhToanButton.setFocusPainted(false);
-        panel.add(tongTienLabel, BorderLayout.WEST);
-        panel.add(thanhToanButton, BorderLayout.EAST);
 
+        xoaButton = new JButton("Xóa sản phẩm");
+        xoaButton.setPreferredSize(new Dimension(150, 30));
+        xoaButton.setBackground(new Color(10, 82, 116));
+        xoaButton.setForeground(Color.WHITE);
+        xoaButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        xoaButton.setFocusPainted(false);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(xoaButton);
+        buttonPanel.add(thanhToanButton);
+        buttonPanel.setBackground(Color.WHITE);
+        panel.add(tongTienLabel, BorderLayout.WEST);
+        panel.add(buttonPanel, BorderLayout.EAST);
         return panel;
     }
 
+    /**
+     * Phương thức này cập nhật dữ liệu trong bảng thanh toán.
+     */
     public void updateData() {
         modelTable.setRowCount(0);
         double tongTien = 0;
         System.out.println("Số lượng sản phẩm trong sharedProducts: " + sanPhamController.getSharedProducts().size());
         for (SanPham sp : sanPhamController.getSharedProducts()) {
-            System.out.println("SP: " + sp.getMaSanPham() + " - " + sp.getTenSanPham());
             double thanhTien = sp.getGiaBan() * sp.getSoLuong();
             tongTien += thanhTien;
             modelTable.addRow(new Object[]{
@@ -100,6 +128,10 @@ public class ThanhToanPanel extends JPanel implements ActionListener {
 
     }
 
+    /**
+     * Phương thức này xử lý sự kiện khi nút thanh toán được nhấn.
+     * @param e Sự kiện ActionEvent.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         Object o = e.getSource();
@@ -114,8 +146,8 @@ public class ThanhToanPanel extends JPanel implements ActionListener {
                     return;
                 }
 
-                String maHoaDon = hoaDonController.generateMaHoaDon();
-                String maNhanVien = nhanVien.getMaNhanVien();
+                String maHoaDon = hoaDonController.generateMaHoaDon(); //lấy mã hóa đơn
+                String maNhanVien = nhanVien.getMaNhanVien(); //lay mã nhân viên
                 LocalDateTime ngayLap = LocalDateTime.now();
                 double tongTien = 0;
                 if(hoaDonController.insertHoaDon(maHoaDon, maNhanVien, ngayLap, tongTien)){
@@ -143,58 +175,71 @@ public class ThanhToanPanel extends JPanel implements ActionListener {
                     if (comfirm == JOptionPane.YES_OPTION) {
                         xuatHoaDonPDF(maHoaDon, ngayLap, nhanVien.getTenNhanVien(), tongTien);
                     }
-
+                    modelTable.setRowCount(0);
                 } else {
                     JOptionPane.showMessageDialog(this, "Lỗi khi lưu hóa đơn!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập số hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
+        } else if (o.equals(xoaButton)) {
+            int index = table.getSelectedRow();
+            sanPhamController.getSharedProducts().remove(index);
+            modelTable.removeRow(index);
+            JOptionPane.showMessageDialog(this, "Đã xóa sản phẩm khỏi giỏ hàng", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            updateData();
         }
     }
 
+    /**
+     * Phương thức này xuất hóa đơn ra file PDF.
+     * @param maHoaDon Mã hóa đơn.
+     * @param ngayLap Ngày lập hóa đơn.
+     * @param tenNhanVien Tên nhân viên lập hóa đơn.
+     * @param tongTien Tổng tiền hóa đơn.
+     */
     private void xuatHoaDonPDF(String maHoaDon, LocalDateTime ngayLap, String tenNhanVien, double tongTien) {
         try {
-            // Create the directory dynamically
+            // Lưu file ở thư mục HoaDonPDF
             String directory = "HoaDonPDF";
             java.nio.file.Path dirPath = java.nio.file.Paths.get(directory);
             if (!java.nio.file.Files.exists(dirPath)) {
                 java.nio.file.Files.createDirectories(dirPath);
             }
 
-            // Define the file path
+           //Tao ten file pdf
             String filename = directory + "/HoaDon_" + maHoaDon + ".pdf";
 
-            // Create the PDF document
+           //Tạo mới file PDF
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream(filename));
             document.open();
 
-            // Load the font for Vietnamese characters
-            String fontPath = "fonts/arial.ttf"; // Ensure this path is correct
+            //Set font chữ Việt Nam
+            String fontPath = "fonts/arial.ttf";
             BaseFont unicodeFont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             com.itextpdf.text.Font fontTieuDe = new com.itextpdf.text.Font(unicodeFont, 16, com.itextpdf.text.Font.BOLD);
             com.itextpdf.text.Font fontNormal = new com.itextpdf.text.Font(unicodeFont, 12);
             com.itextpdf.text.Font fontTableHeader = new com.itextpdf.text.Font(unicodeFont, 12, com.itextpdf.text.Font.BOLD); // Font cho header bảng
 
-            // Title with Vietnamese diacritical marks
+            // Tạo tiêu đề
             Paragraph tieuDe = new Paragraph("Hóa Đơn Bán Hàng", fontTieuDe);
-            tieuDe.setAlignment(Element.ALIGN_CENTER); // Center the title
+            tieuDe.setAlignment(Element.ALIGN_CENTER);
             document.add(tieuDe);
 
 
 
-            // Add invoice details
+            // Thêm thông tin hóa đơn
             document.add(new Paragraph("Mã Hóa Đơn: " + maHoaDon, fontNormal));
             document.add(new Paragraph("Ngày Lập:  " + ngayLap, fontNormal));
             document.add(new Paragraph("Nhân viên: " + tenNhanVien, fontNormal));
             document.add(new Paragraph("------------------------------------------------------"));
 
-            // Add product table
-            PdfPTable table = new PdfPTable(4); // 4 columns for product details
+            // Tạo bảng cho thông tin sản phẩm
+            PdfPTable table = new PdfPTable(4);
             table.setWidthPercentage(100);
 
-            // Add table header with font
+            // Set font chữ cho cacs cột
             table.addCell(new com.itextpdf.text.Phrase("Mã Sản Phẩm", fontTableHeader));
             table.addCell(new com.itextpdf.text.Phrase("Tên Sản Phẩm", fontTableHeader));
             table.addCell(new com.itextpdf.text.Phrase("Số Lượng", fontTableHeader));
@@ -210,14 +255,14 @@ public class ThanhToanPanel extends JPanel implements ActionListener {
 
             document.add(table);
 
-            // Add total amount
+            // Thêm tổng tiền
             document.add(new Paragraph("------------------------------------------------------"));
             document.add(new Paragraph("Tổng Tiền: " + tongTien , fontNormal));
 
-            // Close the document
+            // Đóng document
             document.close();
 
-            // Show success message
+            // Hiển thị thông báo
             JOptionPane.showMessageDialog(this, "Đã xuất hóa đơn ra file: " + filename);
         } catch (Exception e) {
             e.printStackTrace();

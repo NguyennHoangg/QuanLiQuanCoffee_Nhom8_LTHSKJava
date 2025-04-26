@@ -13,6 +13,10 @@ public class CaLamViecPanel extends JPanel implements ActionListener {
     private JTextField soTienField;
     private ShiftListener shiftListener;
     JButton openShiftButton;
+
+    /**
+     * Constructor của panel ca làm việc
+     */
     public CaLamViecPanel() {
         setLayout(new BorderLayout());
 
@@ -23,7 +27,10 @@ public class CaLamViecPanel extends JPanel implements ActionListener {
         add(createFormCenterPanel(), BorderLayout.CENTER);
     }
 
-    // Panel chứa tiêu đề
+   /**
+     * Phương thức này tạo một panel tiêu đề với chữ "Vui lòng mở ca làm việc".
+     * @return JPanel chứa tiêu đề.
+     */
     private JPanel createTitlePanel() {
         JPanel panel = new JPanel(new BorderLayout());
         JLabel label = new JLabel("Vui lòng mở ca làm việc", SwingConstants.CENTER);
@@ -34,7 +41,10 @@ public class CaLamViecPanel extends JPanel implements ActionListener {
         return panel;
     }
 
-    // Panel chứa form ở giữa màn hình
+   /**
+     * Phương thức này tạo một panel chứa các trường nhập liệu và nút mở ca làm việc.
+     * @return JPanel chứa các trường nhập liệu và nút.
+     */
     private JPanel createFormCenterPanel() {
         JPanel outerPanel = new JPanel(new GridBagLayout()); // để căn giữa toàn bộ panel form
         JPanel formPanel = new JPanel(new GridBagLayout());  // panel chứa các trường nhập
