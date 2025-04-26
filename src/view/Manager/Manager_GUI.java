@@ -55,6 +55,14 @@ public class Manager_GUI {
         hiLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         sidebar.add(hiLabel);
 
+        ImageIcon logoIcon = new ImageIcon("image/Logo.png");
+        Image scaledLogo = logoIcon.getImage().getScaledInstance(200, 170, Image.SCALE_SMOOTH);
+        JLabel logoLabel = new JLabel(new ImageIcon(scaledLogo));
+        logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        logoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 50, 0));
+        sidebar.add(logoLabel);
+
+
         // Thêm các nút vào sidebar
         addSidebarButton(sidebar, "SẢN PHẨM", "image/products.png", "PRODUCT");
         addSidebarButton(sidebar, "PHIẾU NHẬP", "image/import_export.png", "PHIEU_NHAP");

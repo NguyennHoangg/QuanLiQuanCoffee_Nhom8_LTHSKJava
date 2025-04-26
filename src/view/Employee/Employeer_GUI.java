@@ -99,9 +99,16 @@ public class Employeer_GUI {
         JLabel hiLabel = new JLabel("Wind's Coffee Shop");
         hiLabel.setForeground(Color.WHITE);
         hiLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        hiLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 40, 0));
+        hiLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
         hiLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         sidebar.add(hiLabel);
+
+        ImageIcon logoIcon = new ImageIcon("image/Logo.png");
+        Image scaledLogo = logoIcon.getImage().getScaledInstance(200, 170, Image.SCALE_SMOOTH);
+        JLabel logoLabel = new JLabel(new ImageIcon(scaledLogo));
+        logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        logoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 50, 0));
+        sidebar.add(logoLabel);
 
         addSidebarButton(sidebar, "BÁN HÀNG", "image/products.png", "BAN_HANG");
         addSidebarButton(sidebar, "HÓA ĐƠN", "image/list.png", "HOA_DON");
