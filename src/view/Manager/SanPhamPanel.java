@@ -21,6 +21,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -303,7 +304,7 @@ public class SanPhamPanel extends JPanel implements ActionListener, MouseListene
 
     public void xoaSanPham(){
         if(selectedSanPham != null){
-            int confirm = JOptionPane.showConfirmDialog(this,"bạn có chắc chắn muõnoas sản phẩm này?","Xác nhận",JOptionPane.YES_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(this,"bạn có chắc chắn muốn xóa sản phẩm này?","Xác nhận",JOptionPane.YES_OPTION);
             if(confirm == JOptionPane.YES_OPTION){
                 if(sanPhamDao.xoaSanPham(selectedSanPham.getMaSanPham())){
                     JOptionPane.showMessageDialog(this, "Xóa sản phẩm thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
@@ -405,8 +406,8 @@ public class SanPhamPanel extends JPanel implements ActionListener, MouseListene
     public void xuatPDF() {
         if(danhSach != null && !danhSach.isEmpty()) {
             Document document = new Document();
+            String fileName = "DanhSachSanPhamPDF/DanhSachSanPham.pdf";
             try {
-                String fileName = "DanhSachSanPhamPDF/DanhSachSanPham.pdf";
                 PdfWriter.getInstance(document, new FileOutputStream(fileName));
                 document.open();
 
@@ -480,6 +481,16 @@ public class SanPhamPanel extends JPanel implements ActionListener, MouseListene
             }
             finally {
                 document.close();
+
+                if(Desktop.isDesktopSupported()){
+                    try{
+                        File pdfFile = new File(fileName);
+                        Desktop.getDesktop().open(pdfFile);
+                    }catch (IOException ex){
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(this, "Không thể mở file PDF!", "Thông báo", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
             }
         }
         else{
@@ -540,6 +551,8 @@ public class SanPhamPanel extends JPanel implements ActionListener, MouseListene
         }
         productCardPanel.revalidate();
         productCardPanel.repaint();
+
+        searchField.setText("");
     }
 
     @Override

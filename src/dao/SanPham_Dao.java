@@ -176,8 +176,8 @@ public class SanPham_Dao {
             String sql = "UPDATE SanPham SET tenSanPham = ?, giaBan = ?, soLuong = ?, maLoaiSanPham = ?, hinhAnh = ? WHERE maSanPham = ?";
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, sp.getTenSanPham());
-            stmt.setInt(2, sp.getSoLuong());
-            stmt.setDouble(3, sp.getGiaBan());
+            stmt.setDouble(2, sp.getGiaBan());
+            stmt.setInt(3, sp.getSoLuong());
             stmt.setString(4, sp.getLoaiSanPham().getMaLoaiSanPham());
             stmt.setString(5, sp.getHinhAnh());
             stmt.setString(6, sp.getMaSanPham());

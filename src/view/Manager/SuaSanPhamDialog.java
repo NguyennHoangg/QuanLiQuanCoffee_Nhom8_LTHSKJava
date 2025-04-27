@@ -117,8 +117,8 @@ public class SuaSanPhamDialog extends JDialog implements ActionListener {
         try {
             String maSp = maSPField.getText().trim();
             String tenSP = tenSPField.getText().trim();
-            String soLuong = soLuongField.getText().trim();
             String donGia = donGiaField.getText().trim();
+            String soLuong = soLuongField.getText().trim();
             String loaiSPText = (String) loaiSPComboBox.getSelectedItem();
             String hinhAnh = hinhAnhField.getText().trim();
 
