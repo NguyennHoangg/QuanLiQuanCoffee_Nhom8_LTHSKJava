@@ -111,7 +111,6 @@ public class ThanhToanPanel extends JPanel implements ActionListener {
     public void updateData() {
         modelTable.setRowCount(0);
         double tongTien = 0;
-        System.out.println("Số lượng sản phẩm trong sharedProducts: " + sanPhamController.getSharedProducts().size());
         for (SanPham sp : sanPhamController.getSharedProducts()) {
             double thanhTien = sp.getGiaBan() * sp.getSoLuong();
             tongTien += thanhTien;
@@ -264,6 +263,9 @@ public class ThanhToanPanel extends JPanel implements ActionListener {
 
             // Hiển thị thông báo
             JOptionPane.showMessageDialog(this, "Đã xuất hóa đơn ra file: " + filename);
+
+            // Mở file PDF sau khi xuất
+            java.awt.Desktop.getDesktop().open(new java.io.File(filename));
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Lỗi khi xuất hóa đơn PDF");

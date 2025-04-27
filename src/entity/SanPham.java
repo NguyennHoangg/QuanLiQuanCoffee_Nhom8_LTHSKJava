@@ -6,13 +6,15 @@ public class SanPham {
     private double giaBan;
     private int soLuong;
     private LoaiSanPham loaiSanPham;
+    private String hinhAnh;
 
-    public SanPham(String maSanPham, String tenSanPham, double giaBan, int soLuong, LoaiSanPham loaiSanPham) {
+    public SanPham(String maSanPham, String tenSanPham, double giaBan, int soLuong, LoaiSanPham loaiSanPham, String hinhAnh) {
         this.maSanPham = maSanPham;
         this.tenSanPham = tenSanPham;
         this.giaBan = giaBan;
         this.soLuong = soLuong;
         this.loaiSanPham = loaiSanPham;
+        this.hinhAnh = hinhAnh;
     }
 
     public SanPham() {
@@ -74,6 +76,14 @@ public class SanPham {
         this.loaiSanPham = loaiSanPham;
     }
 
+    public String getHinhAnh() {
+        return hinhAnh;
+    }
+
+    public void setHinhAnh(String hinhAnh) {
+        this.hinhAnh = hinhAnh;
+    }
+
     @Override
     public String toString() {
         return "SanPham{" +
@@ -82,6 +92,7 @@ public class SanPham {
                 ", giaBan=" + giaBan +
                 ", soLuong=" + soLuong +
                 ", loaiSanPham=" + loaiSanPham +
+                ", hinhAnh='" + hinhAnh + '\'' +
                 '}';
     }
 }

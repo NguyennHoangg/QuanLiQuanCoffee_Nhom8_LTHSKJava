@@ -3,11 +3,20 @@ package controller;
 import dao.SanPham_Dao;
 import entity.LoaiSanPham;
 import entity.SanPham;
+import view.Manager.SanPhamPanel;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SanPhamController {
+public class SanPhamController implements ActionListener {
+    private SanPhamPanel view;
+
+    public SanPhamController(SanPhamPanel view) {
+        this.view = view;
+    }
 
     /**
      * Phương thức này sẽ lấy thông tin sản phẩm từ đối tượng SanPham
@@ -59,6 +68,32 @@ public class SanPhamController {
     }
 
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String cmd = e.getActionCommand();
+        switch (cmd){
+            case "Thêm":
+                view.dialogThemSanPham();
+                break;
+            case "Xóa":
+                view.xoaSanPham();
+                break;
+            case "Sửa":
+                SanPham selectedSanPham = view.getSelectedSanPham();
+                if (selectedSanPham != null) {
+                    view.dialogSuaSanPham(selectedSanPham);
+                } else {
+                    JOptionPane.showMessageDialog(view, "Vui lòng chọn sản phẩm để sửa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                }
+                break;
+            case "Xem chi tiết":
+                view.xemChiTiet();
+                break;
+            case "Xuất PDF":
+                view.xuatPDF();
+                break;
+        }
+    }
 }
 
 
