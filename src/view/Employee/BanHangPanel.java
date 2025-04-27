@@ -221,6 +221,7 @@ public class BanHangPanel extends JPanel implements MouseListener, ActionListene
                 double donGia = Double.parseDouble(donGiaLabel.getText());
                 LoaiSanPham loaiSanPham = sanPhamController.getLoaiSanPham(maSanPham);
 
+
                 if (loaiSanPham == null) {
                     JOptionPane.showMessageDialog(this, "Loại sản phẩm không tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -238,8 +239,9 @@ public class BanHangPanel extends JPanel implements MouseListener, ActionListene
                     }
                 }
 
-                SanPham sanPham = new SanPham(maSanPham, tenSanPham, donGia, soLuong, loaiSanPham, null);
-                sanPhamController.getSharedProducts().add(sanPham);
+                SanPham sanPham = new SanPham(maSanPham, tenSanPham, donGia, soLuong, loaiSanPham, null );
+                sanPhamController.getSharedProducts().add(sanPham); // Thêm trực tiếp vào list của controller
+
                 JOptionPane.showMessageDialog(this, "Đã thêm sản phẩm vào giỏ hàng");
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập thông tin hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
