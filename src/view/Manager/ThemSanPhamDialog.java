@@ -10,6 +10,7 @@ package view.Manager;
  * @created : 27/04/2025
  */
 
+import dao.SanPham_Dao;
 import entity.LoaiSanPham;
 import entity.SanPham;
 
@@ -17,9 +18,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 public class ThemSanPhamDialog extends JDialog implements ActionListener {
-    private JTextField maSPField, tenSPField, soLuongField, donGiaField, hinhAnhField;
+    private JTextField maSPField, tenSPField, soLuongField, donGiaField;
+    private JComboBox<String> hinhAnhField;
     private JComboBox<String> loaiSPComboBox;
     private JButton btnXacNhan, btnHuy;
     private boolean isConfirmed = false;
@@ -71,7 +74,8 @@ public class ThemSanPhamDialog extends JDialog implements ActionListener {
         JLabel hinhAnhLabel = new JLabel("Hình ảnh:");
         hinhAnhLabel.setForeground(new Color(26, 102, 227));
         inputPanel.add(hinhAnhLabel);
-        hinhAnhField = new JTextField();
+        hinhAnhField = new JComboBox<>();
+        loadAnhTuSrc();
         inputPanel.add(hinhAnhField);
 
         add(inputPanel, BorderLayout.CENTER);
@@ -89,6 +93,7 @@ public class ThemSanPhamDialog extends JDialog implements ActionListener {
 
         add(buttonPanel, BorderLayout.SOUTH);
 
+        hinhAnhField.addActionListener(this);
         btnXacNhan.addActionListener(e -> themSanPham());
         btnHuy.addActionListener(e -> dispose());
     }
@@ -100,7 +105,7 @@ public class ThemSanPhamDialog extends JDialog implements ActionListener {
             String soLuong = soLuongField.getText().trim();
             String donGia = donGiaField.getText().trim();
             String loaiSPText = (String) loaiSPComboBox.getSelectedItem();
-            String hinhAnh = hinhAnhField.getText().trim();
+            String hinhAnh = (String) hinhAnhField.getSelectedItem();
 
             int soLuongInt = Integer.parseInt(soLuong);
             int donGiaInt = Integer.parseInt(donGia);
@@ -118,6 +123,21 @@ public class ThemSanPhamDialog extends JDialog implements ActionListener {
             }
         }catch (NumberFormatException ex){
             JOptionPane.showMessageDialog(this, "Vui lòng nhập số hợp lệ cho đơn giá và số lượng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void loadAnhTuSrc(){
+        String folderPath = "imgSanPham";
+
+        File hinhAnh = new File(folderPath);
+        if(hinhAnh.exists() && hinhAnh.isDirectory()){
+            for(File file : hinhAnh.listFiles()){
+                if(file.isFile()){
+                    hinhAnhField.addItem(file.getName());
+                }
+            }
+        }else{
+            JOptionPane.showMessageDialog(this, "Thư mục không tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 

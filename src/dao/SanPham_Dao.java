@@ -190,7 +190,6 @@ public class SanPham_Dao {
         return rowsAffected > 0;
     }
 
-
     // Hàm đóng kết nối để tránh lặp lại nhiều
     private void closeResources(Connection conn, Statement stmt, ResultSet rs) {
         try {
