@@ -30,7 +30,7 @@ public class Manager_GUI {
         mainPanel = new JPanel(cardLayout);
 
         // Thêm các panel tương ứng vào mainPanel
-        mainPanel.add(new ProductFrame(), "PRODUCT");
+        mainPanel.add(new SanPhamPanel(), "PRODUCT");
         mainPanel.add(new ThongKeFrame(), "THONG_KE");
 //        mainPanel.add(new PhieuNhapFrame(), "PHIEU_NHAP");
 //        mainPanel.add(new PhieuXuatFrame(), "PHIEU_XUAT");
