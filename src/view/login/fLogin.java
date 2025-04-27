@@ -93,6 +93,7 @@ import controller.UserController;
             customUI.getInstance().setCustomLbTitle(lbWelcome);
             pnMain.add(lbWelcome);
 
+
             lbShowMessage = new JLabel("");
             lbShowMessage.setFont(new Font("Dialog", Font.BOLD, 14));
             lbShowMessage.setBounds(469, 288, 285, 25);
