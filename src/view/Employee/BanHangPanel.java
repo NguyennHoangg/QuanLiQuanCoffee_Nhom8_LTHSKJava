@@ -228,7 +228,10 @@ public class BanHangPanel extends JPanel implements MouseListener, ActionListene
                 int soLuong = Integer.parseInt(soLuongField.getText());
                 double donGia = Double.parseDouble(donGiaLabel.getText());
                 LoaiSanPham loaiSanPham = sanPhamController.getLoaiSanPham(maSanPham);
-
+                if(soLuong < 1){
+                    JOptionPane.showMessageDialog(this, "Số lượng sản phẩm phải lớn hơn 0!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 if (loaiSanPham == null) {
                     JOptionPane.showMessageDialog(this, "Loại sản phẩm không tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     return;

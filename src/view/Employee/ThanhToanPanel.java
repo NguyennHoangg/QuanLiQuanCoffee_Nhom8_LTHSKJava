@@ -240,17 +240,17 @@ public class ThanhToanPanel extends JPanel implements ActionListener {
             table.setWidthPercentage(100);
 
             // Set font chữ cho cacs cột
-            table.addCell(new com.itextpdf.text.Phrase("Mã Sản Phẩm", fontTableHeader));
             table.addCell(new com.itextpdf.text.Phrase("Tên Sản Phẩm", fontTableHeader));
             table.addCell(new com.itextpdf.text.Phrase("Số Lượng", fontTableHeader));
             table.addCell(new com.itextpdf.text.Phrase("Đơn Giá", fontTableHeader));
+            table.addCell(new com.itextpdf.text.Phrase("Thành Tiền", fontTableHeader));
 
             // Add product data with font
             for (SanPham sp : sanPhamController.getSharedProducts()) {
-                table.addCell(new com.itextpdf.text.Phrase(sp.getMaSanPham(), fontNormal));
                 table.addCell(new com.itextpdf.text.Phrase(sp.getTenSanPham(), fontNormal)); // Áp dụng font
                 table.addCell(new com.itextpdf.text.Phrase(String.valueOf(sp.getSoLuong()), fontNormal));
                 table.addCell(new com.itextpdf.text.Phrase(String.valueOf(sp.getGiaBan()), fontNormal));
+                table.addCell(new com.itextpdf.text.Phrase(String.valueOf(sp.getSoLuong() * sp.getGiaBan()), fontNormal));
             }
 
             document.add(table);
