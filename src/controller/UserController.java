@@ -1,5 +1,6 @@
 package controller;
 
+import connectDB.ConnectDataBase;
 import dao.CaLamViec_DAO;
 import dao.NhanVien_Dao;
 import dao.TaiKhoan_DAO;
@@ -8,6 +9,10 @@ import entity.NhanVien;
 import entity.TaiKhoan;
 
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
@@ -21,19 +26,28 @@ public class UserController {
     /**
      * Phương thức này kiểm tra xem tài khoản có hợp lệ hay không.
      *
-     * @param username Tên đăng nhập của tài khoản.
-     * @param password Mật khẩu của tài khoản.
+     * @param TenDN Tên đăng nhập của tài khoản.
+     * @param MK Mật khẩu của tài khoản.
      * @return true nếu tài khoản hợp lệ, false nếu không.
      */
-    public boolean checkLogin(String username, String password) {
-        List<TaiKhoan> dsTaiKhoan = TaiKhoan_DAO.getAllTaiKhoan();
-        for (TaiKhoan taiKhoan : dsTaiKhoan) {
-            if (taiKhoan.getTenDangNhap().equals(username) && taiKhoan.getMatKhau().equals(password)) {
-                setCurrentUsername(username); // Lưu tên đăng nhập hiện tại
-                return true;
+    public boolean checkLogin(String tenDangNhap, String matKhau) {
+        String sql = "SELECT COUNT(*) FROM [dbo].[TaiKhoan] WHERE tenDangNhap = ? AND matKhau = ?";
+
+        try (Connection conn = ConnectDataBase.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, tenDangNhap);
+            stmt.setString(2, matKhau);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return false;
+        return false; // Mặc định trả về false nếu có lỗi hoặc không tìm thấy
     }
 
     /**
@@ -44,11 +58,21 @@ public class UserController {
      * @return true nếu tài khoản có quyền admin, false nếu không.
      */
     public boolean checkAdmin(String username, String password) {
-        List<TaiKhoan> dsTaiKhoan = TaiKhoan_DAO.getAllTaiKhoan();
-        for (TaiKhoan taiKhoan : dsTaiKhoan) {
-            if (taiKhoan.getTenDangNhap().equals(username) && taiKhoan.getMatKhau().equals(password) && taiKhoan.isQuyenHan()) {
-                return true;
+        String sql = "SELECT COUNT(*) FROM [dbo].[TaiKhoan] WHERE tenDangNhap = ? AND matKhau = ? AND quyen = 1";
+
+        try (Connection conn = ConnectDataBase.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return false;
     }
