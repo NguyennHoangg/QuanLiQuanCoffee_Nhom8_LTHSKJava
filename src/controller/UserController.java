@@ -26,8 +26,8 @@ public class UserController {
     /**
      * Phương thức này kiểm tra xem tài khoản có hợp lệ hay không.
      *
-     * @param TenDN Tên đăng nhập của tài khoản.
-     * @param MK Mật khẩu của tài khoản.
+     * @param tenDangNhap Tên đăng nhập của tài khoản.
+     * @param matKhau Mật khẩu của tài khoản.
      * @return true nếu tài khoản hợp lệ, false nếu không.
      */
     public boolean checkLogin(String tenDangNhap, String matKhau) {
