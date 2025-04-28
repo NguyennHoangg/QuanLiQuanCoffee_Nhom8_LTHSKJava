@@ -138,10 +138,22 @@ public class UserController {
         return caLamViec;
     }
 
+    /**
+     * Phương thức này lưu ca làm việc vào cơ sở dữ liệu.
+     *
+     * @param caLamViec Ca làm việc cần lưu.
+     * @return true nếu lưu thành công, false nếu không.
+     */
     public boolean saveShift(CaLamViec caLamViec) {
         return caLamViecDao.insertCaLamViec(caLamViec);
     }
 
+    /**
+     * Phương thức này đóng ca làm việc.
+     * @param caLamViec Ca làm việc cần đóng.
+     * @param tienDongCa Số tiền đóng ca.
+     * @return true nếu đóng ca thành công, false nếu không.
+     */
     public boolean closeShift(CaLamViec caLamViec, double tienDongCa) {
         if (caLamViec == null || caLamViec.getMaCaLamViec() == null || caLamViec.getMaCaLamViec().isEmpty()) {
             throw new IllegalArgumentException("Ca làm việc không hợp lệ hoặc thiếu mã ca làm việc.");
@@ -162,10 +174,5 @@ public class UserController {
         return nhanVienDao.getNhanVienByTenDangNhap(tenDangNhap);
     }
 
-    /**
-     * Phương thức này lấy danh sách nhân viên.
-     *
-     * @return Danh sách nhân viên.
-     */
 
 }

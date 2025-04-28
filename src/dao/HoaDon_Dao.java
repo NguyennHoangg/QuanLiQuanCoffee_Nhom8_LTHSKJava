@@ -120,8 +120,9 @@ public class HoaDon_Dao {
                 double thanhTien = rs.getDouble("thanhTien");
                 String maLoaiSP = rs.getString("maLoaiSanPham");
                 String tenLoaiSP = rs.getString("tenLoaiSanPham");
+                String hinhAnh = rs.getString("hinhAnh");
 
-                SanPham sp = new SanPham(maSP, tenSP, giaBan, soLuong, new LoaiSanPham(maLoaiSP, tenLoaiSP));
+                SanPham sp = new SanPham(maSP, tenSP, giaBan, soLuong, new LoaiSanPham(maLoaiSP, tenLoaiSP), hinhAnh);
 
                 if (!hoaDonMap.containsKey(maHD)) {
                     List<SanPham> dsSP = new ArrayList<>();

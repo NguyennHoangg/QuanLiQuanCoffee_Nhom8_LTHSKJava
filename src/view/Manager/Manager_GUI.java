@@ -30,7 +30,7 @@ public class Manager_GUI {
         mainPanel = new JPanel(cardLayout);
 
         // Thêm các panel tương ứng vào mainPanel
-        mainPanel.add(new ProductFrame(), "PRODUCT");
+        mainPanel.add(new SanPhamPanel(), "PRODUCT");
         mainPanel.add(new ThongKeFrame(), "THONG_KE");
         mainPanel.add(new PhieuNhapFrame(), "PHIEU_NHAP");
 //        mainPanel.add(new PhieuXuatFrame(), "PHIEU_XUAT");
@@ -54,6 +54,14 @@ public class Manager_GUI {
         hiLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 40, 0));
         hiLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         sidebar.add(hiLabel);
+
+        ImageIcon logoIcon = new ImageIcon("image/Logo.png");
+        Image scaledLogo = logoIcon.getImage().getScaledInstance(200, 170, Image.SCALE_SMOOTH);
+        JLabel logoLabel = new JLabel(new ImageIcon(scaledLogo));
+        logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        logoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 50, 0));
+        sidebar.add(logoLabel);
+
 
         // Thêm các nút vào sidebar
         addSidebarButton(sidebar, "SẢN PHẨM", "image/products.png", "PRODUCT");
