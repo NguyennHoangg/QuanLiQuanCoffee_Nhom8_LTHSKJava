@@ -34,7 +34,7 @@ public class Manager_GUI {
         mainPanel.add(new ThongKeFrame(), "THONG_KE");
 //        mainPanel.add(new PhieuNhapFrame(), "PHIEU_NHAP");
 //        mainPanel.add(new PhieuXuatFrame(), "PHIEU_XUAT");
-//        mainPanel.add(new KhoFrame(), "KHO");
+//        mainPanel.add(new KhoPanel(), "KHO");
 //        mainPanel.add(new AccountFrame(), "ACCOUNT");
 //        mainPanel.add(new UpdateFrame(), "UPDATE");
 
@@ -98,7 +98,7 @@ public class Manager_GUI {
         if (frameToOpen != null) {
             if (frameToOpen.equals("DANG_XUAT")) {
                 btn.addActionListener(e -> handleLogout());
-            } else {
+            }else{
                 btn.addActionListener(e -> openFrame(frameToOpen));
             }
         }
@@ -124,5 +124,6 @@ public class Manager_GUI {
             new fLogin();
         }
     }
+
 
 }
