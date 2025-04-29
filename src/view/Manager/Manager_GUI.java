@@ -34,13 +34,8 @@ public class Manager_GUI {
         mainPanel.add(new ThongKeFrame(), "THONG_KE");
         mainPanel.add(new PhieuNhapFrame(), "PHIEU_NHAP");
 //        mainPanel.add(new PhieuXuatFrame(), "PHIEU_XUAT");
-<<<<<<< HEAD
-//        mainPanel.add(new KhoPanel(), "KHO");
-//        mainPanel.add(new AccountFrame(), "ACCOUNT");
-=======
 //        mainPanel.add(new KhoFrame(), "KHO");
         mainPanel.add(new TaiKhoanFrame(), "ACCOUNT");
->>>>>>> 39cfeba66fdde6ae310c43074cae6e2bb75bbb28
 //        mainPanel.add(new UpdateFrame(), "UPDATE");
 
         frame.add(mainPanel, BorderLayout.CENTER);
