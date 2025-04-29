@@ -111,7 +111,6 @@ public class ThanhToanPanel extends JPanel implements ActionListener {
     public void updateData() {
         modelTable.setRowCount(0);
         double tongTien = 0;
-        System.out.println("Số lượng sản phẩm trong sharedProducts: " + sanPhamController.getSharedProducts().size());
         for (SanPham sp : sanPhamController.getSharedProducts()) {
             double thanhTien = sp.getGiaBan() * sp.getSoLuong();
             tongTien += thanhTien;
@@ -240,17 +239,17 @@ public class ThanhToanPanel extends JPanel implements ActionListener {
             table.setWidthPercentage(100);
 
             // Set font chữ cho cacs cột
-            table.addCell(new com.itextpdf.text.Phrase("Mã Sản Phẩm", fontTableHeader));
             table.addCell(new com.itextpdf.text.Phrase("Tên Sản Phẩm", fontTableHeader));
             table.addCell(new com.itextpdf.text.Phrase("Số Lượng", fontTableHeader));
             table.addCell(new com.itextpdf.text.Phrase("Đơn Giá", fontTableHeader));
+            table.addCell(new com.itextpdf.text.Phrase("Thành Tiền", fontTableHeader));
 
             // Add product data with font
             for (SanPham sp : sanPhamController.getSharedProducts()) {
-                table.addCell(new com.itextpdf.text.Phrase(sp.getMaSanPham(), fontNormal));
                 table.addCell(new com.itextpdf.text.Phrase(sp.getTenSanPham(), fontNormal)); // Áp dụng font
                 table.addCell(new com.itextpdf.text.Phrase(String.valueOf(sp.getSoLuong()), fontNormal));
                 table.addCell(new com.itextpdf.text.Phrase(String.valueOf(sp.getGiaBan()), fontNormal));
+                table.addCell(new com.itextpdf.text.Phrase(String.valueOf(sp.getSoLuong() * sp.getGiaBan()), fontNormal));
             }
 
             document.add(table);
@@ -264,6 +263,9 @@ public class ThanhToanPanel extends JPanel implements ActionListener {
 
             // Hiển thị thông báo
             JOptionPane.showMessageDialog(this, "Đã xuất hóa đơn ra file: " + filename);
+
+            // Mở file PDF sau khi xuất
+            java.awt.Desktop.getDesktop().open(new java.io.File(filename));
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Lỗi khi xuất hóa đơn PDF");
