@@ -138,6 +138,7 @@ public class ThanhToanPanel extends JPanel implements ActionListener {
             try {
                 boolean hoaDonInsert = false;
                 boolean chiTietHoaDonInsert = false;
+
                 // Lấy thông tin nhân viên
                 NhanVien nhanVien = userController.getNhanVienByTenDangNhap(userController.getCurrentUsername());
                 if (nhanVien == null) {
@@ -145,39 +146,48 @@ public class ThanhToanPanel extends JPanel implements ActionListener {
                     return;
                 }
 
-                String maHoaDon = hoaDonController.generateMaHoaDon(); //lấy mã hóa đơn
-                String maNhanVien = nhanVien.getMaNhanVien(); //lay mã nhân viên
+                String maHoaDon = hoaDonController.generateMaHoaDon(); // Lấy mã hóa đơn
+                String maNhanVien = nhanVien.getMaNhanVien(); // Lấy mã nhân viên
                 LocalDateTime ngayLap = LocalDateTime.now();
                 double tongTien = 0;
-                if(hoaDonController.insertHoaDon(maHoaDon, maNhanVien, ngayLap, tongTien)){
-                    hoaDonInsert = true;
+
+                // Insert HoaDon first
+                for (SanPham sp : sanPhamController.getSharedProducts()) {
+                    double thanhTien = sp.getSoLuong() * sp.getGiaBan();
+                    tongTien += thanhTien;
                 }
-                for(SanPham sp : sanPhamController.getSharedProducts()){
+
+                hoaDonInsert = hoaDonController.insertHoaDon(maHoaDon, maNhanVien, ngayLap, tongTien);
+
+                if (!hoaDonInsert) {
+                    JOptionPane.showMessageDialog(this, "Lỗi khi lưu hóa đơn!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Insert ChiTietHoaDon
+                for (SanPham sp : sanPhamController.getSharedProducts()) {
                     String maChiTietHoaDon = hoaDonController.generateMaChiTietHoaDon();
                     String maSanPham = sp.getMaSanPham();
                     int soLuong = sp.getSoLuong();
                     double donGia = sp.getGiaBan();
                     double thanhTien = soLuong * donGia;
-                    tongTien += thanhTien;
-                    SanPham sanPham = sanPhamController.getThongTinSanPham(maSanPham);
-                    if(hoaDonController.insertChiTietHoaDon(maChiTietHoaDon, maHoaDon, maSanPham, soLuong, donGia, thanhTien)){
-                        chiTietHoaDonInsert = true;
+
+                    chiTietHoaDonInsert = hoaDonController.insertChiTietHoaDon(maChiTietHoaDon, maHoaDon, maSanPham, soLuong, donGia, thanhTien);
+
+                    if (!chiTietHoaDonInsert) {
+                        JOptionPane.showMessageDialog(this, "Lỗi khi lưu chi tiết hóa đơn!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        return;
                     }
                 }
 
-
-
-                // Lưu hóa đơn vào cơ sở dữ liệu
-                if (hoaDonInsert && chiTietHoaDonInsert) {
-                    JOptionPane.showMessageDialog(this, "Thanh toán thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                    int comfirm = JOptionPane.showConfirmDialog(this, "Bạn có muốn xuất hóa đơn PDF không?", "Xuất hóa đơn", JOptionPane.YES_NO_OPTION);
-                    if (comfirm == JOptionPane.YES_OPTION) {
-                        xuatHoaDonPDF(maHoaDon, ngayLap, nhanVien.getTenNhanVien(), tongTien);
-                    }
-                    modelTable.setRowCount(0);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Lỗi khi lưu hóa đơn!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                // Success message
+                JOptionPane.showMessageDialog(this, "Thanh toán thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                int confirm = JOptionPane.showConfirmDialog(this, "Bạn có muốn xuất hóa đơn PDF không?", "Xuất hóa đơn", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    xuatHoaDonPDF(maHoaDon, ngayLap, nhanVien.getTenNhanVien(), tongTien);
                 }
+                modelTable.setRowCount(0);
+
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập số hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }

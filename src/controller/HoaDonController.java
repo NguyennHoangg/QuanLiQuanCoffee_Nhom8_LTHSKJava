@@ -5,8 +5,11 @@ import dao.SanPham_Dao;
 import entity.HoaDon;
 import entity.SanPham;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class HoaDonController {
@@ -74,4 +77,13 @@ public class HoaDonController {
         } while (hoaDonDao.isMaChiTietHoaDonExists(maChiTietHoaDon)); // Check if it already exists
         return maChiTietHoaDon;
     }
+
+    public Map<String, Integer> getTop8SanPhamBanChay(LocalDateTime startDate, LocalDateTime endDate) {
+        return hoaDonDao.get8MonBanChayNhat(startDate, endDate);
+    }
+
+    public Map<LocalDate, Double> getDoanhThuTheoThoiGian(LocalDateTime startDate, LocalDateTime endDate) {
+        return hoaDonDao.getDoanhThuTheoThoiGian(startDate, endDate);
+    }
+
 }
