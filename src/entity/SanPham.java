@@ -7,6 +7,7 @@ public class SanPham {
     private int soLuong;
     private LoaiSanPham loaiSanPham;
     private String hinhAnh;
+    private NguyenLieu nguyenLieu;
 
     public SanPham(String maSanPham, String tenSanPham, double giaBan, int soLuong, LoaiSanPham loaiSanPham, String hinhAnh) {
         this.maSanPham = maSanPham;
@@ -15,6 +16,16 @@ public class SanPham {
         this.soLuong = soLuong;
         this.loaiSanPham = loaiSanPham;
         this.hinhAnh = hinhAnh;
+    }
+
+    public SanPham(String maSanPham, String tenSanPham, double giaBan, int soLuong, LoaiSanPham loaiSanPham, String hinhAnh, NguyenLieu nguyenLieu) {
+        this.maSanPham = maSanPham;
+        this.tenSanPham = tenSanPham;
+        this.giaBan = giaBan;
+        this.soLuong = soLuong;
+        this.loaiSanPham = loaiSanPham;
+        this.hinhAnh = hinhAnh;
+        this.nguyenLieu = nguyenLieu;
     }
 
     public SanPham() {
@@ -82,6 +93,14 @@ public class SanPham {
 
     public void setHinhAnh(String hinhAnh) {
         this.hinhAnh = hinhAnh;
+    }
+
+    public NguyenLieu getNguyenLieu() {
+        return nguyenLieu;
+    }
+
+    public void setNguyenLieu(NguyenLieu nguyenLieu) {
+        this.nguyenLieu = nguyenLieu;
     }
 
     @Override
