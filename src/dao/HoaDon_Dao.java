@@ -205,7 +205,7 @@ public class HoaDon_Dao {
                 if (!hoaDonMap.containsKey(maHD)) {
                     List<SanPham> dsSP = new ArrayList<>();
                     dsSP.add(sp);
-                    HoaDon hd = new HoaDon(maHD, maNV, ngayLap, dsSP, 0, 0, 0); // số lượng, giá bán, thành tiền sẽ tính sau
+                    HoaDon hd = new HoaDon(maHD, maNV, ngayLap, dsSP, soLuong, giaBan, thanhTien);
                     hoaDonMap.put(maHD, hd);
                 } else {
                     hoaDonMap.get(maHD).getDsachSanPham().add(sp);

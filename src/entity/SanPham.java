@@ -95,12 +95,17 @@ public class SanPham {
         this.hinhAnh = hinhAnh;
     }
 
+
+    public void addQuantity(int quantity){
+        this.soLuong += quantity;
+
     public NguyenLieu getNguyenLieu() {
         return nguyenLieu;
     }
 
     public void setNguyenLieu(NguyenLieu nguyenLieu) {
         this.nguyenLieu = nguyenLieu;
+
     }
 
     @Override
