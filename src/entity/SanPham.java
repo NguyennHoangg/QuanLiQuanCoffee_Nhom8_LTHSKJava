@@ -84,6 +84,10 @@ public class SanPham {
         this.hinhAnh = hinhAnh;
     }
 
+    public void addQuantity(int quantity){
+        this.soLuong += quantity;
+    }
+
     @Override
     public String toString() {
         return "SanPham{" +

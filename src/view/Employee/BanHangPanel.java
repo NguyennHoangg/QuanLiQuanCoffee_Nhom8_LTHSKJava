@@ -1,24 +1,32 @@
 package view.Employee;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import controller.HoaDonController;
 import controller.UserController;
 import entity.LoaiSanPham;
+import entity.NhanVien;
 import entity.SanPham;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import controller.SanPhamController;
-import view.custom.ImageRenderer;
 
 public class BanHangPanel extends JPanel implements MouseListener, ActionListener {
     private final JPanel mainPanel;
@@ -26,229 +34,385 @@ public class BanHangPanel extends JPanel implements MouseListener, ActionListene
 
     private JButton btnThanhToan, btnThemGioHang;
     private SanPhamController sanPhamController;
-    private DefaultTableModel tableModel;
-    private JTable table;
-    private JTextField maSanPhamField, tenSanPhamField, soLuongField, tienKhachDuaField;
-    private JLabel donGiaLabel, thanhTienLabel, tienTraLaiLabel;
+
+    private JLabel lblSoLuongValue, lblTienValue;
 
     private HoaDonController hoaDonController;
     private UserController userController;
-    private ThanhToanPanel thanhToanPanel;
 
-    public BanHangPanel(UserController userController, JPanel mainPanel, CardLayout cardLayout, SanPhamController sanPhamController, ThanhToanPanel thanhToanPanel) {
+
+    private JPanel cardPanel;
+
+    private Map<SanPham, Integer> cartItems;
+
+    public BanHangPanel(UserController userController, JPanel mainPanel, CardLayout cardLayout, SanPhamController sanPhamController) {
         this.userController = userController;
         this.mainPanel = mainPanel;
         this.cardLayout = cardLayout;
         this.sanPhamController = sanPhamController;
-        this.thanhToanPanel = thanhToanPanel;
-        setLayout(new BorderLayout());
-        add(northPanel(), BorderLayout.NORTH);
-        add(createTableScrollPane(), BorderLayout.CENTER);
-        addProductToTable();
 
-        table.addMouseListener(this);
+        setLayout(new BorderLayout());
+
+        cartItems =new HashMap<>();
+
+        lblSoLuongValue = new JLabel("0");
+        lblTienValue = new JLabel("0 VND");
+
+        cardPanel = InForBuyPanel();
+
+        add(cardPanel, BorderLayout.CENTER);
+        add(createLoaiSanPhamPanel(sanPhamController.getDsachSanPham()), BorderLayout.WEST);
+
         btnThanhToan.addActionListener(this);
-        btnThemGioHang.addActionListener(this);
+
         this.hoaDonController = new HoaDonController();
     }
 
-    public JPanel northPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
+    public JPanel InForBuyPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
         panel.setBorder(BorderFactory.createTitledBorder("Thông tin bán hàng"));
-        panel.setPreferredSize(new Dimension(800, 300));
+        panel.setPreferredSize(new Dimension(300, 1000));
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JPanel nothPanel = new JPanel(new GridLayout(2,1));
+        JLabel lblTongSoLuong = new JLabel("Tổng số lượng: ");
+        JLabel lblTongTien = new JLabel("Tổng tiền: ");
 
-        JLabel titleLabel = new JLabel("BÁN HÀNG", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        titleLabel.setForeground(new Color(10, 82, 116));
+        nothPanel.add(lblTongSoLuong);
+        nothPanel.add(lblSoLuongValue);
+        nothPanel.add(lblTongTien);
+        nothPanel.add(lblTienValue);
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 4;
-        gbc.anchor = GridBagConstraints.CENTER;
-        panel.add(titleLabel, gbc);
+        panel.add(nothPanel, BorderLayout.NORTH);
 
-        gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.WEST;
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        centerPanel.setPreferredSize(new Dimension(300, 600));
+        JScrollPane scrollPane = new JScrollPane(centerPanel);
+        scrollPane.setPreferredSize(new Dimension(300, 600));
 
-        maSanPhamField = new JTextField();
-        tenSanPhamField = new JTextField();
-        soLuongField = new JTextField("0");
-        tienKhachDuaField = new JTextField("0");
+        panel.add(scrollPane, BorderLayout.CENTER);
 
-        donGiaLabel = new JLabel("0");
-        thanhTienLabel = new JLabel("0");
-        tienTraLaiLabel = new JLabel("0");
+        JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        maSanPhamField.setPreferredSize(new Dimension(250, 25));
-        tenSanPhamField.setPreferredSize(new Dimension(250, 25));
-        soLuongField.setPreferredSize(new Dimension(250, 25));
-        tienKhachDuaField.setPreferredSize(new Dimension(250, 25));
-
-        gbc.gridy = 1;
-        gbc.gridx = 0;
-        panel.add(new JLabel("Mã sản phẩm:"), gbc);
-        gbc.gridx = 1;
-        panel.add(maSanPhamField, gbc);
-
-        gbc.gridx = 2;
-        panel.add(new JLabel("Tên sản phẩm:"), gbc);
-        gbc.gridx = 3;
-        panel.add(tenSanPhamField, gbc);
-
-        gbc.gridy = 2;
-        gbc.gridx = 0;
-        panel.add(new JLabel("Số lượng:"), gbc);
-        gbc.gridx = 1;
-        panel.add(soLuongField, gbc);
-
-        gbc.gridx = 2;
-        panel.add(new JLabel("Đơn giá:"), gbc);
-        gbc.gridx = 3;
-        panel.add(donGiaLabel, gbc);
-
-        gbc.gridy = 3;
-        gbc.gridx = 0;
-        panel.add(new JLabel("Nhân viên: "), gbc);
-        gbc.gridx = 1;
-        panel.add(new JLabel(userController.getNhanVienByTenDangNhap(userController.getCurrentUsername()).getTenNhanVien()), gbc);
-
-        gbc.gridy = 4;
-        gbc.gridx = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
-
-        btnThemGioHang = new JButton("THÊM VÀO GIỎ HÀNG");
-        btnThemGioHang.setPreferredSize(new Dimension(200, 35));
-        btnThemGioHang.setBackground(new Color(10, 82, 116));
-        btnThemGioHang.setForeground(Color.WHITE);
-        panel.add(btnThemGioHang, gbc);
-
-        gbc.gridx = 2;
         btnThanhToan = new JButton("THANH TOÁN");
         btnThanhToan.setPreferredSize(new Dimension(200, 35));
         btnThanhToan.setBackground(new Color(10, 82, 116));
         btnThanhToan.setForeground(Color.WHITE);
-        panel.add(btnThanhToan, gbc);
+        southPanel.add(btnThanhToan);
+
+        panel.add(southPanel, BorderLayout.SOUTH);
 
         return panel;
     }
 
-    private JScrollPane createTableScrollPane() {
-        String[] columnNames = {"", "Mã sản phẩm", "Tên sản phẩm", "Loại", "Đơn giá"};
-        tableModel = new DefaultTableModel(columnNames, 0);
-        table = new JTable(tableModel);
-        table.setRowHeight(80); // tăng height cho các hàng
-
-
-
-        // Đặt ImageRenderer cho cột hình ảnh (cột 0)
-        table.getColumnModel().getColumn(0).setCellRenderer(new ImageRenderer());
-
-        // Căn giữa các cột còn lại
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-        for (int i = 1; i < table.getColumnCount(); i++) {
-            table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+    private void addItemToCart(SanPham sp) {
+        if (cartItems.containsKey(sp)) {
+            cartItems.put(sp, cartItems.get(sp) + 1);
+        } else {
+            cartItems.put(sp, 1);
         }
 
-        return new JScrollPane(table);
+        updateCartPanel();
+        updateTotalInfo();
     }
 
+    private void updateTotalInfo() {
+        int tongSoLuong = cartItems.values().stream().mapToInt(Integer::intValue).sum();
+        double tongTien = cartItems.entrySet().stream().mapToDouble(entry -> entry.getKey().getGiaBan() * entry.getValue()).sum();
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        if (e.getSource().equals(table)) {
-            int row = table.getSelectedRow();
-            if (row != -1) {
-                String maSP = tableModel.getValueAt(row, 1).toString(); // cột 1
-                String tenSP = tableModel.getValueAt(row, 2).toString(); // cột 2
-                String donGia = tableModel.getValueAt(row, 4).toString(); // cột 4
+        lblSoLuongValue.setText(String.valueOf(tongSoLuong));
+        lblTienValue.setText(tongTien + " VND");
+    }
 
-                maSanPhamField.setText(maSP);
-                tenSanPhamField.setText(tenSP);
-                donGiaLabel.setText(donGia);
+    private void updateCartPanel(){
+        JScrollPane scrollPane = (JScrollPane) cardPanel.getComponent(1);
+        if(scrollPane !=null){
+            JPanel centerPanel = (JPanel) scrollPane.getViewport().getView();
+            centerPanel.removeAll();
 
-                soLuongField.setText("1"); // mặc định chọn số lượng 1
-                soLuongField.requestFocus();
+            centerPanel.setLayout(new GridLayout(30, 1,0,5));
+
+            for (Map.Entry<SanPham, Integer> entry : cartItems.entrySet()) {
+                JPanel itemPanel = new JPanel();
+                itemPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+
+                JLabel lblTenMon = new JLabel("" + entry.getKey().getTenSanPham());
+                lblTenMon.setFont(new Font("Arial", Font.PLAIN, 12));
+
+                JLabel lblSoLuong = new JLabel("" + entry.getValue());
+                lblSoLuong.setFont(new Font("Arial", Font.PLAIN, 12));
+
+                JLabel lblGia = new JLabel("" + entry.getKey().getGiaBan() + " VND");
+                lblGia.setFont(new Font("Arial", Font.PLAIN, 12));
+
+                itemPanel.add(lblTenMon);
+                itemPanel.add(lblSoLuong);
+                itemPanel.add(lblGia);
+
+                centerPanel.add(itemPanel);
+        }
+            centerPanel.revalidate();
+            centerPanel.repaint();
+        }
+        else{
+            System.out.println("Loi khong co scrollPane");
+
+        }
+    }
+
+    private JPanel createLoaiSanPhamPanel(List<SanPham> listSanPham){
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setPreferredSize(new Dimension(950, 750));
+
+        Map<String, List<SanPham>> loaiSanPham = new HashMap<>();
+
+        for(SanPham sp : listSanPham){
+            LoaiSanPham loaiSP = sanPhamController.getLoaiSanPham(sp.getMaSanPham());
+
+            if(loaiSP != null){
+                String tenLoaiSanPham = loaiSP.getTenLoaiSanPham();
+
+                loaiSanPham.putIfAbsent(tenLoaiSanPham, new ArrayList<>());
+                loaiSanPham.get(tenLoaiSanPham).add(sp);
             }
         }
-    }
 
-    @Override public void mousePressed(MouseEvent e) {}
-    @Override public void mouseReleased(MouseEvent e) {}
-    @Override public void mouseEntered(MouseEvent e) {}
-    @Override public void mouseExited(MouseEvent e) {}
+        JPanel loaiPanelContainer = new JPanel();
+        loaiPanelContainer.setLayout(new BoxLayout(loaiPanelContainer, BoxLayout.Y_AXIS));
 
-    public void addProductToTable() {
-        tableModel.setRowCount(0);
-        for (SanPham sp : sanPhamController.getDsachSanPham()) {
-            tableModel.addRow(new Object[]{
-                    setImageToTable(sp.getHinhAnh()),
-                    sp.getMaSanPham(),
-                    sp.getTenSanPham(),
-                    sp.getLoaiSanPham().getTenLoaiSanPham(),
-                    sp.getGiaBan()
-            });
+        for(Map.Entry<String, List<SanPham>> entry : loaiSanPham.entrySet()){
+            String loaiSP = entry.getKey();
+            List<SanPham> sanPhams = entry.getValue();
+
+            JPanel loaiPanel = new JPanel();
+            loaiPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+            loaiPanel.setPreferredSize(new Dimension(950,750));
+            loaiPanel.setBorder(BorderFactory.createTitledBorder(loaiSP));
+
+            for(SanPham sp : sanPhams){
+                JPanel productCard = createProductCard(sp);
+                loaiPanel.add(productCard);
+            }
+
+            loaiPanelContainer.add(loaiPanel);
+
         }
+
+        JScrollPane scrollPane = new JScrollPane(loaiPanelContainer);
+        scrollPane.setPreferredSize(new Dimension(950, 600));
+        panel.add(scrollPane,BorderLayout.CENTER);
+        return panel;
     }
 
-    private ImageIcon setImageToTable(String imagePath) {
+    private JPanel createProductCard(SanPham sp) {
+        JPanel cardWrapper = new JPanel();
+        cardWrapper.setPreferredSize(new Dimension(170, 220));
+
+        JPanel card = new JPanel();
+        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+        card.setPreferredSize(new Dimension(170, 200));
+        card.setBorder(BorderFactory.createLineBorder(Color.green));
+        card.setBackground(Color.white);
+
+        ImageIcon icon;
+        String path = "imgSanPham/" + sp.getHinhAnh();
+        File file = new File(path);
+        if (file.exists()) {
+            icon = new ImageIcon(path);
+        } else {
+            icon = new ImageIcon("image/logo_Wind'sCoffee.png");
+        }
+
+        // Ảnh sản phẩm
+        Image scaledImage = icon.getImage().getScaledInstance(150, 140, Image.SCALE_SMOOTH);
+        JLabel imageLbl = new JLabel(new ImageIcon(scaledImage));
+        imageLbl.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel namelbl = new JLabel(sp.getTenSanPham());
+        namelbl.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel priceLbl = new JLabel(sp.getGiaBan() + " VNĐ");
+        priceLbl.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        card.add(Box.createVerticalStrut(10));
+        card.add(imageLbl);
+        card.add(Box.createVerticalStrut(10));
+        card.add(namelbl);
+        card.add(priceLbl);
+
+        cardWrapper.add(card, BorderLayout.CENTER);
+        cardWrapper.putClientProperty("sanPham", sp);
+
+        cardWrapper.addMouseListener(this);
+
+        return cardWrapper;
+    }
+
+    private void xuatHoaDonPDF(String maHoaDon, LocalDateTime ngayLap, String tenNhanVien, double tongTien) {
         try {
+            String directory = "HoaDonPDF";
+            java.nio.file.Path dirPath = java.nio.file.Paths.get(directory);
+            if (!java.nio.file.Files.exists(dirPath)) {
+                java.nio.file.Files.createDirectories(dirPath);
+            }
 
-            ImageIcon icon = new ImageIcon("imgSanPham/" + imagePath);
-            Image img = icon.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-            return new ImageIcon(img);
+            String filename = directory + "/HoaDon_" + maHoaDon + ".pdf";
+
+            Document document = new Document();
+            PdfWriter.getInstance(document, new FileOutputStream(filename));
+            document.open();
+
+            String fontPath = "fonts/arial.ttf";
+            BaseFont unicodeFont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            com.itextpdf.text.Font fontTieuDe = new com.itextpdf.text.Font(unicodeFont, 16, com.itextpdf.text.Font.BOLD);
+            com.itextpdf.text.Font fontNormal = new com.itextpdf.text.Font(unicodeFont, 12);
+            com.itextpdf.text.Font fontTableHeader = new com.itextpdf.text.Font(unicodeFont, 12, com.itextpdf.text.Font.BOLD); // Font cho header bảng
+
+            Paragraph tieuDe = new Paragraph("Hóa Đơn Bán Hàng", fontTieuDe);
+            tieuDe.setAlignment(Element.ALIGN_CENTER);
+            document.add(tieuDe);
+
+            document.add(new Paragraph("Mã Hóa Đơn: " + maHoaDon, fontNormal));
+            document.add(new Paragraph("Ngày Lập:  " + ngayLap, fontNormal));
+            document.add(new Paragraph("Nhân viên: " + tenNhanVien, fontNormal));
+            document.add(new Paragraph("------------------------------------------------------"));
+
+            PdfPTable table = new PdfPTable(4);
+            table.setWidthPercentage(100);
+
+            table.addCell(new com.itextpdf.text.Phrase("Tên Sản Phẩm", fontTableHeader));
+            table.addCell(new com.itextpdf.text.Phrase("Số Lượng", fontTableHeader));
+            table.addCell(new com.itextpdf.text.Phrase("Đơn Giá", fontTableHeader));
+            table.addCell(new com.itextpdf.text.Phrase("Thành Tiền", fontTableHeader));
+
+            // Use cartItems to populate the table
+            for (Map.Entry<SanPham, Integer> entry : cartItems.entrySet()) {
+                SanPham sp = entry.getKey();
+                int soLuong = entry.getValue();
+                double thanhTien = sp.getGiaBan() * soLuong;
+
+                table.addCell(new com.itextpdf.text.Phrase(sp.getTenSanPham(), fontNormal));
+                table.addCell(new com.itextpdf.text.Phrase(String.valueOf(soLuong), fontNormal));
+                table.addCell(new com.itextpdf.text.Phrase(String.valueOf(sp.getGiaBan() + " VNĐ"), fontNormal));
+                table.addCell(new com.itextpdf.text.Phrase(String.valueOf(thanhTien), fontNormal));
+            }
+
+            document.add(table);
+
+            document.add(new Paragraph("------------------------------------------------------"));
+            document.add(new Paragraph("Tổng Tiền: " + tongTien, fontNormal));
+
+            document.close();
+
+            java.awt.Desktop.getDesktop().open(new java.io.File(filename));
         } catch (Exception e) {
-
             e.printStackTrace();
-            ImageIcon defaultIcon = new ImageIcon(getClass().getResource("image/Logo.png"));
-            Image defaultImg = defaultIcon.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-            return new ImageIcon(defaultImg);
+            JOptionPane.showMessageDialog(this, "Lỗi khi xuất hóa đơn PDF");
         }
     }
+
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource().equals(btnThemGioHang)) {
+        Object source = e.getSource();
+
+        if (source.equals(btnThanhToan)) {
             try {
-                String maSanPham = maSanPhamField.getText();
-                String tenSanPham = tenSanPhamField.getText();
-                int soLuong = Integer.parseInt(soLuongField.getText());
-                double donGia = Double.parseDouble(donGiaLabel.getText());
-                LoaiSanPham loaiSanPham = sanPhamController.getLoaiSanPham(maSanPham);
+                double tongTien = 0;
+                List<SanPham> danhSachSanPham = new ArrayList<>();
 
+                for (Map.Entry<SanPham, Integer> entry : cartItems.entrySet()) {
+                    SanPham sp = entry.getKey();
+                    int soLuong = entry.getValue();
+                    double thanhTien = sp.getGiaBan() * soLuong;
+                    tongTien += thanhTien;
 
-                if (loaiSanPham == null) {
-                    JOptionPane.showMessageDialog(this, "Loại sản phẩm không tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    sp.setSoLuong(soLuong);
+                    danhSachSanPham.add(sp);
+                }
+
+                String maHoaDon = hoaDonController.generateMaHoaDon();
+                NhanVien nhanVien = userController.getNhanVienByTenDangNhap(userController.getCurrentUsername());
+                if (nhanVien == null) {
+                    JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin nhân viên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                if (soLuong <= 0) {
-                    JOptionPane.showMessageDialog(this, "Số lượng phải lớn hơn 0!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                LocalDateTime ngayLap = LocalDateTime.now();
+                boolean hoaDonInsert = hoaDonController.insertHoaDon(maHoaDon, nhanVien.getMaNhanVien(), ngayLap, tongTien);
+                if (!hoaDonInsert) {
+                    JOptionPane.showMessageDialog(this, "Lỗi khi lưu hóa đơn!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                for (SanPham sp : sanPhamController.getSharedProducts()) {
-                    if (sp.getMaSanPham().equals(maSanPham)) {
-                        JOptionPane.showMessageDialog(this, "Sản phẩm đã có trong giỏ hàng!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                        return;
+                boolean chiTietHoaDonInsert = true;
+                for (SanPham sp : danhSachSanPham) {
+                    String maChiTietHoaDon = hoaDonController.generateMaChiTietHoaDon();
+                    String maSanPham = sp.getMaSanPham();
+                    int soLuong = sp.getSoLuong();
+                    double donGia = sp.getGiaBan();
+                    double thanhTienSP = soLuong * donGia;
+                    if (!hoaDonController.insertChiTietHoaDon(maChiTietHoaDon, maHoaDon, maSanPham, soLuong, donGia, thanhTienSP)) {
+                        chiTietHoaDonInsert = false;
+                        break;
                     }
                 }
 
-                SanPham sanPham = new SanPham(maSanPham, tenSanPham, donGia, soLuong, loaiSanPham, null );
-                sanPhamController.getSharedProducts().add(sanPham); // Thêm trực tiếp vào list của controller
+                if (chiTietHoaDonInsert) {
+                    JOptionPane.showMessageDialog(this, "Thanh toán thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
 
-                JOptionPane.showMessageDialog(this, "Đã thêm sản phẩm vào giỏ hàng");
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập thông tin hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    int comfirm = JOptionPane.showConfirmDialog(this, "Bạn có muốn xuất hóa đơn PDF không?", "Xuất hóa đơn", JOptionPane.YES_NO_OPTION);
+                    if (comfirm == JOptionPane.YES_OPTION) {
+                        xuatHoaDonPDF(maHoaDon, ngayLap, nhanVien.getTenNhanVien(), tongTien);
+                    }
+
+                    cartItems.clear();
+                    updateCartPanel();
+                    updateTotalInfo();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Lỗi khi lưu chi tiết hóa đơn!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Có lỗi xảy ra trong quá trình thanh toán!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
             }
-        } else if (e.getSource().equals(btnThanhToan)) {
-            thanhToanPanel.updateData();
-            cardLayout.show(mainPanel, "THANH_TOAN");
         }
     }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        Object source = e.getSource();
+        if (source instanceof JPanel) {
+            JPanel clickedPanel = (JPanel) source;
+            SanPham selectedSanPham = (SanPham) clickedPanel.getClientProperty("sanPham");
+            if (selectedSanPham != null) {
+                addItemToCart(selectedSanPham);
+            }
+        }
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
 }
+
+
