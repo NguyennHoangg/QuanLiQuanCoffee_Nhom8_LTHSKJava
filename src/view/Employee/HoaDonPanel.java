@@ -110,13 +110,28 @@ public class HoaDonPanel extends JPanel {
             String tenSanPham = tenSanPhamBuilder.length() > 0
                     ? tenSanPhamBuilder.substring(0, tenSanPhamBuilder.length() - 2)
                     : "";
+            String soLuong = hd.getDsachSanPham().stream()
+                    .map(sp -> String.valueOf(sp.getSoLuong()))
+                    .reduce((s1, s2) -> s1 + ", " + s2)
+                    .orElse("");
 
+
+           double thanhTien = hd.getDsachSanPham().stream()
+                   .mapToDouble(sp -> sp.getGiaBan() * sp.getSoLuong())
+                   .sum();
+
+           //Hiển thị đơn giá từng sản phẩm cách nhau bởi dấu ohaayr
+            String donGia = hd.getDsachSanPham().stream()
+                    .map(sp -> String.valueOf(sp.getGiaBan()))
+                    .reduce((s1, s2) -> s1 + ", " + s2)
+                    .orElse("");
+            // Thêm dữ liệu vào bảng
             Object[] rowData = {
                     hd.getMaHoaDon(),
                     tenSanPham,
-                    hd.getSoLuong(),
-                    hd.getGiaBan(),
-                    hd.getThanhTien(),
+                    soLuong,
+                    donGia,
+                    thanhTien,
                     hd.getNgayLap(),
                     nhanVien.getTenNhanVien()
             };
