@@ -311,11 +311,11 @@ public class PhieuNhapFrame extends JPanel implements ActionListener, MouseListe
             txtTenKho.setText(tblModel.getValueAt(row, 7).toString());
             txtDC.setText(tblModel.getValueAt(row, 8).toString());
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             try {
-                Date ngayNhap = (Date) dateFormat.parse(tblModel.getValueAt(row, 4).toString());
+                java.util.Date ngayNhap =  dateFormat.parse(tblModel.getValueAt(row, 4).toString());
                 dateNhap.setDate(ngayNhap);
-                Date ngayHetHan = (Date) dateFormat.parse(tblModel.getValueAt(row, 5).toString());
+                java.util.Date ngayHetHan = dateFormat.parse(tblModel.getValueAt(row, 5).toString());
                 dateHetHan.setDate(ngayHetHan);
             } catch (Exception ex) {
                 ex.printStackTrace();

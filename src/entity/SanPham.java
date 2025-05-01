@@ -96,8 +96,9 @@ public class SanPham {
     }
 
 
-    public void addQuantity(int quantity){
+    public void addQuantity(int quantity) {
         this.soLuong += quantity;
+    }
 
     public NguyenLieu getNguyenLieu() {
         return nguyenLieu;
