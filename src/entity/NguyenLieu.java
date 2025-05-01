@@ -7,6 +7,7 @@ public class NguyenLieu {
     private String tenNguyenLieu;
     private String donViTinh;
     private double giaNhap;
+    private int soLuong;
     private Date ngayNhap;
     private Date NgayHetHan;
     private KhoNguyenLieu khoNguyenLieu;
@@ -19,6 +20,17 @@ public class NguyenLieu {
         this.giaNhap = giaNhap;
         this.ngayNhap = ngayNhap;
         this.NgayHetHan = ngayHetHan;
+        this.khoNguyenLieu = khoNguyenLieu;
+    }
+
+    public NguyenLieu(String maNguyenLieu, String tenNguyenLieu, String donViTinh, double giaNhap, int soLuong, Date ngayNhap, Date ngayHetHan, KhoNguyenLieu khoNguyenLieu) {
+        this.maNguyenLieu = maNguyenLieu;
+        this.tenNguyenLieu = tenNguyenLieu;
+        this.donViTinh = donViTinh;
+        this.giaNhap = giaNhap;
+        this.soLuong = soLuong;
+        this.ngayNhap = ngayNhap;
+        NgayHetHan = ngayHetHan;
         this.khoNguyenLieu = khoNguyenLieu;
     }
 
@@ -61,6 +73,14 @@ public class NguyenLieu {
             throw new IllegalArgumentException("Giá nhập không hợp lệ");
         }
         this.giaNhap = giaNhap;
+    }
+
+    public int getSoLuong() {
+        return soLuong;
+    }
+
+    public void setSoLuong(int soLuong) {
+        this.soLuong = soLuong;
     }
 
     public Date getNgayNhap() {

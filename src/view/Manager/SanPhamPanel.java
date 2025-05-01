@@ -111,10 +111,18 @@ public class SanPhamPanel extends JPanel implements ActionListener, MouseListene
     private JPanel createFunctionToolbar() {
         JPanel toolbar1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         String[] btnNames = {"Thêm", "Xóa", "Sửa", "Xem chi tiết", "Xuất PDF"};
+        String[] inconPaths = {"image/add.png","image/removeEmp.png","image/repairEmp.png","image/list.png","image/import_export.png"};
+
+        List<String> btnNamesList = Arrays.asList(btnNames);
 
         for (String name : btnNames) {
+            int index = btnNamesList.indexOf(name);
             JButton btn = createStyledButton(name);
             btn.setActionCommand(name);
+
+            ImageIcon icon = new ImageIcon(new ImageIcon(inconPaths[index]).getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+            btn.setIcon(icon);
+
             btn.addActionListener(new SanPhamController(this));
             toolbar1.add(btn);
         }
@@ -137,6 +145,13 @@ public class SanPhamPanel extends JPanel implements ActionListener, MouseListene
         searchButton = createStyledButton("Tìm kiếm");
         searchButton.setPreferredSize(new Dimension(100, 30));
 
+        ImageIcon icon = new ImageIcon(new ImageIcon("image/search.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+        searchButton.setIcon(icon);
+
+        ImageIcon logo = new ImageIcon(new ImageIcon("image/Logo.png").getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH));
+        JLabel label = new JLabel(logo);
+
+        toolbar2.add(label);
         toolbar2.add(searchComboBox);
         toolbar2.add(searchField);
         toolbar2.add(searchButton);

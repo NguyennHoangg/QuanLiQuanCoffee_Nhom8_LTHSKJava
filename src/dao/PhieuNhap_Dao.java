@@ -15,7 +15,7 @@ public class PhieuNhap_Dao {
 
         try (Connection con = ConnectDataBase.getConnection();
              Statement stmt = con.createStatement();
-             ResultSet rs = stmt.executeQuery("select nl.maNguyenLieu, nl.tenNguyenLieu, nl.donViTinh, nl.giaNhap, nl.ngayNhap, nl.maNguyenLieu, knl.maKho, knl.tenKho, knl.diaChi\n" +
+             ResultSet rs = stmt.executeQuery("select nl.maNguyenLieu, nl.tenNguyenLieu, nl.donViTinh, nl.giaNhap, nl.ngayNhap,nl.ngayHetHan, knl.maKho, knl.tenKho, knl.diaChi\n" +
                      "from [dbo].[NguyenLieu] nl\n" +
                      "join [dbo].[ChiTietKhoNguyenLieu] ctknl on nl.maNguyenLieu = ctknl.maNguyenLieu\n" +
                      "join [dbo].[KhoNguyenLieu] knl on ctknl.maKho = knl.maKho")) {
@@ -25,6 +25,7 @@ public class PhieuNhap_Dao {
                 String tenNguyenLieu = rs.getString(2);
                 String donViTinh = rs.getString(3);
                 double giaNhap = rs.getDouble(4);
+
                 Date ngayNhap = rs.getDate(5);
                 Date ngayHetHan = rs.getDate(6);
                 String maKho = rs.getString(7);
