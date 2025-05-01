@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SanPhamController implements ActionListener {
     private SanPhamPanel view;
@@ -68,8 +69,7 @@ public class SanPhamController implements ActionListener {
     public void setSharedProducts(List<SanPham> sanPham) {
         this.sharedProducts = sanPham;
     }
-
-
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
