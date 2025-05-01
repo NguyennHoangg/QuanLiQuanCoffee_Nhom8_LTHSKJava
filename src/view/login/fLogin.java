@@ -87,7 +87,7 @@ import controller.UserController;
 
             getContentPane().add(pnMain);
 
-            JLabel lbWelcome = new JLabel("Sign In!");
+            JLabel lbWelcome = new JLabel("Đăng Nhập!");
             lbWelcome.setHorizontalAlignment(SwingConstants.CENTER);
             lbWelcome.setBounds(469, 93, 285, 35);
             customUI.getInstance().setCustomLbTitle(lbWelcome);
@@ -144,6 +144,7 @@ import controller.UserController;
                 }
             }
         }
+
 
         @Override
         public void keyTyped(KeyEvent e) {

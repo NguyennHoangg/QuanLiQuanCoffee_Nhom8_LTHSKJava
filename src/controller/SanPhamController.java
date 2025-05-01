@@ -3,6 +3,7 @@ package controller;
 import dao.SanPham_Dao;
 import entity.LoaiSanPham;
 import entity.SanPham;
+import view.Manager.KhoPanel;
 import view.Manager.SanPhamPanel;
 
 import javax.swing.*;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 public class SanPhamController implements ActionListener {
     private SanPhamPanel view;
+    private KhoPanel khoPanel;
 
     public SanPhamController(SanPhamPanel view) {
         this.view = view;
