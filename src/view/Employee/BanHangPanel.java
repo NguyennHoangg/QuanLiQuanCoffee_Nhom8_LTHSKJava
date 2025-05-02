@@ -45,6 +45,13 @@ public class BanHangPanel extends JPanel implements MouseListener, ActionListene
 
     private Map<SanPham, Integer> cartItems;
 
+    /**
+     * Constructor của panel bán hàng
+     * @param userController
+     * @param mainPanel
+     * @param cardLayout
+     * @param sanPhamController
+     */
     public BanHangPanel(UserController userController, JPanel mainPanel, CardLayout cardLayout, SanPhamController sanPhamController) {
         this.userController = userController;
         this.mainPanel = mainPanel;

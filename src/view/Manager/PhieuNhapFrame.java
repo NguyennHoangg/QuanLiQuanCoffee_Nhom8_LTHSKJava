@@ -22,6 +22,7 @@ public class PhieuNhapFrame extends JPanel implements ActionListener, MouseListe
 
     private JTextField txtMa;
     private JTextField txtTen;
+    private JTextField txtSoLuong;
     private JButton btnThem;
     private JButton btnXoa;
     private JButton btnSua;
@@ -126,9 +127,19 @@ public class PhieuNhapFrame extends JPanel implements ActionListener, MouseListe
         txtDV.setPreferredSize(new Dimension(200, 25));
         panel.add(txtDV, gbc);
 
-        // Thêm các nút vào Left Panel
         gbc.gridx = 0;
         gbc.gridy = 3;
+        panel.add(new JLabel("Số Lượng: "), gbc);
+
+        gbc.gridx = 1;
+        txtSoLuong = new JTextField();
+        txtSoLuong.setPreferredSize(new Dimension(200, 25));
+        panel.add(txtSoLuong, gbc);
+
+
+        // Thêm các nút vào Left Panel
+        gbc.gridx = 0;
+        gbc.gridy = 4;
         gbc.gridwidth = 2;
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
@@ -295,7 +306,12 @@ public class PhieuNhapFrame extends JPanel implements ActionListener, MouseListe
         } else if (o.equals(btnSua)) {
             suaNguyenLieu();
         } else if (o.equals(btnTim)) {
+            String maNguyenLieu = txtTim.getText();
+            if(maNguyenLieu.isEmpty()){
+                loadDataToTable();
+            }
             timNguyenLieuTheoTen();
+            txtTim.setText("");
         }
 
     }
@@ -379,41 +395,39 @@ public class PhieuNhapFrame extends JPanel implements ActionListener, MouseListe
         String maNguyenLieu = txtMa.getText().trim();
         String tenNguyenLieu = txtTen.getText().trim();
         String donViTinh = txtDV.getText().trim();
-        Date ngayNhap = (Date) dateNhap.getDate();
-        Date ngayHetHan = (Date) dateHetHan.getDate();
-        String giaNhapStr = txtMaKho.getText().trim();
+        String maKho = txtMaKho.getText().trim();
+        String tenKho = txtTenKho.getText().trim();
         String diaChi = txtDC.getText().trim();
-        double giaNhap;
+        int soLuong = Integer.parseInt(txtSoLuong.getText().trim());
 
-        if (!maNguyenLieu.matches("^[a-zA-Z0-9]+$")) {
-            throw new IllegalArgumentException("Mã nguyên liệu không hợp lệ. Chỉ cho phép chữ và số.");
+
+        java.util.Date utilNgayNhap = dateNhap.getDate();
+        java.util.Date utilNgayHetHan = dateHetHan.getDate();
+
+        if (utilNgayNhap == null || utilNgayHetHan == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày nhập và ngày hết hạn.");
+            return null;
         }
 
-        if (tenNguyenLieu.isEmpty() || !tenNguyenLieu.matches("^[\\p{L}\\s]+$")) {
-            throw new IllegalArgumentException("Tên nguyên liệu không hợp lệ. Vui lòng nhập tên hợp lệ.");
-        }
+        java.sql.Date ngayNhap = new java.sql.Date(utilNgayNhap.getTime());
+        java.sql.Date ngayHetHan = new java.sql.Date(utilNgayHetHan.getTime());
 
-        if (donViTinh.isEmpty() || !donViTinh.matches("^[\\p{L}\\s]+$")) {
-            throw new IllegalArgumentException("Đơn vị tính không hợp lệ. Vui lòng nhập đơn vị hợp lệ.");
-        }
-
-        if (!giaNhapStr.matches("^\\d+(\\.\\d{1,2})?$")) {
-            throw new IllegalArgumentException("Giá nhập không hợp lệ. Vui lòng nhập số.");
+        double giaNhap = 0;
+        int selectedRow = tbl.getSelectedRow();
+        if (selectedRow != -1) {
+            try {
+                giaNhap = Double.parseDouble(tblModel.getValueAt(selectedRow, 3).toString());
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Giá nhập không hợp lệ.");
+                return null;
+            }
         } else {
-            giaNhap = Double.parseDouble(giaNhapStr);
+
+            giaNhap = 100000;
         }
 
-        if (ngayNhap == null || ngayHetHan == null) {
-            throw new IllegalArgumentException("Ngày nhập và ngày hết hạn không được để trống.");
-        }
-
-        if (ngayHetHan.before(ngayNhap)) {
-            throw new IllegalArgumentException("Ngày hết hạn không được trước ngày nhập.");
-        }
-
-
-        KhoNguyenLieu khoNguyenLieu = new KhoNguyenLieu(txtMaKho.getText().trim(), txtTenKho.getText().trim(), diaChi);
-        return new NguyenLieu(maNguyenLieu, tenNguyenLieu, donViTinh, giaNhap, ngayNhap, ngayHetHan, khoNguyenLieu);
+        KhoNguyenLieu kho = new KhoNguyenLieu(maKho, tenKho, diaChi);
+        return new NguyenLieu(maNguyenLieu, tenNguyenLieu, donViTinh, giaNhap, ngayNhap, ngayHetHan, kho, soLuong);
     }
 
     private void themNguyenLieu() {
@@ -469,7 +483,7 @@ public class PhieuNhapFrame extends JPanel implements ActionListener, MouseListe
 
 
     private void timNguyenLieuTheoTen() {
-        String maNguyenLieu = txtTim.getText().trim();
+        String maNguyenLieu = txtTim.getText();
         Date ngayNhap = (Date) dateNhapTim.getDate();
         Date ngayHetHan = (Date) dateHetHanTim.getDate();
 

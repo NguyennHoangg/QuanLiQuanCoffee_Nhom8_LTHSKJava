@@ -13,7 +13,7 @@ public class NguyenLieu {
     private KhoNguyenLieu khoNguyenLieu;
 
     //contructor
-    public NguyenLieu(String maNguyenLieu, String tenNguyenLieu, String donViTinh, double giaNhap, Date ngayNhap, Date ngayHetHan, KhoNguyenLieu khoNguyenLieu) {
+    public NguyenLieu(String maNguyenLieu, String tenNguyenLieu, String donViTinh, double giaNhap, Date ngayNhap, Date ngayHetHan, KhoNguyenLieu khoNguyenLieu, int soLuong) {
         this.maNguyenLieu = maNguyenLieu;
         this.tenNguyenLieu = tenNguyenLieu;
         this.donViTinh = donViTinh;
@@ -21,9 +21,10 @@ public class NguyenLieu {
         this.ngayNhap = ngayNhap;
         this.NgayHetHan = ngayHetHan;
         this.khoNguyenLieu = khoNguyenLieu;
+        this.soLuong = soLuong;
     }
 
-    public NguyenLieu(String maNguyenLieu, String tenNguyenLieu, String donViTinh, double giaNhap, int soLuong, Date ngayNhap, Date ngayHetHan, KhoNguyenLieu khoNguyenLieu) {
+    public NguyenLieu(String maNguyenLieu, String tenNguyenLieu, String donViTinh, double giaNhap, Date ngayNhap, Date ngayHetHan, KhoNguyenLieu khoNguyenLieu) {
         this.maNguyenLieu = maNguyenLieu;
         this.tenNguyenLieu = tenNguyenLieu;
         this.donViTinh = donViTinh;
@@ -32,6 +33,15 @@ public class NguyenLieu {
         this.ngayNhap = ngayNhap;
         NgayHetHan = ngayHetHan;
         this.khoNguyenLieu = khoNguyenLieu;
+    }
+
+    public NguyenLieu(String maNguyenLieu, String tenNguyenLieu, String donViTinh, double giaNhap, Date ngayNhap, Date ngayHetHan) {
+        this.maNguyenLieu = maNguyenLieu;
+        this.tenNguyenLieu = tenNguyenLieu;
+        this.donViTinh = donViTinh;
+        this.giaNhap = giaNhap;
+        this.ngayNhap = ngayNhap;
+        NgayHetHan = ngayHetHan;
     }
 
     public String getMaNguyenLieu() {

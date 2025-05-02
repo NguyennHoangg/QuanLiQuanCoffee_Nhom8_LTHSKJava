@@ -62,7 +62,6 @@ public class Kho_DAO {
         List<KhoViewTable> list = new ArrayList<>();
 
         String sql = """
-               
                     SELECT k.maKho, nl.maNguyenLieu,nl.tenNguyenLieu, nl.donViTinh, nl.giaNhap,ctk.soLuong, nl.ngayNhap, nl.ngayHetHan, ncc.maNhaCungCap, ncc.tenNhaCungCap
                from KhoNguyenLieu k
                join ChiTietKhoNguyenLieu ctk on k.maKho = ctk.maKho

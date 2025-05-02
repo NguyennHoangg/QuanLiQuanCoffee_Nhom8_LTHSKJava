@@ -83,8 +83,10 @@ public class NguyenLieuController {
         Date ngayNhap = Date.valueOf(scanner.nextLine());
         System.out.print("Nhập ngày hết hạn mới (yyyy-mm-dd): ");
         Date ngayHetHan = Date.valueOf(scanner.nextLine());
+        System.out.print("Nhập số lượng mới: ");
+        int soLuong = scanner.nextInt();
 
-        NguyenLieu nguyenLieu = new NguyenLieu(maNguyenLieu, tenNguyenLieu, donViTinh, giaNhap, ngayNhap, ngayHetHan, null); // Cần thêm kho nếu cần
+        NguyenLieu nguyenLieu = new NguyenLieu(maNguyenLieu, tenNguyenLieu, donViTinh, giaNhap, ngayNhap, ngayHetHan); // Cần thêm kho nếu cần
 
         if (phieuNhapDao.updateNguyenLieu(nguyenLieu)) {
             System.out.println("Cập nhật nguyên liệu thành công!");
