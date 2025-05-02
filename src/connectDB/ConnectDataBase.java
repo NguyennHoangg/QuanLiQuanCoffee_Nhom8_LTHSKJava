@@ -23,4 +23,7 @@ public class ConnectDataBase {
         }
         return conn;
     }
+    public static ConnectDataBase getInstance(){
+        return new ConnectDataBase();
+    }
 }
