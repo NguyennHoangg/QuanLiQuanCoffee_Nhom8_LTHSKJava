@@ -200,4 +200,22 @@ public class SanPham_Dao {
             e.printStackTrace();
         }
     }
+
+    public boolean isMaSanPhamExists(String maSanPham) {
+        String sql = "SELECT COUNT(*) FROM SanPham WHERE maSanPham = ?";
+        try (Connection conn = ConnectDataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, maSanPham);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Trả về true nếu mã sản phẩm đã tồn tại
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

@@ -55,4 +55,12 @@ public class KhoController implements ActionListener {
                 break;
         }
     }
+
+    public String generateMaKho() {
+        String maKho;
+        do {
+            maKho = "K" + (int) (Math.random() * 10000);
+        } while (kho_dao.isMaKhoExists(maKho));
+        return maKho;
+    }
 }

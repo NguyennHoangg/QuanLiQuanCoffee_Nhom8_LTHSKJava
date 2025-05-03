@@ -474,5 +474,19 @@ public class Kho_DAO {
     }
 
 
+    public boolean isMaKhoExists(String maKho) {
+        String sql = "SELECT COUNT(*) FROM KhoNguyenLieu WHERE maKho = ?";
+        try (Connection conn = ConnectDataBase.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, maKho);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Trả về true nếu mã kho đã tồn tại
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+    }
+        return false;
+    }
 }
 

@@ -1,5 +1,6 @@
 package view.Manager;
 
+import controller.UserController;
 import dao.TaiKhoan_DAO;
 import entity.NhanVien;
 import entity.TaiKhoan;
@@ -33,6 +34,7 @@ public class TaiKhoanFrame extends JPanel implements ActionListener, MouseListen
     TaiKhoan_DAO taiKhoan_DAO = new TaiKhoan_DAO();
     private JComboBox<String> cmbQuyen;
     private JTextField txtTim;
+    UserController userController = new UserController();
 
 
     public TaiKhoanFrame() {
@@ -98,6 +100,7 @@ public class TaiKhoanFrame extends JPanel implements ActionListener, MouseListen
         gbc.weightx = 0.8;
         txtMa = new JTextField();
         txtMa.setPreferredSize(new Dimension(200, 25));
+        txtMa.setEditable(false);
         panel.add(txtMa, gbc);
 
         gbc.gridx = 0;
@@ -408,7 +411,7 @@ public class TaiKhoanFrame extends JPanel implements ActionListener, MouseListen
             return null;
         }
 
-        String maNV = txtMa.getText().trim();
+        String maNV = userController.generateMaNhanVien();
         String tenNV = txtTen.getText().trim();
         int tuoi = Integer.parseInt(txtTuoi.getText().trim());
         String diaChi = txtDC.getText().trim();

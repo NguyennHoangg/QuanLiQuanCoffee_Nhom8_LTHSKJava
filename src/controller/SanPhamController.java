@@ -69,6 +69,14 @@ public class SanPhamController implements ActionListener {
     public void setSharedProducts(List<SanPham> sanPham) {
         this.sharedProducts = sanPham;
     }
+
+    public String generateMaSanPham() {
+        String maSanPham;
+        do {
+            maSanPham = "SP" + (int) (Math.random() * 10000);
+        } while (sanPhamDao.isMaSanPhamExists(maSanPham));
+        return maSanPham;
+    }
     
     @Override
     public void actionPerformed(ActionEvent e) {

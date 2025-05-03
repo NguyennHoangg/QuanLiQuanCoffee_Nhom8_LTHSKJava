@@ -10,6 +10,7 @@ package view.Manager;
  * @created : 27/04/2025
  */
 
+import controller.SanPhamController;
 import dao.SanPham_Dao;
 import entity.LoaiSanPham;
 import entity.SanPham;
@@ -27,6 +28,7 @@ public class ThemSanPhamDialog extends JDialog implements ActionListener {
     private JButton btnXacNhan, btnHuy;
     private boolean isConfirmed = false;
     private SanPhamPanel sanPhamPanel;
+    private SanPhamController sanPhamController = new SanPhamController();
 
     public ThemSanPhamDialog(Frame parent, String tittle, SanPhamPanel sanPhamPanel){
         super(parent, tittle, true);
@@ -45,6 +47,7 @@ public class ThemSanPhamDialog extends JDialog implements ActionListener {
         maSPLabel.setForeground(new Color(26, 102, 227));
         inputPanel.add(maSPLabel);
         maSPField = new JTextField();
+        maSPField.setEnabled(false);
         inputPanel.add(maSPField);
 
         JLabel tenSPLabel = new JLabel("Tên sản phẩm:");
@@ -100,7 +103,7 @@ public class ThemSanPhamDialog extends JDialog implements ActionListener {
 
     private void themSanPham(){
         try{
-            String maSp = maSPField.getText().trim();
+            String maSp = sanPhamController.generateMaSanPham();
             String tenSP = tenSPField.getText().trim();
             String soLuong = soLuongField.getText().trim();
             String donGia = donGiaField.getText().trim();

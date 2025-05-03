@@ -174,5 +174,17 @@ public class UserController {
         return nhanVienDao.getNhanVienByTenDangNhap(tenDangNhap);
     }
 
-
+    /**
+     * Phương thức này tạo mã nhân viên ngẫu nhiên.
+     *
+     * @return Mã nhân viên ngẫu nhiên có dạng NVXXXX.
+     */
+    public String generateMaNhanVien(){
+        String maNhanVien;
+        do {
+            int randomNumber = new Random().nextInt(10000); // Tạo số ngẫu nhiên từ 0 đến 9999
+            maNhanVien = "NV" + String.format("%04d", randomNumber); // Định dạng mã nhân viên
+        } while (nhanVienDao.isMaNhanVienExists(maNhanVien)); // Kiểm tra tính duy nhất
+        return maNhanVien;
+    }
 }

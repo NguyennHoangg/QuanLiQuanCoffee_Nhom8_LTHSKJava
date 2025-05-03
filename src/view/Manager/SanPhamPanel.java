@@ -284,11 +284,6 @@ public class SanPhamPanel extends JPanel implements ActionListener, MouseListene
             return false;
         }
 
-        if(maSP.length() < 4 || !maSP.matches("[SP\\d]{2,}")) {
-            JOptionPane.showMessageDialog(this, "Mã sản phẩm phải bắt đầu bằng 'SP' và có ít nhất 2 ký tự số sau đó.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return false;
-
-        }
 
         if(!maloaiSP.getMaLoaiSanPham().matches("^LSP\\d{2,}")) {
             JOptionPane.showMessageDialog(this, "Mã loại sản phẩm phải bắt đầu bằng 'LSP' và có ít nhất 2 ký tự số sau đó.", "Lỗi", JOptionPane.ERROR_MESSAGE);
