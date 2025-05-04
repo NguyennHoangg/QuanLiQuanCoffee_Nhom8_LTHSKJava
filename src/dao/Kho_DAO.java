@@ -488,5 +488,35 @@ public class Kho_DAO {
     }
         return false;
     }
+
+    public boolean isMaNguyenLieuExists(String maNguyenLieu) {
+        String sql = "SELECT COUNT(*) FROM NguyenLieu WHERE maNguyenLieu = ?";
+        try (Connection conn = ConnectDataBase.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, maNguyenLieu);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Trả về true nếu mã nguyên liệu đã tồn tại
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isMaNhaCungCapExists(String maNhaCungCap) {
+        String sql = "SELECT COUNT(*) FROM NhaCungCap WHERE maNhaCungCap = ?";
+        try (Connection conn = ConnectDataBase.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, maNhaCungCap);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Trả về true nếu mã nhà cung cấp đã tồn tại
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
 

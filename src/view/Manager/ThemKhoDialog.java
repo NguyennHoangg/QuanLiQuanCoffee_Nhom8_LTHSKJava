@@ -46,6 +46,7 @@ public class ThemKhoDialog extends JDialog {
 
         inputPanel.add(new JLabel("Mã nguyên liệu:"));
         maNLField = new JTextField();
+        maNLField.setEnabled(false);
         inputPanel.add(maNLField);
 
         inputPanel.add(new JLabel("Tên nguyên liệu:"));
@@ -76,6 +77,7 @@ public class ThemKhoDialog extends JDialog {
 
         inputPanel.add(new JLabel("Mã nhà cung cấp:"));
         maNCCField = new JTextField();
+        maNCCField.setEnabled(false);
         inputPanel.add(maNCCField);
 
         inputPanel.add(new JLabel("Tên nhà cung cấp:"));
@@ -115,7 +117,7 @@ public class ThemKhoDialog extends JDialog {
             kho.setTenKho(tenKhoField.getText().trim());
             kho.setDiaChiKho(diaChiKhoField.getText().trim());
 
-            kho.setMaNguyenLieu(maNLField.getText().trim());
+            kho.setMaNguyenLieu(khoController.generateMaNguyenLieu());
             kho.setTenNguyenLieu(tenNLField.getText().trim());
             kho.setDonViTinh(donViTinhField.getText().trim());
             kho.setSoLuong(Integer.parseInt(soLuongField.getText().trim()));
@@ -123,7 +125,7 @@ public class ThemKhoDialog extends JDialog {
             kho.setNgayNhap(new Date(ngayNhapField.getDate().getTime()));
             kho.setNgayHetHan(new Date(ngayHetHanField.getDate().getTime()));
 
-            kho.setMaNhaCungCap(maNCCField.getText().trim());
+            kho.setMaNhaCungCap(khoController.generateMaNCC());
             kho.setTenNhaCungCap(tenNCCField.getText().trim());
             kho.setDiaChiNhaCungCap(diaChiNCCField.getText().trim());
             kho.setSoDienThoaiNhaCungCap(sdtNCCField.getText().trim());

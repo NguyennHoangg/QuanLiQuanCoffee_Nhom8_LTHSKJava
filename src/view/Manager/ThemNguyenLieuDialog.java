@@ -1,6 +1,7 @@
 package view.Manager;
 
 import com.toedter.calendar.JDateChooser;
+import controller.KhoController;
 import entity.NguyenLieu;
 import entity.KhoNguyenLieu;
 import entity.NhaCungCap;
@@ -33,6 +34,7 @@ public class ThemNguyenLieuDialog extends JDialog implements ActionListener {
     private JButton btnOK;
     private JButton btnCancel;
     private PhieuNhapFrame phieuNhapFrame;
+    private KhoController khoController = new KhoController();
 
     public ThemNguyenLieuDialog(JFrame parent, String title, PhieuNhapFrame phieuNhapFrame) {
         super(parent, title, true);
@@ -46,15 +48,18 @@ public class ThemNguyenLieuDialog extends JDialog implements ActionListener {
 
         // Initialize fields
         txtMaNguyenLieu = new JTextField(15);
+        txtMaNguyenLieu.setEnabled(false);
         txtTenNguyenLieu = new JTextField(15);
         txtDonViTinh = new JTextField(15);
         txtGiaNhap = new JTextField(15);
         txtSoLuong = new JTextField(15);
         txtMaNCC = new JTextField(15);
+        txtMaNCC.setEnabled(false);
         txtTenNCC = new JTextField(15);
         txtDCNCC = new JTextField(15);
         txtSDTNCC = new JTextField(15);
         txtMaKho = new JTextField(15);
+        txtMaKho.setEnabled(false);
         txtTenKho = new JTextField(15);
         txtDiaChiKho = new JTextField(15);
         dateNgayNhap = new JDateChooser();
@@ -105,7 +110,6 @@ public class ThemNguyenLieuDialog extends JDialog implements ActionListener {
     }
 
     private boolean isValidDate() {
-        String maNguyenLieu = txtMaNguyenLieu.getText().trim();
         String tenNguyenLieu = txtTenNguyenLieu.getText().trim();
         String donViTinh = txtDonViTinh.getText().trim();
         String giaNhapStr = txtGiaNhap.getText().trim();
@@ -121,9 +125,6 @@ public class ThemNguyenLieuDialog extends JDialog implements ActionListener {
         String sdtNCC = txtSDTNCC.getText().trim();
 
         // Validate existing fields
-        if (!maNguyenLieu.matches("^[a-zA-Z0-9]+$")) {
-            throw new IllegalArgumentException("Mã nguyên liệu không hợp lệ.");
-        }
         if (tenNguyenLieu.isEmpty() || !tenNguyenLieu.matches("^[\\p{L}\\s]+$")) {
             throw new IllegalArgumentException("Tên nguyên liệu không hợp lệ.");
         }
@@ -142,9 +143,7 @@ public class ThemNguyenLieuDialog extends JDialog implements ActionListener {
         if (ngayHetHan.before(ngayNhap)) {
             throw new IllegalArgumentException("Ngày hết hạn phải sau hoặc bằng ngày nhập.");
         }
-        if (maKho.isEmpty() || !maKho.matches("^[a-zA-Z0-9]+$")) {
-            throw new IllegalArgumentException("Mã kho không hợp lệ.");
-        }
+
         if (tenKho.isEmpty() || !tenKho.matches("^[\\p{L}\\s]+$")) {
             throw new IllegalArgumentException("Tên kho không hợp lệ.");
         }
@@ -152,9 +151,6 @@ public class ThemNguyenLieuDialog extends JDialog implements ActionListener {
             throw new IllegalArgumentException("Địa chỉ kho không hợp lệ.");
         }
 
-        if (maNCC.isEmpty() || !maNCC.matches("^[a-zA-Z0-9]+$")) {
-            throw new IllegalArgumentException("Mã NCC không hợp lệ.");
-        }
         if (tenNCC.isEmpty() || !tenNCC.matches("^[\\p{L}\\s]+$")) {
             throw new IllegalArgumentException("Tên NCC không hợp lệ.");
         }
@@ -188,19 +184,19 @@ public class ThemNguyenLieuDialog extends JDialog implements ActionListener {
                 JOptionPane.showMessageDialog(this, "Thông tin không hợp lệ", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            String maNguyenLieu = txtMaNguyenLieu.getText().trim();
+            String maNguyenLieu = khoController.generateMaNguyenLieu();
             String tenNguyenLieu = txtTenNguyenLieu.getText().trim();
             String donViTinh = txtDonViTinh.getText().trim();
             double giaNhap = Double.parseDouble(txtGiaNhap.getText().trim());
             int soLuong = Integer.parseInt(txtSoLuong.getText().trim());
-            String maKho = txtMaKho.getText().trim();
+            String maKho = khoController.generateMaKho();
             String tenKho = txtTenKho.getText().trim();
             String diaChiKho = txtDiaChiKho.getText().trim();
             Date ngayNhapDate = dateNgayNhap.getDate();
             LocalDate ngayNhap = ngayNhapDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             Date ngayHetHanDate = dateNgayHetHan.getDate();
             LocalDate ngayHetHan = ngayHetHanDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            String maNCC = txtMaNCC.getText().trim();
+            String maNCC = khoController.generateMaNCC();
             String tenNCC = txtTenNCC.getText().trim();
             String diaChiNCC = txtDCNCC.getText().trim();
             String sdtNCC = txtSDTNCC.getText().trim();
@@ -210,7 +206,7 @@ public class ThemNguyenLieuDialog extends JDialog implements ActionListener {
             KhoNguyenLieu kho = new KhoNguyenLieu(maKho, tenKho, diaChiKho);
             NguyenLieu nguyenLieu = new NguyenLieu(maNguyenLieu, tenNguyenLieu, donViTinh, giaNhap, ngayNhap, ngayHetHan, kho, soLuong, ncc);
             phieuNhapFrame.themNguyenLieu(nguyenLieu);
-            JOptionPane.showMessageDialog(this, "Thêm nguyên liệu thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }

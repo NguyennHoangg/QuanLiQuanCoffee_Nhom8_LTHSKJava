@@ -17,24 +17,26 @@ import view.Manager.KhoPanel;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class KhoController implements ActionListener {
     private KhoPanel view;
-    private Kho_DAO kho_dao;
+    private Kho_DAO kho_dao = new Kho_DAO();
+    private List<KhoViewTable> khoViewTables = new ArrayList<>();
 
     public KhoController(KhoPanel view) {
         this.view = view;
-        this.kho_dao = new Kho_DAO();
     }
 
-    public KhoController(){
-
+    public KhoController() {
+        this.khoViewTables = new ArrayList<>();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
-        switch (cmd){
+        switch (cmd) {
             case "Thêm":
                 view.dialogThemKho();
                 break;
@@ -63,8 +65,25 @@ public class KhoController implements ActionListener {
     public String generateMaKho() {
         String maKho;
         do {
-            maKho = "K" + (int) (Math.random() * 10000);
+            maKho = "K" + (int) (Math.random() * 1000);
         } while (kho_dao.isMaKhoExists(maKho));
         return maKho;
     }
+
+    public String generateMaNguyenLieu() {
+        String maNguyenLieu;
+        do {
+            maNguyenLieu = "NL" + (int) (Math.random() * 1000);
+        } while (kho_dao.isMaNguyenLieuExists(maNguyenLieu));
+        return maNguyenLieu;
+    }
+
+    public String generateMaNCC() {
+        String maNCC;
+        do {
+            maNCC = "NCC" + (int) (Math.random() * 1000);
+        } while (kho_dao.isMaNhaCungCapExists(maNCC));
+        return maNCC;
+    }
+
 }

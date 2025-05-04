@@ -192,6 +192,7 @@ public class SuaNguyenLieuDialog extends JDialog implements ActionListener {
             NguyenLieu nguyenLieu = new NguyenLieu(maNguyenLieu, tenNguyenLieu, donViTinh, giaNhap, ngayNhap, ngayHetHan,khoNguyenLieu, soLuong, nhaCungCap);
 
             phieuNhapFrame.suaNguyenLieu(nguyenLieu);
+            dispose();
         }
     }
 

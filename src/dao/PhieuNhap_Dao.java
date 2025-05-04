@@ -140,6 +140,93 @@ public class PhieuNhap_Dao {
         }
     }
 
+    public boolean addNguyenLieu1(NguyenLieu nl) {
+        if (nl == null || nl.getKhoNguyenLieu() == null || nl.getNhaCungCap() == null) {
+            throw new IllegalArgumentException("NguyenLieu, KhoNguyenLieu hoặc NhaCungCap không được null.");
+        }
+
+        String insertKho = "INSERT INTO KhoNguyenLieu (maKho, tenKho, diaChi) VALUES (?, ?, ?)";
+        String checkKho = "SELECT COUNT(*) FROM KhoNguyenLieu WHERE maKho = ?";
+
+        String insertNCC = "INSERT INTO NhaCungCap (maNhaCungCap, tenNhaCungCap, diaChi, soDienThoai) VALUES (?, ?, ?, ?)";
+        String checkNCC = "SELECT COUNT(*) FROM NhaCungCap WHERE maNhaCungCap = ?";
+
+        String insertNL = "INSERT INTO NguyenLieu (maNguyenLieu, tenNguyenLieu, donViTinh, giaNhap, ngayNhap, ngayHetHan) VALUES (?, ?, ?, ?, ?, ?)";
+
+        String insertCTKho = "INSERT INTO ChiTietKhoNguyenLieu (maKho, maNguyenLieu, soLuong) VALUES (?, ?, ?)";
+        String insertCTNCC = "INSERT INTO ChiTietNhaCungCap (maNhaCungCap, maNguyenLieu) VALUES (?, ?)";
+
+        try (Connection con = getConnection()) {
+            con.setAutoCommit(false);
+
+            KhoNguyenLieu kho = nl.getKhoNguyenLieu();
+            NhaCungCap ncc = nl.getNhaCungCap();
+
+            // 1. Thêm Kho nếu chưa tồn tại
+            try (PreparedStatement checkStmt = con.prepareStatement(checkKho)) {
+                checkStmt.setString(1, kho.getMaKho());
+                ResultSet rs = checkStmt.executeQuery();
+                if (rs.next() && rs.getInt(1) == 0) {
+                    try (PreparedStatement stmt = con.prepareStatement(insertKho)) {
+                        stmt.setString(1, kho.getMaKho());
+                        stmt.setString(2, kho.getTenKho());
+                        stmt.setString(3, kho.getDiaChi());
+                        stmt.executeUpdate();
+                    }
+                }
+            }
+
+            // 2. Thêm Nhà Cung Cấp nếu chưa tồn tại
+            try (PreparedStatement checkStmt = con.prepareStatement(checkNCC)) {
+                checkStmt.setString(1, ncc.getMaNhaCungCap());
+                ResultSet rs = checkStmt.executeQuery();
+                if (rs.next() && rs.getInt(1) == 0) {
+                    try (PreparedStatement stmt = con.prepareStatement(insertNCC)) {
+                        stmt.setString(1, ncc.getMaNhaCungCap());
+                        stmt.setString(2, ncc.getTenNhaCungCap());
+                        stmt.setString(3, ncc.getDiaChi());
+                        stmt.setString(4, ncc.getSoDienThoai());
+                        stmt.executeUpdate();
+                    }
+                }
+            }
+
+            // 3. Thêm NguyenLieu
+            try (PreparedStatement stmt = con.prepareStatement(insertNL)) {
+                stmt.setString(1, nl.getMaNguyenLieu());
+                stmt.setString(2, nl.getTenNguyenLieu());
+                stmt.setString(3, nl.getDonViTinh());
+                stmt.setDouble(4, nl.getGiaNhap());
+                stmt.setDate(5, java.sql.Date.valueOf(nl.getNgayNhap()));
+                stmt.setDate(6, java.sql.Date.valueOf(nl.getNgayHetHan()));
+                stmt.executeUpdate();
+            }
+
+            // 4. Thêm vào ChiTietKhoNguyenLieu
+            try (PreparedStatement stmt = con.prepareStatement(insertCTKho)) {
+                stmt.setString(1, kho.getMaKho());
+                stmt.setString(2, nl.getMaNguyenLieu());
+                stmt.setInt(3, nl.getSoLuong());
+                stmt.executeUpdate();
+            }
+
+            // 5. Thêm vào ChiTietNhaCungCap
+            try (PreparedStatement stmt = con.prepareStatement(insertCTNCC)) {
+                stmt.setString(1, ncc.getMaNhaCungCap());
+                stmt.setString(2, nl.getMaNguyenLieu());
+                stmt.executeUpdate();
+            }
+
+            con.commit();
+            return true;
+
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi thêm nguyên liệu: " + e.getMessage());
+            return false;
+        }
+    }
+
+
     private void insertKho(Connection con, KhoNguyenLieu kho) throws SQLException {
         String checkKho = "SELECT COUNT(*) FROM KhoNguyenLieu WHERE maKho = ?";
         String insertKho = "INSERT INTO KhoNguyenLieu (maKho, tenKho, diaChi) VALUES (?, ?, ?)";

@@ -275,7 +275,7 @@ public class PhieuNhapFrame extends JPanel implements ActionListener, MouseListe
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin nguyên liệu");
             return;
         }
-        if (phieuNhapDao.addNguyenLieu(nl)) {
+        if (phieuNhapDao.addNguyenLieu1(nl)) {
             JOptionPane.showMessageDialog(this, "Thêm nguyên liệu thành công!");
             loadDataToTable();
         } else {
