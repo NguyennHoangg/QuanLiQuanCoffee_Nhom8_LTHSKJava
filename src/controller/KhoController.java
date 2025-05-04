@@ -27,6 +27,10 @@ public class KhoController implements ActionListener {
         this.kho_dao = new Kho_DAO();
     }
 
+    public KhoController(){
+
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();

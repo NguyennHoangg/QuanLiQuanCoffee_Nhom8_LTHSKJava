@@ -1,6 +1,7 @@
 package view.Manager;
 
 import com.toedter.calendar.JDateChooser;
+import controller.KhoController;
 import entity.KhoViewTable;
 
 import javax.swing.*;
@@ -15,6 +16,7 @@ public class ThemKhoDialog extends JDialog {
     private JButton btnXacNhan, btnHuy;
     private KhoPanel khoPanel;
     private JDateChooser ngayNhapField, ngayHetHanField;
+    private KhoController khoController = new KhoController();
 
     public ThemKhoDialog(Frame parent, String title, KhoPanel khoPanel) {
         super(parent, title, true);
@@ -31,6 +33,7 @@ public class ThemKhoDialog extends JDialog {
 
         inputPanel.add(new JLabel("Mã kho:"));
         maKhoField = new JTextField();
+        maKhoField.setEnabled(false);
         inputPanel.add(maKhoField);
 
         inputPanel.add(new JLabel("Tên kho:"));
@@ -108,7 +111,7 @@ public class ThemKhoDialog extends JDialog {
     private void xacNhanThem(ActionEvent e) {
         try {
             KhoViewTable kho = new KhoViewTable();
-            kho.setMaKho(maKhoField.getText().trim());
+            kho.setMaKho(khoController.generateMaKho());
             kho.setTenKho(tenKhoField.getText().trim());
             kho.setDiaChiKho(diaChiKhoField.getText().trim());
 
