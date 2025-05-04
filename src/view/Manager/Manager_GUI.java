@@ -35,10 +35,9 @@ public class Manager_GUI {
         mainPanel.add(new SanPhamPanel(), "PRODUCT");
         mainPanel.add(new ThongKeFrame(hoaDonController), "THONG_KE");
         mainPanel.add(new PhieuNhapFrame(), "PHIEU_NHAP");
-//        mainPanel.add(new PhieuXuatFrame(), "PHIEU_XUAT");
         mainPanel.add(new KhoPanel(), "KHO");
         mainPanel.add(new TaiKhoanFrame(), "ACCOUNT");
-//        mainPanel.add(new UpdateFrame(), "UPDATE");
+        mainPanel.add(new ThongTinPanel(), "UPDATE");
 
         frame.add(mainPanel, BorderLayout.CENTER);
         frame.setVisible(true);
