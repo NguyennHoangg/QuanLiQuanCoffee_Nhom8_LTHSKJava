@@ -8,15 +8,13 @@ public class NhaCungCap {
     private String tenNhaCungCap;
     private String diaChi;
     private String soDienThoai;
-    private String email;
     private List<NguyenLieu> danhSachNguyenLieu; // Nguyên liệu mà nhà cung cấp cung cấp
 
-    public NhaCungCap(String maNhaCungCap, String tenNhaCungCap, String diaChi, String soDienThoai, String email) {
+    public NhaCungCap(String maNhaCungCap, String tenNhaCungCap, String diaChi, String soDienThoai) {
         this.maNhaCungCap = maNhaCungCap;
         this.tenNhaCungCap = tenNhaCungCap;
         this.diaChi = diaChi;
         this.soDienThoai = soDienThoai;
-        this.email = email;
         this.danhSachNguyenLieu = new ArrayList<>();
     }
 
@@ -64,17 +62,6 @@ public class NhaCungCap {
         this.soDienThoai = soDienThoai;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        if (email == null || email.isEmpty()) {
-            throw new IllegalArgumentException("Email không được để trống");
-        }
-        this.email = email;
-    }
-
     public void themNguyenLieu(NguyenLieu nguyenLieu) {
         if (nguyenLieu == null) {
             throw new IllegalArgumentException("Nguyên liệu không được để trống");
@@ -89,7 +76,6 @@ public class NhaCungCap {
                 ", tenNhaCungCap='" + tenNhaCungCap + '\'' +
                 ", diaChi='" + diaChi + '\'' +
                 ", soDienThoai='" + soDienThoai + '\'' +
-                ", email='" + email + '\'' +
                 ", danhSachNguyenLieu=" + danhSachNguyenLieu +
                 '}';
     }

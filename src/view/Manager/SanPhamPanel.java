@@ -8,7 +8,6 @@ import controller.SanPhamController;
 import dao.SanPham_Dao;
 import entity.LoaiSanPham;
 import entity.SanPham;
-
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.*;
@@ -26,7 +25,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.Phaser;
-
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;

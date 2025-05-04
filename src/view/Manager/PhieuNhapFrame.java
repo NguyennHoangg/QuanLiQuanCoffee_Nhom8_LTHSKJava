@@ -1,289 +1,118 @@
 package view.Manager;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.pdf.*;
 import com.toedter.calendar.JDateChooser;
 import dao.PhieuNhap_Dao;
-import entity.NguyenLieu;
 import entity.KhoNguyenLieu;
+import entity.NguyenLieu;
+import entity.NhaCungCap;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.sql.Date;
-//import java.util.Date;
+import java.awt.Image;
+import java.awt.event.*;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 public class PhieuNhapFrame extends JPanel implements ActionListener, MouseListener {
-
-    private JTextField txtMa;
-    private JTextField txtTen;
-    private JTextField txtSoLuong;
-    private JButton btnThem;
-    private JButton btnXoa;
-    private JButton btnSua;
-    private JButton btnTim;
+    private JTextField txtTim;
     private JTable tbl;
     private DefaultTableModel tblModel;
-    private PhieuNhap_Dao PhieuNhap_Dao = new PhieuNhap_Dao();
-    private JTextField txtTim;
-    private JDateChooser dateNhap;
-    private JDateChooser dateHetHan;
-    private JTextField txtMaKho;
-    private JTextField txtDV;
-    private JTextField txtTenKho;
-    private JDateChooser dateNhapTim;
-    private JDateChooser dateHetHanTim;
-    private JTextField txtDC;
+    private JDateChooser dateNhapTim, dateHetHanTim;
+    private JButton btnThem, btnXoa, btnSua, btnTim, btnXuatPDF;
+    private PhieuNhap_Dao phieuNhapDao = new PhieuNhap_Dao();
 
     public PhieuNhapFrame() {
         setLayout(new BorderLayout());
         add(createTextFieldPanel(), BorderLayout.NORTH);
         add(createTableScrollPane(), BorderLayout.CENTER);
 
-
-//        loadDataToTable();
         btnThem.addActionListener(this);
         btnXoa.addActionListener(this);
         btnSua.addActionListener(this);
-        tbl.addMouseListener(this);
-        dateNhapTim.addMouseListener(this);
-        dateHetHanTim.addMouseListener(this);
         btnTim.addActionListener(this);
-
+        btnXuatPDF.addActionListener(this);
+        tbl.addMouseListener(this);
 
         loadDataToTable();
     }
 
     private JPanel createTextFieldPanel() {
-        JPanel mainPanel = new JPanel(new GridLayout(1, 3, 10, 10));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        mainPanel.setBorder(BorderFactory.createTitledBorder("Thông tin tài khoản"));
+        JPanel mainPanel = new JPanel(new GridLayout(1, 2, 10, 10));
+        mainPanel.setBorder(BorderFactory.createTitledBorder("Chức năng"));
 
-        // Cột 1 (Trái)
-        mainPanel.add(createLeftPanel());
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
+        btnThem = createRoundButton("Thêm", "image/addEmp.png");
+        btnXoa = createRoundButton("Xóa", "image/removeEmp.png");
+        btnSua = createRoundButton("Sửa", "image/repairEmp.png");
+        btnXuatPDF = createRoundButton("Xuất PDF", "image/PDF.png");
 
-        // Cột 2 (Giữa)
-        mainPanel.add(createCenterPanel());
+        Dimension buttonSize = new Dimension(120, 40);
+        btnThem.setPreferredSize(buttonSize);
+        btnXoa.setPreferredSize(buttonSize);
+        btnSua.setPreferredSize(buttonSize);
+        btnXuatPDF.setPreferredSize(buttonSize);
 
-        // Cột 3 (Phải)
-        mainPanel.add(createRightPanel());
+        buttonPanel.add(btnThem);
+        buttonPanel.add(btnXoa);
+        buttonPanel.add(btnSua);
+        buttonPanel.add(btnXuatPDF);
+
+        mainPanel.add(buttonPanel);
+        mainPanel.add(createSearchPanel());
 
         return mainPanel;
     }
 
     private JScrollPane createTableScrollPane() {
-     String[] cols = {"Mã nguyên liệu", "Tên nguyên liệu", "Đơn vị tính", "Giá nhập", "Ngày nhập", "Ngày hết hạn", "Mã kho", "Tên Kho", "Địa chỉ"};
+        String[] cols = {"Mã nguyên liệu", "Tên nguyên liệu", "Đơn vị tính", "Giá nhập", "Ngày nhập", "Ngày hết hạn", "Mã kho", "Tên Kho", "Địa chỉ", "Số lượng"};
         tblModel = new DefaultTableModel(cols, 0);
         tbl = new JTable(tblModel);
-        JScrollPane scroll = new JScrollPane(tbl);
-
         return new JScrollPane(tbl);
     }
 
-    private JPanel createLeftPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        gbc.weightx = 0.2;
-        gbc.weighty = 1.0;
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        panel.add(new JLabel("Mã nguyên liệu:"), gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 0.8;
-        txtMa = new JTextField();
-        txtMa.setPreferredSize(new Dimension(200, 25));
-        panel.add(txtMa, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 0.2;
-        panel.add(new JLabel("Tên nguyên liệu:"), gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 0.8;
-        txtTen = new JTextField();
-        txtTen.setPreferredSize(new Dimension(200, 25));
-        panel.add(txtTen, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.weightx = 0.2;
-        panel.add(new JLabel("Đơn vị tính:"), gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 0.8;
-        txtDV = new JTextField();
-        txtDV.setPreferredSize(new Dimension(200, 25));
-        panel.add(txtDV, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        panel.add(new JLabel("Số Lượng: "), gbc);
-
-        gbc.gridx = 1;
-        txtSoLuong = new JTextField();
-        txtSoLuong.setPreferredSize(new Dimension(200, 25));
-        panel.add(txtSoLuong, gbc);
-
-
-        // Thêm các nút vào Left Panel
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.gridwidth = 2;
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
-
-        btnThem = createRoundButton("Thêm", "image/addEmp.png");
-        btnXoa = createRoundButton("Xóa", "image/removeEmp.png");
-        btnSua = createRoundButton("Sửa", "image/repairEmp.png");
-
-        Dimension buttonSize = new Dimension(100, 40);
-        btnThem.setPreferredSize(buttonSize);
-        btnXoa.setPreferredSize(buttonSize);
-        btnSua.setPreferredSize(buttonSize);
-
-        buttonPanel.add(btnThem);
-        buttonPanel.add(btnXoa);
-        buttonPanel.add(btnSua);
-
-        panel.add(buttonPanel, gbc);
-
-        return panel;
-    }
-
-
-    private JPanel createCenterPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 0.2;
-        panel.add(new JLabel("Mã kho :"), gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 0.8;
-        txtMaKho = new JTextField();
-        txtMaKho.setPreferredSize(new Dimension(200, 25));
-        panel.add(txtMaKho, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 0.2;
-        panel.add(new JLabel("Tên kho :"), gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 0.8;
-        txtTenKho = new JTextField();
-        txtTenKho.setPreferredSize(new Dimension(200, 25));
-        panel.add(txtTenKho, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.weightx = 0.2;
-        panel.add(new JLabel("Ngày nhập :"), gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 0.8;
-        dateNhap = new JDateChooser();
-        dateNhap.setDateFormatString("dd/MM/yyyy");
-        dateNhap.setPreferredSize(new Dimension(200, 25));
-        panel.add(dateNhap, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.weightx = 0.2;
-        panel.add(new JLabel("Ngày hết hạn:"), gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 0.8;
-        dateHetHan = new JDateChooser();
-        dateHetHan.setDateFormatString("dd/MM/yyyy");
-        dateHetHan.setPreferredSize(new Dimension(200, 25));
-        panel.add(dateHetHan, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.weightx = 0.2;
-        panel.add(new JLabel("Địa chỉ:"), gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 0.8;
-        txtDC = new JTextField();
-        txtDC.setPreferredSize(new Dimension(200, 25));
-        panel.add(txtDC, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        gbc.gridwidth = 2;
-        gbc.weighty = 1.0;
-        panel.add(Box.createVerticalGlue(), gbc);
-
-        return panel;
-    }
-
-    private JPanel createRightPanel() {
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
-
+    private JPanel createSearchPanel() {
         JPanel searchPanel = new JPanel();
         searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.Y_AXIS));
-        searchPanel.setBorder(BorderFactory.createTitledBorder("Tìm kiếm: "));
+        searchPanel.setBorder(BorderFactory.createTitledBorder("Tìm kiếm"));
 
         searchPanel.add(new JLabel("Ngày nhập:"));
         dateNhapTim = new JDateChooser();
         dateNhapTim.setDateFormatString("dd/MM/yyyy");
-        dateNhapTim.setPreferredSize(new Dimension(200, 25));
         searchPanel.add(dateNhapTim);
 
-        searchPanel.add(new JLabel("Ngày hết hạn"));
+        searchPanel.add(new JLabel("Ngày hết hạn:"));
         dateHetHanTim = new JDateChooser();
         dateHetHanTim.setDateFormatString("dd/MM/yyyy");
-        dateHetHanTim.setPreferredSize(new Dimension(200, 25));
         searchPanel.add(dateHetHanTim);
 
-        JPanel searchFieldPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        searchPanel.add(new JLabel("Tên nguyên liệu:"));
         txtTim = new JTextField();
         txtTim.setPreferredSize(new Dimension(200, 25));
 
-        Dimension buttonSize = new Dimension(100, 40);
         btnTim = createRoundButton("Tìm", "image/search.png");
-        btnTim.setPreferredSize(buttonSize);
+        btnTim.setPreferredSize(new Dimension(100, 40));
 
-        ImageIcon originalIcon = new ImageIcon("image/search.png");
-        Image scaledImage = originalIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-        btnTim.setIcon(new ImageIcon(scaledImage));
+        JPanel fieldPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        fieldPanel.add(txtTim);
+        fieldPanel.add(btnTim);
 
+        searchPanel.add(fieldPanel);
 
-        searchFieldPanel.add(txtTim);
-        searchFieldPanel.add(btnTim);
-
-        searchPanel.add(searchFieldPanel);
-
-        mainPanel.add(searchPanel);
-        mainPanel.add(Box.createVerticalGlue());
-
-        return mainPanel;
+        return searchPanel;
     }
 
-    private JButton createRoundButton (String text, String iconPath){
+    private JButton createRoundButton(String text, String iconPath) {
         JButton button = new JButton(text);
-        button.setIcon(new ImageIcon(iconPath));
+        button.setIcon(new ImageIcon(new ImageIcon(iconPath).getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
         button.setBackground(new Color(10, 82, 116));
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
@@ -291,291 +120,212 @@ public class PhieuNhapFrame extends JPanel implements ActionListener, MouseListe
         return button;
     }
 
+    private void loadDataToTable() {
+        DefaultTableModel model = (DefaultTableModel) tbl.getModel();
+        model.setRowCount(0);
+
+        List<NguyenLieu> dsNguyenLieu = new PhieuNhap_Dao().printAllNguyenLieu();
+
+        for (NguyenLieu nl : dsNguyenLieu) {
+            // Xử lý khi kho là null
+            String maKho = (nl.getKhoNguyenLieu() != null) ? nl.getKhoNguyenLieu().getMaKho() : "Không có kho";
+            String tenKho = (nl.getKhoNguyenLieu() != null) ? nl.getKhoNguyenLieu().getTenKho() : "";
+
+            model.addRow(new Object[]{
+                    nl.getMaNguyenLieu(),
+                    nl.getTenNguyenLieu(),
+                    nl.getDonViTinh(),
+                    nl.getGiaNhap(),
+                    nl.getNgayNhap(),
+                    nl.getNgayHetHan(),
+                    maKho,
+                    tenKho,
+                    nl.getKhoNguyenLieu() != null ? nl.getKhoNguyenLieu().getDiaChi() : "Không có địa chỉ",
+                    nl.getSoLuong(),
+            });
+        }
+    }
+
+
+    private void timNguyenLieu() {
+        java.util.Date ngayNhap = dateNhapTim.getDate();
+        java.util.Date ngayHetHan = dateHetHanTim.getDate();
+        String tenNguyenLieu = txtTim.getText().trim();
+
+        if (ngayNhap == null && ngayHetHan == null && tenNguyenLieu.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập ít nhất một tiêu chí tìm kiếm!");
+            return;
+        }
+
+        java.sql.Date sqlNgayNhap = (ngayNhap != null) ? new java.sql.Date(ngayNhap.getTime()) : null;
+        java.sql.Date sqlNgayHetHan = (ngayHetHan != null) ? new java.sql.Date(ngayHetHan.getTime()) : null;
+
+        List<NguyenLieu> result = phieuNhapDao.timKiem(sqlNgayNhap, sqlNgayHetHan, tenNguyenLieu);
+
+        tblModel.setRowCount(0);
+        if (result.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy nguyên liệu nào!");
+            return;
+        }
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        for (NguyenLieu nl : result) {
+            KhoNguyenLieu kho = nl.getKhoNguyenLieu();
+
+            String ngayNhapStr = (nl.getNgayNhap() != null) ? nl.getNgayNhap().format(dtf) : "";
+            String ngayHetHanStr = (nl.getNgayHetHan() != null) ? nl.getNgayHetHan().format(dtf) : "";
+
+            tblModel.addRow(new Object[]{
+                    nl.getMaNguyenLieu(), nl.getTenNguyenLieu(), nl.getDonViTinh(), nl.getGiaNhap(),
+                    ngayNhapStr, ngayHetHanStr,
+                    kho != null ? kho.getMaKho() : "",
+                    kho != null ? kho.getTenKho() : "",
+                    kho != null ? kho.getDiaChi() : "",
+                    nl.getSoLuong()
+            });
+        }
+    }
 
 
 
+    private void xuatPDF() {
+        //cho nhỏ lại một chúc xíu
+        Document document = new Document(PageSize.A4, 36, 36, 36, 36);
+        try {
+            String filePath = "PhieuNhapPDF/PhieuNhap.pdf";
+            PdfWriter.getInstance(document, new FileOutputStream(filePath));
+            document.open();
 
+            BaseFont baseFont = BaseFont.createFont("fonts/arial.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            Font titleFont = new Font(baseFont, 20, Font.BOLD);
+            Font cellFont = new Font(baseFont, 10);
+
+            Paragraph title = new Paragraph("Phiếu Nhập Nguyên Liệu", titleFont);
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
+
+            document.add(new Paragraph("\nNgày lập: " + new SimpleDateFormat("dd/MM/yyyy").format(new java.util.Date()), cellFont));
+            document.add(new Paragraph(" "));
+
+            PdfPTable table = new PdfPTable(10);
+            table.setWidthPercentage(100);
+            table.setSpacingBefore(10f);
+            table.setWidths(new float[]{7, 5, 4, 4, 5, 5, 4, 4, 5, 4});
+            Font headerFont = new Font(baseFont, 10, Font.BOLD);
+
+            String[] headers = {
+                    "Mã nguyên liệu", "Tên nguyên liệu", "Đơn vị tính", "Giá nhập", "Ngày nhập", "Ngày hết hạn",
+                    "Mã kho", "Tên kho", "Địa chỉ kho", "Số lượng"
+            };
+
+            for (String header : headers) {
+                table.addCell(new PdfPCell(new Phrase(header, headerFont)));
+            }
+
+            for (int i = 0; i < tblModel.getRowCount(); i++) {
+                for (int j = 0; j < tblModel.getColumnCount(); j++) {
+                    table.addCell(new PdfPCell(new Phrase(tblModel.getValueAt(i, j).toString(), cellFont)));
+                }
+            }
+
+            document.add(table);
+            document.close();
+
+
+            //Mở tệp PDF sau khi suất
+            File file = new File(filePath);
+            if(Desktop.isDesktopSupported()){
+                Desktop.getDesktop().open(file);
+            }
+            JOptionPane.showMessageDialog(this, "Xuất PDF thành công! Đã lưu tại: " + filePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void themNguyenLieuDialog() {
+        new ThemNguyenLieuDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Thêm nguyên liệu", this).setVisible(true);
+    }
+
+    private void suaNguyenLieuDialog() {
+        int row = tbl.getSelectedRow();
+        if(row != -1){
+            String maNguyenLieu = tblModel.getValueAt(row, 0).toString();
+            String maKho = tblModel.getValueAt(row, 6).toString();
+
+            NguyenLieu nl = phieuNhapDao.timByManguyenLieuVaMaKho(maNguyenLieu, maKho);
+            if(nl == null){
+                JOptionPane.showMessageDialog(this, "Nguyên liệu không tồn tại trong kho này");
+                return;
+            }
+            SuaNguyenLieuDialog suaDialog = new SuaNguyenLieuDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Sửa Nguyên Liệu", this, maNguyenLieu, maKho);
+            suaDialog.setData(nl);
+            suaDialog.setVisible(true);
+        }else{
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn nguyên liệu để sửa.");
+        }
+
+    }
+
+    public void themNguyenLieu(NguyenLieu nl) {
+        if (nl == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin nguyên liệu");
+            return;
+        }
+        if (phieuNhapDao.addNguyenLieu(nl)) {
+            JOptionPane.showMessageDialog(this, "Thêm nguyên liệu thành công!");
+            loadDataToTable();
+        } else {
+            JOptionPane.showMessageDialog(this, "Thêm nguyên liệu thất bại!");
+        }
+    }
+
+    public void suaNguyenLieu(NguyenLieu nl) {
+        int row = tbl.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn nguyên liệu để sửa.");
+            return;
+        }
+        if (phieuNhapDao.suaNguyenLieu(nl)) {
+            JOptionPane.showMessageDialog(this, "Cập nhật nguyên liệu thành công!");
+            loadDataToTable();
+        } else {
+            JOptionPane.showMessageDialog(this, "Cập nhật nguyên liệu thất bại!");
+        }
+    }
+
+    private void xoaNguyenLieu() {
+        int row = tbl.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn nguyên liệu để xóa.");
+            return;
+        }
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa nguyên liệu này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            String maNguyenLieu = tblModel.getValueAt(row, 0).toString();
+            if (phieuNhapDao.deleteNguyenLieu(maNguyenLieu)) {
+                JOptionPane.showMessageDialog(this, "Xóa nguyên liệu thành công!");
+                loadDataToTable();
+            } else {
+                JOptionPane.showMessageDialog(this, "Xóa nguyên liệu thất bại!");
+            }
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Object o = e.getSource();
-        if (o.equals(btnThem)) {
-            themNguyenLieu();
-        } else if (o.equals(btnXoa)) {
-            xoaNguyenLieu();
-        } else if (o.equals(btnSua)) {
-            suaNguyenLieu();
-        } else if (o.equals(btnTim)) {
-            String maNguyenLieu = txtTim.getText();
-            if(maNguyenLieu.isEmpty()){
-                loadDataToTable();
-            }
-            timNguyenLieuTheoTen();
-            txtTim.setText("");
-        }
-
+        Object src = e.getSource();
+        if (src == btnThem) themNguyenLieuDialog();
+        else if (src == btnXoa) xoaNguyenLieu();
+        else if (src == btnSua) suaNguyenLieuDialog();
+        else if (src == btnTim) timNguyenLieu();
+        else if (src == btnXuatPDF) xuatPDF();
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        int row = tbl.getSelectedRow();
-        if (row != -1) {
-            txtMa.setText(tblModel.getValueAt(row, 0).toString());
-            txtTen.setText(tblModel.getValueAt(row, 1).toString());
-            txtDV.setText(tblModel.getValueAt(row, 2).toString());
-            txtMaKho.setText(tblModel.getValueAt(row, 6).toString());
-            txtTenKho.setText(tblModel.getValueAt(row, 7).toString());
-            txtDC.setText(tblModel.getValueAt(row, 8).toString());
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            try {
-                java.util.Date ngayNhap =  dateFormat.parse(tblModel.getValueAt(row, 4).toString());
-                dateNhap.setDate(ngayNhap);
-                java.util.Date ngayHetHan = dateFormat.parse(tblModel.getValueAt(row, 5).toString());
-                dateHetHan.setDate(ngayHetHan);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
-
-    private void loadDataToTable() {
-        tblModel.setRowCount(0);
-        List<NguyenLieu> dsNguyenLieu = PhieuNhap_Dao.printAllNguyenLieu();
-        for (NguyenLieu nguyenLieu : dsNguyenLieu) {
-            Object[] row = {
-                    nguyenLieu.getMaNguyenLieu(),
-                    nguyenLieu.getTenNguyenLieu(),
-                    nguyenLieu.getDonViTinh(),
-                    nguyenLieu.getGiaNhap(),
-                    nguyenLieu.getNgayNhap(),
-                    nguyenLieu.getNgayHetHan(),
-                    nguyenLieu.getKhoNguyenLieu().getMaKho(),
-                    nguyenLieu.getKhoNguyenLieu().getTenKho(),
-                    nguyenLieu.getKhoNguyenLieu().getDiaChi()
-            };
-            tblModel.addRow(row);
-        }
-    }
-
-    private void clearInputFields() {
-        txtMa.setText("");
-        txtTen.setText("");
-        txtDV.setText("");
-        txtMaKho.setText("");
-        txtTenKho.setText("");
-        txtDC.setText("");
-        dateNhap.setDate(null);
-        dateHetHan.setDate(null);
-    }
-
-
-
-    private NguyenLieu layNguyenLieuTuInput() {
-        String maNguyenLieu = txtMa.getText().trim();
-        String tenNguyenLieu = txtTen.getText().trim();
-        String donViTinh = txtDV.getText().trim();
-        String maKho = txtMaKho.getText().trim();
-        String tenKho = txtTenKho.getText().trim();
-        String diaChi = txtDC.getText().trim();
-        int soLuong = Integer.parseInt(txtSoLuong.getText().trim());
-
-
-        java.util.Date utilNgayNhap = dateNhap.getDate();
-        java.util.Date utilNgayHetHan = dateHetHan.getDate();
-
-        if (utilNgayNhap == null || utilNgayHetHan == null) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày nhập và ngày hết hạn.");
-            return null;
-        }
-
-        java.sql.Date ngayNhap = new java.sql.Date(utilNgayNhap.getTime());
-        java.sql.Date ngayHetHan = new java.sql.Date(utilNgayHetHan.getTime());
-
-        double giaNhap = 0;
-        int selectedRow = tbl.getSelectedRow();
-        if (selectedRow != -1) {
-            try {
-                giaNhap = Double.parseDouble(tblModel.getValueAt(selectedRow, 3).toString());
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Giá nhập không hợp lệ.");
-                return null;
-            }
-        } else {
-
-            giaNhap = 100000;
-        }
-
-        KhoNguyenLieu kho = new KhoNguyenLieu(maKho, tenKho, diaChi);
-        return new NguyenLieu(maNguyenLieu, tenNguyenLieu, donViTinh, giaNhap, ngayNhap, ngayHetHan, kho, soLuong);
-    }
-
-    private void themNguyenLieu() {
-        try {
-            NguyenLieu nguyenLieu = layNguyenLieuTuInput();
-            if (PhieuNhap_Dao.addNguyenLieu(nguyenLieu)) {
-                JOptionPane.showMessageDialog(this, "Thêm nguyên liệu thành công!");
-                loadDataToTable();
-                clearInputFields();
-            } else {
-                JOptionPane.showMessageDialog(this, "Thêm nguyên liệu thất bại!");
-            }
-        } catch (IllegalArgumentException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void suaNguyenLieu() {
-        try {
-            NguyenLieu nguyenLieu = layNguyenLieuTuInput();
-            if (PhieuNhap_Dao.updateNguyenLieu(nguyenLieu)) {
-                JOptionPane.showMessageDialog(this, "Sửa nguyên liệu thành công!");
-                loadDataToTable();
-                clearInputFields();
-            } else {
-                JOptionPane.showMessageDialog(this, "Sửa nguyên liệu thất bại!");
-            }
-        } catch (IllegalArgumentException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-
-    //xoa nguyen lieu co cau hoi yes no
-    private void xoaNguyenLieu() {
-        int row = tbl.getSelectedRow();
-        if (row != -1) {
-            String maNguyenLieu = tblModel.getValueAt(row, 0).toString();
-            int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa nguyên liệu này không?", "Xác nhận", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
-                if (PhieuNhap_Dao.deleteNguyenLieu(maNguyenLieu)) {
-                    JOptionPane.showMessageDialog(this, "Xóa nguyên liệu thành công!");
-                    loadDataToTable();
-                    clearInputFields();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Xóa nguyên liệu thất bại!");
-                }
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn nguyên liệu để xóa.");
-        }
-    }
-
-
-    private void timNguyenLieuTheoTen() {
-        String maNguyenLieu = txtTim.getText();
-        Date ngayNhap = (Date) dateNhapTim.getDate();
-        Date ngayHetHan = (Date) dateHetHanTim.getDate();
-
-        List<NguyenLieu> dsNguyenLieu = PhieuNhap_Dao.searchNguyenLieuByTen(maNguyenLieu);
-        tblModel.setRowCount(0);
-        for (NguyenLieu nguyenLieu : dsNguyenLieu) {
-            Object[] row = {
-                    nguyenLieu.getMaNguyenLieu(),
-                    nguyenLieu.getTenNguyenLieu(),
-                    nguyenLieu.getDonViTinh(),
-                    nguyenLieu.getGiaNhap(),
-                    nguyenLieu.getNgayNhap(),
-                    nguyenLieu.getNgayHetHan(),
-                    nguyenLieu.getKhoNguyenLieu().getMaKho(),
-                    nguyenLieu.getKhoNguyenLieu().getTenKho(),
-                    nguyenLieu.getKhoNguyenLieu().getDiaChi()
-            };
-            tblModel.addRow(row);
-            clearInputFields();
-        }
-    }
-
-    private void timNguyenLieuTheNgayNhap(Date ngayNhap) {
-
-        List<NguyenLieu> danhSachNguyenLieu = PhieuNhap_Dao.searchNguyenLieuByNgayNhap(ngayNhap);
-        List<NguyenLieu> ketQuaTimKiem = new ArrayList<>();
-
-        for (NguyenLieu nguyenLieu : danhSachNguyenLieu) {
-
-            if (nguyenLieu.getNgayNhap().equals(ngayNhap)) {
-                ketQuaTimKiem.add(nguyenLieu);
-            }
-        }
-        if (ketQuaTimKiem.isEmpty()) {
-            resetTable();
-        } else {
-            resetTable();
-            for (NguyenLieu nl : ketQuaTimKiem) {
-                Object[] row = {
-                        nl.getMaNguyenLieu(),
-                        nl.getTenNguyenLieu(),
-                        nl.getDonViTinh(),
-                        nl.getGiaNhap(),
-                        nl.getNgayNhap(),
-                        nl.getNgayHetHan(),
-                        nl.getKhoNguyenLieu().getMaKho(),
-                        nl.getKhoNguyenLieu().getTenKho(),
-                        nl.getKhoNguyenLieu().getDiaChi()
-                };
-                tblModel.addRow(row);
-                dateNhapTim.setDate(null);
-            }
-        }
-    }
-    private void resetTable() {
-        DefaultTableModel model = (DefaultTableModel) tbl.getModel();
-        model.setRowCount(0);
-    }
-
-
-   private void timNguyenLieuTheNgayHetHan(Date ngayHetHan) {
-
-        List<NguyenLieu> danhSachNguyenLieu = PhieuNhap_Dao.searchNguyenLieuByNgayHetHan(ngayHetHan);
-        List<NguyenLieu> ketQuaTimKiem = new ArrayList<>();
-
-        for (NguyenLieu nguyenLieu : danhSachNguyenLieu) {
-
-            if (nguyenLieu.getNgayHetHan().equals(ngayHetHan)) {
-                ketQuaTimKiem.add(nguyenLieu);
-            }
-        }
-        if (ketQuaTimKiem.isEmpty()) {
-            resetTable();
-        } else {
-            resetTable();
-            for (NguyenLieu nl : ketQuaTimKiem) {
-                Object[] row = {
-                        nl.getMaNguyenLieu(),
-                        nl.getTenNguyenLieu(),
-                        nl.getDonViTinh(),
-                        nl.getGiaNhap(),
-                        nl.getNgayNhap(),
-                        nl.getNgayHetHan(),
-                        nl.getKhoNguyenLieu().getMaKho(),
-                        nl.getKhoNguyenLieu().getTenKho(),
-                        nl.getKhoNguyenLieu().getDiaChi()
-                };
-                tblModel.addRow(row);
-                dateHetHanTim.setDate(null);
-            }
-        }
-    }
-
-
+    @Override public void mouseClicked(MouseEvent e) {}
+    @Override public void mousePressed(MouseEvent e) {}
+    @Override public void mouseReleased(MouseEvent e) {}
+    @Override public void mouseEntered(MouseEvent e) {}
+    @Override public void mouseExited(MouseEvent e) {}
 }
