@@ -1,6 +1,5 @@
 package view.Manager;
 
-import controller.UserController;
 import dao.TaiKhoan_DAO;
 import entity.NhanVien;
 import entity.TaiKhoan;
@@ -34,7 +33,6 @@ public class TaiKhoanFrame extends JPanel implements ActionListener, MouseListen
     TaiKhoan_DAO taiKhoan_DAO = new TaiKhoan_DAO();
     private JComboBox<String> cmbQuyen;
     private JTextField txtTim;
-    UserController userController = new UserController();
 
 
     public TaiKhoanFrame() {
@@ -100,7 +98,6 @@ public class TaiKhoanFrame extends JPanel implements ActionListener, MouseListen
         gbc.weightx = 0.8;
         txtMa = new JTextField();
         txtMa.setPreferredSize(new Dimension(200, 25));
-        txtMa.setEditable(false);
         panel.add(txtMa, gbc);
 
         gbc.gridx = 0;
@@ -142,66 +139,66 @@ public class TaiKhoanFrame extends JPanel implements ActionListener, MouseListen
 
 
     private JPanel createCenterPanel() {
-            JPanel panel = new JPanel(new GridBagLayout());
-            GridBagConstraints gbc = new GridBagConstraints();
-            gbc.insets = new Insets(5, 5, 5, 5);
-            gbc.anchor = GridBagConstraints.WEST;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
 
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            gbc.weightx = 0.2;
-            panel.add(new JLabel("Số điện thoại:"), gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0.2;
+        panel.add(new JLabel("Số điện thoại:"), gbc);
 
-            gbc.gridx = 1;
-            gbc.weightx = 0.8;
-            txtSDT = new JTextField();
-            txtSDT.setPreferredSize(new Dimension(200, 25));
-            panel.add(txtSDT, gbc);
+        gbc.gridx = 1;
+        gbc.weightx = 0.8;
+        txtSDT = new JTextField();
+        txtSDT.setPreferredSize(new Dimension(200, 25));
+        panel.add(txtSDT, gbc);
 
-            gbc.gridx = 0;
-            gbc.gridy = 1;
-            gbc.weightx = 0.2;
-            panel.add(new JLabel("Tuổi:"), gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0.2;
+        panel.add(new JLabel("Tuổi:"), gbc);
 
-            gbc.gridx = 1;
-            gbc.weightx = 0.8;
-            txtTuoi = new JTextField();
-            txtTuoi.setPreferredSize(new Dimension(200, 25));
-            panel.add(txtTuoi, gbc);
+        gbc.gridx = 1;
+        gbc.weightx = 0.8;
+        txtTuoi = new JTextField();
+        txtTuoi.setPreferredSize(new Dimension(200, 25));
+        panel.add(txtTuoi, gbc);
 
-            gbc.gridx = 0;
-            gbc.gridy = 2;
-            gbc.weightx = 0.2;
-            panel.add(new JLabel("Tên đăng nhập:"), gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.weightx = 0.2;
+        panel.add(new JLabel("Tên đăng nhập:"), gbc);
 
-            gbc.gridx = 1;
-            gbc.weightx = 0.8;
-            txtTDN = new JTextField();
-            txtTDN.setPreferredSize(new Dimension(200, 25));
-            panel.add(txtTDN, gbc);
+        gbc.gridx = 1;
+        gbc.weightx = 0.8;
+        txtTDN = new JTextField();
+        txtTDN.setPreferredSize(new Dimension(200, 25));
+        panel.add(txtTDN, gbc);
 
-            gbc.gridx = 0;
-            gbc.gridy = 3;
-            gbc.weightx = 0.2;
-            panel.add(new JLabel("Password:"), gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.weightx = 0.2;
+        panel.add(new JLabel("Password:"), gbc);
 
-            gbc.gridx = 1;
-            gbc.weightx = 0.8;
-            txtPw = new JPasswordField();
-            txtPw.setPreferredSize(new Dimension(200, 25));
-            panel.add(txtPw, gbc);
+        gbc.gridx = 1;
+        gbc.weightx = 0.8;
+        txtPw = new JPasswordField();
+        txtPw.setPreferredSize(new Dimension(200, 25));
+        panel.add(txtPw, gbc);
 
 
-            gbc.gridx = 0;
-            gbc.gridy = 4;
-            gbc.gridwidth = 2;
-            gbc.weighty = 1.0;
-            panel.add(Box.createVerticalGlue(), gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
+        gbc.weighty = 1.0;
+        panel.add(Box.createVerticalGlue(), gbc);
 
-            return panel;
-        }
+        return panel;
+    }
 
     private JPanel createRightPanel() {
         JPanel mainPanel = new JPanel();
@@ -247,15 +244,15 @@ public class TaiKhoanFrame extends JPanel implements ActionListener, MouseListen
         return mainPanel;
     }
 
-        private JButton createRoundButton (String text, String iconPath){
-            JButton button = new JButton(text);
-            button.setIcon(new ImageIcon(iconPath));
-            button.setBackground(new Color(10, 82, 116));
-            button.setForeground(Color.WHITE);
-            button.setFocusPainted(false);
-            button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-            return button;
-        }
+    private JButton createRoundButton (String text, String iconPath){
+        JButton button = new JButton(text);
+        button.setIcon(new ImageIcon(iconPath));
+        button.setBackground(new Color(10, 82, 116));
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        return button;
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -332,32 +329,28 @@ public class TaiKhoanFrame extends JPanel implements ActionListener, MouseListen
         }
     }
 
-    private void themTaiKhoan() {
-        try {
+    private void themTaiKhoan(){
+        try{
             NhanVien nv = layThongTinTuFiels();
-            if (nv == null) {
-                JOptionPane.showMessageDialog(this, "Thông tin nhập không hợp lệ. Vui lòng kiểm tra lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
 
             boolean quyen = cmbQuyen.getSelectedItem().equals("Quản lý");
             nv.getTaiKhoan().setQuyenHan(quyen);
-
-            if (taiKhoan_DAO.addTaiKhoan(nv)) {
+            if(taiKhoan_DAO.addTaiKhoan(nv)){
                 JOptionPane.showMessageDialog(this, "Thêm tài khoản thành công");
                 loadDataToTable();
                 clearTextFields();
-            } else {
+            }else{
                 JOptionPane.showMessageDialog(this, "Thêm tài khoản thất bại");
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Thêm tài khoản thất bại: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(this, "Thêm tài khoản thất bại");
             e.printStackTrace();
         }
     }
 
-    private boolean isValidInput() {
+    private NhanVien layThongTinTuFiels(){
         try {
+            // Lấy dữ liệu từ form
             String maNV = txtMa.getText().trim();
             String tenNV = txtTen.getText().trim();
             String tuoi = txtTuoi.getText().trim();
@@ -365,67 +358,44 @@ public class TaiKhoanFrame extends JPanel implements ActionListener, MouseListen
             String username = txtTDN.getText().trim();
             String password = txtPw.getText().trim();
 
-            if (maNV.isEmpty() || tenNV.isEmpty() || tuoi.isEmpty() || sdt.isEmpty() || username.isEmpty() || password.isEmpty()) {
-                throw new IllegalArgumentException("Vui lòng nhập đầy đủ thông tin.");
+
+            // Validate dữ liệu
+            if(!(maNV.matches("NV\\d{1,5}"))) {
+                throw new IllegalArgumentException("Mã NV phải có dạng NV + là kí tự số (VD: NV1)");
             }
 
-            if (!maNV.matches("NV\\d{1,5}")) {
-                throw new IllegalArgumentException("Mã NV phải có dạng NV + số (VD: NV1)");
+            if (!(tenNV.matches("^[a-zA-Z\\s]{2,50}$"))) {
+                throw new IllegalArgumentException("Tên NV chỉ chứa chữ cái và dấu cách (2-50 ký tự)");
             }
 
-            if (!tenNV.matches("^[a-zA-ZÀ-Ỵà-ỵĐđ\\s\\-]{2,50}$")) {
-                throw new IllegalArgumentException("Tên NV chỉ chứa chữ cái, dấu cách và gạch nối (2-50 ký tự)");
-            }
-
-            if (!tuoi.matches("^(1[8-9]|[2-5][0-9]|6[0-5])$")) {
+            if (!(tuoi.matches("^(1[8-9]|[2-5][0-9]|6[0-5])$"))) {
                 throw new IllegalArgumentException("Tuổi phải từ 18-65");
             }
 
-            if (!sdt.matches("^[0]\\d{9}$")) {
-                throw new IllegalArgumentException("Số điện thoại phải có 10 chữ số, bắt đầu bằng 0");
+            if (!(sdt.matches("^[0]\\d{9}$"))) {
+                throw new IllegalArgumentException("Số điện thoại phải có 10 số, bắt đầu bằng 0");
             }
 
-            if (!username.matches("^[a-zA-Z0-9_]{6,20}$")) {
+            if (!(username.matches("^[a-zA-Z0-9_]{6,20}$"))) {
                 throw new IllegalArgumentException("Username 6-20 ký tự (chữ, số, _)");
             }
 
-            if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{5,20}$")) {
-                throw new IllegalArgumentException("Password 5-20 ký tự, ít nhất 1 chữ hoa, 1 chữ thường, 1 số");
+            if (!(password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,20}$"))) {
+                throw new IllegalArgumentException("Password 8-20 ký tự, có ít nhất 1 chữ hoa, 1 chữ thường, 1 số");
             }
-
         } catch (IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Lỗi dữ liệu", JOptionPane.ERROR_MESSAGE);
-            return false;
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace();
-            return false;
         }
-
-        return true;
-    }
-
-
-    private NhanVien layThongTinTuFiels() {
-        if (!isValidInput()) {
-            return null;
-        }
-
-        String maNV = userController.generateMaNhanVien();
-        String tenNV = txtTen.getText().trim();
-        int tuoi = Integer.parseInt(txtTuoi.getText().trim());
-        String diaChi = txtDC.getText().trim();
-        String sdt = txtSDT.getText().trim();
-        String username = txtTDN.getText().trim();
-        String password = txtPw.getText().trim();
 
         return new NhanVien(
-                maNV,
-                tenNV,
-                tuoi,
-                diaChi,
-                sdt,
-                new TaiKhoan(username, password)
+                txtMa.getText().trim(),
+                txtTen.getText().trim(),
+                Integer.parseInt(txtTuoi.getText().trim()),
+                txtDC.getText().trim(),
+                txtSDT.getText().trim(),
+                new TaiKhoan(txtTDN.getText().trim(), txtPw.getText().trim())
         );
     }
 
@@ -458,13 +428,6 @@ public class TaiKhoanFrame extends JPanel implements ActionListener, MouseListen
         String maNV = tbl.getValueAt(row, 0).toString();
         int cofirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn sửa tài khoản này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
         NhanVien nv = layThongTinTuFiels();
-
-        if(nv == null) {
-            JOptionPane.showMessageDialog(this, "Thông tin nhập không hợp lệ. Vui lòng kiểm tra lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-
         nv.setMaNhanVien(maNV);
         if(cofirm == JOptionPane.YES_OPTION) {
             if (taiKhoan_DAO.updateTaiKhoan(nv)) {
