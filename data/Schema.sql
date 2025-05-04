@@ -2,16 +2,16 @@ USE [master]
 GO
 -- Create Database
 -- Tạo Database
-CREATE DATABASE [QuanLiCoffee1];
+CREATE DATABASE [QuanLiCoffee];
 GO
 
-USE [QuanLiCoffee1];
+USE [QuanLiCoffee];
 GO
 
 -- Cấu hình cơ bản
-ALTER DATABASE [QuanLiCoffee1] SET COMPATIBILITY_LEVEL = 160;
-ALTER DATABASE [QuanLiCoffee1] SET AUTO_CLOSE ON;
-ALTER DATABASE [QuanLiCoffee1] SET RECOVERY SIMPLE;
+ALTER DATABASE [QuanLiCoffee] SET COMPATIBILITY_LEVEL = 160;
+ALTER DATABASE [QuanLiCoffee] SET AUTO_CLOSE ON;
+ALTER DATABASE [QuanLiCoffee] SET RECOVERY SIMPLE;
 GO
 
 -- Bảng TaiKhoan
