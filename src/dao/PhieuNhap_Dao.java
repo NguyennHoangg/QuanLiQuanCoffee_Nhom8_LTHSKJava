@@ -394,14 +394,14 @@ public class PhieuNhap_Dao {
 
         try{
             con = getConnection();
-            String sql = "SELECT nl.*,ctknl.soLuong, k.maKho, k.tenKho, k.diaChi AS diaChiKho," +
-                    "ncc.maNhaCungCap, ncc.tenNhaCungCap, ncc.diaChi AS diaChiNCC, ncc.soDienThoai" +
-                    "FROM NguyenLieu nl " +
-                    "JOIN ChiTietKhoNguyenLieu ctknl ON nl.maNguyenLieu = ctknl.maNguyenLieu" +
-                    "JOIN KhoNguyenLieu k ON ctknl.maKho = k.maKho" +
-                    "JOIN ChiTietNhaCungCap ctncc ON ctknl.maNguyenLieu = ctncc.maNguyenLieu" +
-                    "JOIN NhaCungCap ncc ON ctncc.maNhaCungCap = ncc.maNhaCungCap" +
-                    "WHERE nl.maNguyenLieu = ? AND k.maKho = ?";
+            String sql = "SELECT nl.*, ctknl.soLuong, k.maKho, k.tenKho, k.diaChi AS diaChiKho, " +
+                                 "ncc.maNhaCungCap, ncc.tenNhaCungCap, ncc.diaChi AS diaChiNCC, ncc.soDienThoai " +
+                                 "FROM NguyenLieu nl " +
+                                 "JOIN ChiTietKhoNguyenLieu ctknl ON nl.maNguyenLieu = ctknl.maNguyenLieu " +
+                                 "JOIN KhoNguyenLieu k ON ctknl.maKho = k.maKho " +
+                                 "JOIN ChiTietNhaCungCap ctncc ON ctknl.maNguyenLieu = ctncc.maNguyenLieu " +
+                                 "JOIN NhaCungCap ncc ON ctncc.maNhaCungCap = ncc.maNhaCungCap " +
+                                 "WHERE nl.maNguyenLieu = ? AND k.maKho = ?";
 
             stmt = con.prepareStatement(sql);
             stmt.setString(1, maNguyenLieu);

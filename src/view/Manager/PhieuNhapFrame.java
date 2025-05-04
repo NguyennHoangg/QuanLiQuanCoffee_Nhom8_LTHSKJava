@@ -225,7 +225,9 @@ public class PhieuNhapFrame extends JPanel implements ActionListener, MouseListe
 
             for (int i = 0; i < tblModel.getRowCount(); i++) {
                 for (int j = 0; j < tblModel.getColumnCount(); j++) {
-                    table.addCell(new PdfPCell(new Phrase(tblModel.getValueAt(i, j).toString(), cellFont)));
+                    Object cellValue = tblModel.getValueAt(i, j);
+                    String cellText = (cellValue != null) ? cellValue.toString() : ""; // Handle null values
+                    table.addCell(new PdfPCell(new Phrase(cellText, cellFont)));
                 }
             }
 
