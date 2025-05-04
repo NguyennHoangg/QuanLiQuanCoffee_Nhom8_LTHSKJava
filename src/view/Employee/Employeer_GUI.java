@@ -20,7 +20,7 @@ public class Employeer_GUI {
     private CardLayout cardLayout;
     private CaLamViec currentShift;
 
-    private ThanhToanPanel thanhToanPanel;
+//    private ThanhToanPanel thanhToanPanel;
 
     /**
      * Constructor của JFrame chính
@@ -73,14 +73,14 @@ public class Employeer_GUI {
 
         mainPanel.add(caLamViecPanel, "CA_LAM_VIEC");
 
-        ThanhToanPanel thanhToanPanel = new ThanhToanPanel(sanPhamController, userController, hoaDonController);
-        BanHangPanel banHangPanel = new BanHangPanel(userController, mainPanel, cardLayout, sanPhamController, thanhToanPanel);
+//        ThanhToanPanel thanhToanPanel = new ThanhToanPanel(sanPhamController, userController, hoaDonController);
+        BanHangPanel banHangPanel = new BanHangPanel(userController, mainPanel, cardLayout, sanPhamController);
         HoaDonPanel hoaDonPanel = new HoaDonPanel(userController, sanPhamController);
 
 
         mainPanel.add(banHangPanel, "BAN_HANG");
         mainPanel.add(hoaDonPanel, "HOA_DON");
-        mainPanel.add(thanhToanPanel, "THANH_TOAN");
+//        mainPanel.add(thanhToanPanel, "THANH_TOAN");
 
         frame.add(mainPanel, BorderLayout.CENTER);
         frame.setVisible(true);

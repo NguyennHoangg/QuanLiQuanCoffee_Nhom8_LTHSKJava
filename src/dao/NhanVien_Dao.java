@@ -36,4 +36,19 @@ public class NhanVien_Dao {
             }
             return null; // Trả về null nếu không tìm thấy
         }
+
+    public boolean isMaNhanVienExists(String maNhanVien) {
+        String sql = "SELECT COUNT(*) FROM NhanVien WHERE maNhanVien = ?";
+        try (Connection conn = ConnectDataBase.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, maNhanVien);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Trả về true nếu mã nhân viên đã tồn tại
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

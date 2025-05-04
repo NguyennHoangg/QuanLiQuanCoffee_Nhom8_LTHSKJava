@@ -190,7 +190,6 @@ public class SanPham_Dao {
         return rowsAffected > 0;
     }
 
-
     // Hàm đóng kết nối để tránh lặp lại nhiều
     private void closeResources(Connection conn, Statement stmt, ResultSet rs) {
         try {
@@ -200,5 +199,23 @@ public class SanPham_Dao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isMaSanPhamExists(String maSanPham) {
+        String sql = "SELECT COUNT(*) FROM SanPham WHERE maSanPham = ?";
+        try (Connection conn = ConnectDataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, maSanPham);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Trả về true nếu mã sản phẩm đã tồn tại
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

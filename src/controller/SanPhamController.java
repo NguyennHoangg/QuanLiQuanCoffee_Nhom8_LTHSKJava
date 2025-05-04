@@ -3,6 +3,7 @@ package controller;
 import dao.SanPham_Dao;
 import entity.LoaiSanPham;
 import entity.SanPham;
+import view.Manager.KhoPanel;
 import view.Manager.SanPhamPanel;
 
 import javax.swing.*;
@@ -10,9 +11,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SanPhamController implements ActionListener {
     private SanPhamPanel view;
+    private KhoPanel khoPanel;
 
     public SanPhamController(SanPhamPanel view) {
         this.view = view;
@@ -67,7 +70,14 @@ public class SanPhamController implements ActionListener {
         this.sharedProducts = sanPham;
     }
 
-
+    public String generateMaSanPham() {
+        String maSanPham;
+        do {
+            maSanPham = "SP" + (int) (Math.random() * 10000);
+        } while (sanPhamDao.isMaSanPhamExists(maSanPham));
+        return maSanPham;
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
