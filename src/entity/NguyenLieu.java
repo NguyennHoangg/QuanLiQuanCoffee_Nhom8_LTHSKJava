@@ -1,6 +1,7 @@
 package entity;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 public class NguyenLieu {
     private String maNguyenLieu;
@@ -42,6 +43,17 @@ public class NguyenLieu {
         this.giaNhap = giaNhap;
         this.ngayNhap = ngayNhap;
         NgayHetHan = ngayHetHan;
+    }
+
+    public NguyenLieu(String maNguyenLieu, String tenNguyenLieu, String donViTinh, double giaNhap, LocalDate ngayNhap, LocalDate ngayHetHan, KhoNguyenLieu kho, int soLuong, NhaCungCap ncc) {
+        this.maNguyenLieu = maNguyenLieu;
+        this.tenNguyenLieu = tenNguyenLieu;
+        this.donViTinh = donViTinh;
+        this.giaNhap = giaNhap;
+        this.soLuong = soLuong;
+        this.ngayNhap = Date.valueOf(ngayNhap);
+        NgayHetHan = Date.valueOf(ngayHetHan);
+        this.khoNguyenLieu = kho;
     }
 
     public String getMaNguyenLieu() {

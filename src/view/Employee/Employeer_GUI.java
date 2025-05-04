@@ -80,7 +80,7 @@ public class Employeer_GUI {
 
         mainPanel.add(banHangPanel, "BAN_HANG");
         mainPanel.add(hoaDonPanel, "HOA_DON");
-//        mainPanel.add(thanhToanPanel, "THANH_TOAN");
+        mainPanel.add(new ThongTinPanel(userController), "UPDATE");
 
         frame.add(mainPanel, BorderLayout.CENTER);
         frame.setVisible(true);
@@ -220,8 +220,8 @@ public class Employeer_GUI {
                 }
 
                 double soTienDongCa = Double.parseDouble(input.trim());
-                if (soTienDongCa < 0) {
-                    JOptionPane.showMessageDialog(frame, "Số tiền đóng ca không được âm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                if (soTienDongCa < 455000) {
+                    JOptionPane.showMessageDialog(frame, "Số tiền đóng ca không được nhỏ hơn số tiền mở ca!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 

@@ -1,6 +1,7 @@
 package view.Manager;
 
 import controller.HoaDonController;
+import view.Employee.ThongTinPanel;
 import view.login.fLogin;
 
 import javax.swing.*;
@@ -37,7 +38,6 @@ public class Manager_GUI {
         mainPanel.add(new PhieuNhapFrame(), "PHIEU_NHAP");
         mainPanel.add(new KhoPanel(), "KHO");
         mainPanel.add(new TaiKhoanFrame(), "ACCOUNT");
-        mainPanel.add(new ThongTinPanel(), "UPDATE");
 
         frame.add(mainPanel, BorderLayout.CENTER);
         frame.setVisible(true);
@@ -75,7 +75,6 @@ public class Manager_GUI {
         sidebar.add(Box.createVerticalGlue());
 
 
-        addSidebarButton(sidebar, "ĐỔI THÔNG TIN", "image/update.png", "UPDATE");
         addSidebarButton(sidebar, "ĐĂNG XUẤT", "image/logout.png", "DANG_XUAT");
 
         return sidebar;
